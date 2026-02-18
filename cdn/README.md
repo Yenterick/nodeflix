@@ -5,17 +5,22 @@ This server delivers HLS (HTTP Live Streaming) content using Nginx.
 ## Directory Layout
 
 <pre>/var/www/hls/
+├── pics/
+│   └── $1.jpeg
 ├── movies/
-│   └── 1/
+│   └── $1/
 │       ├── main.m3u8
 │       ├── segment_000.ts
+│       ├── banner.jpeg
 │       └── thumbnail.jpeg
 └── series/
-    └── 1/
-        └── 1/
-            ├── main.m3u8
-            ├── segment_000.ts
-            └── thumbnail.jpeg</pre>
+    └── $1/
+        ├── thumbnail.jpeg
+        └── $1/
+            └── $1/
+                ├── main.m3u8
+                ├── segment_000.ts
+                └── thumbnail.jpeg</pre>
 
 --- 
 

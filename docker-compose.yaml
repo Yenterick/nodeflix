@@ -1,0 +1,28 @@
+
+services:
+  pg:
+    container_name: 'pg'
+    image: postgres:latest
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_PASSWORD=2007
+    volumes:
+      - pg-data:/var/lib/postgresql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  mongo:
+    container_name: 'mongo'
+    image: mongo:latest
+    ports:
+      - 27018:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=2007
+      - MONGO_INITDB_DATABASE=nodeflix
+    volumes:
+      - mongodb-data:/data/db
+      - ./db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+
+volumes:
+  pg-data:
+  mongodb-data:
