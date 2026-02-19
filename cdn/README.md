@@ -2,6 +2,8 @@
 
 This server delivers HLS (HTTP Live Streaming) content using Nginx.
 
+--- 
+
 ## Directory Layout
 
 <pre>/var/www/hls/
@@ -24,10 +26,18 @@ This server delivers HLS (HTTP Live Streaming) content using Nginx.
 
 --- 
 
-### Example FFMPEG Conversion
+### Entry Append to Database Example
+
+<pre>node mediaProcessor.js --m | node mediaProcessor.js --s</pre>
+
+---
+
+### FFMPEG Conversion Example
 
 <pre>ffmpeg -i input.mp4 -hls_time 10 -hls_list_size 0 -hls_segment_filename "segment_%03d.ts" -f hls master.m3u8</pre>
 
-## Example URL
+---
 
-<pre>http://server/movies/1/main.3u8</pre>
+### URL Example
+
+<pre>http://server/movies/1/main.m3u8</pre>

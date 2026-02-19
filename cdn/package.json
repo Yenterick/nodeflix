@@ -1,0 +1,17 @@
+{
+  "name": "nodeflix-cdn",
+  "version": "1.0.0",
+  "description": "Content distribution network for Nodeflix.",
+  "keywords": [
+    "cdn"
+  ],
+  "license": "ISC",
+  "author": "Yenterick",
+  "type": "commonjs",
+  "main": "mediaProcessor.js",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "mongodb": "^7.1.0",
+    "mongoose": "^9.2.1"
+  }
+}
