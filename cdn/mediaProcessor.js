@@ -4,6 +4,10 @@ const path = require('path');
 const mongoose = require('mongoose');
 const { Client } = require('ssh2')
 const { readFileSync } = require('fs');
+const fs = require('fs').promises;
+const { exec } = require('child_process');
+const { promisify } = require('util');
+const execPromise = promisify(exec);
 
 // Importing the database and required models
 const { dbConnection } = require('./config/database');
@@ -60,7 +64,7 @@ const movieForm = async () => {
         description,
         genres: genresRaw.split(',').map(g => g.trim()),
         cast: castRaw.split(',').map(c => c.trim()),
-        releaseYear: parseInt(releaseYear),
+        release_year: parseInt(releaseYear),
         duration: parseInt(duration),
         is_for_kids: isForKids.toLowerCase() === 'y'
     };
@@ -89,7 +93,7 @@ const seriesForm = async () => {
         const episodeCount = parseInt(await askQuestion(`How many episodes are in season ${seasonNumber}?: `)) || 0;
         if (episodeCount === 0) break;
         const episodes = [];
-        
+
         for (let i = 1; i <= episodeCount; i++) {
             log(`Episode ${i} (Season ${seasonNumber})`);
             const episodeTitle = await askQuestion('Episode Title: ');
@@ -200,25 +204,26 @@ const remoteMovieProcess = async (inputPath, thumbnailPath, movieId) => {
     return new Promise((resolve, reject) => {
         const conn = new Client();
         conn.on('ready', () => {
-            log('SSH client connected successfully...');
+            log('SSH client connected successfully.');
 
             // Paths needed for the output
             const mediaDir = `/var/www/hls/movies/${movieId}`;
             const hlsCommand = `ffmpeg -i "/var/www/uploads/${inputPath}" -hls_time 10 -hls_list_size 0 -hls_segment_filename "${mediaDir}/segment_%03d.ts" -f hls "${mediaDir}/master.m3u8"`;
-            const thumbCommand = `ffmpeg -i "/var/www/uploads/${thumbnailPath}" -vframes 1 -q:v 2 "${mediaDir}/thumbnail.jpeg"`;
+            const thumbCommand = `ffmpeg -i "/var/www/uploads/${thumbnailPath}" -vframes 1 "${mediaDir}/thumbnail.jpeg"`;
 
             const fullCommand = `mkdir -p ${mediaDir} && ${hlsCommand} && ${thumbCommand}`;
 
+            log(`Converting the movie ${movieId}`);
             log(`Executing: ${fullCommand}`);
 
             conn.exec(fullCommand, (error, stream) => {
                 if (error) reject(error);
-                stream.on('close', (code, signal) => {
+                stream.on('close', (code) => {
                     conn.end();
-                    log(`Stream finished | Code : ${code} | Signal : ${signal}.`);
+                    log(`Movie ${movieId} successfully converted to HLS.`);
+                    log(`Stream finished | Code : ${code}.`);
                     resolve();
                 }).on('data', (data) => {
-                    // Retrieves info from the host terminal
                     log(`<${process.env.SSH_USERNAME}@${process.env.SSH_HOST}:${process.env.SSH_PORT}> ${data}`);
                 });
             });
@@ -231,9 +236,158 @@ const remoteMovieProcess = async (inputPath, thumbnailPath, movieId) => {
     });
 }
 
+// Converts the series to hls format remotelly via SSH
+const remoteSeriesProcess = async (inputPath, thumbnailPath, seriesId) => {
+    return new Promise((resolve, reject) => {
+        const conn = new Client();
+        conn.on('ready', async () => {
+            try {
+                log('SSH client connected successfully.');
+
+                // Converting the series thumbnail
+                const mediaDir = `/var/www/hls/series/${seriesId}`;
+                const thumbCommand = `ffmpeg -i "/var/www/uploads/${thumbnailPath}" -vframes 1 -q:v 2 "${mediaDir}/thumbnail.jpeg"`;
+
+                const thumbFullCommand = `mkdir -p ${mediaDir} && ${thumbCommand}`;
+
+                log(`Executing: ${thumbFullCommand}`);
+                await new Promise((resolve, reject) => {
+                    conn.exec(thumbFullCommand, (error, stream) => {
+                        if (error) reject(error);
+                        stream.on('close', (code) => {
+                            log(`Stream finished | Code : ${code}`);
+                            resolve();
+                        }).on('data', (data) => {
+                            log(`<${process.env.SSH_USERNAME}@${process.env.SSH_HOST}:${process.env.SSH_PORT}> ${data}`);
+                        });
+                    });
+                });
+
+                // Getting the paths needed for the output
+                log(`Searching the series folders...`);
+
+                let seasons;
+                await new Promise((resolve, reject) => {
+                    conn.exec(`ls /var/www/uploads/${inputPath}`, (error, stream) => {
+                        if (error) reject(error);
+                        stream.on('data', (data) => {
+                            // Retrieves info from the host terminal
+                            seasons = data.toString().trim().split('\n');
+                        });
+                        stream.on('close', (code) => {
+                            log(`Stream finished | Code : ${code}`);
+                            resolve();
+                        });
+                    });
+                });
+
+                // Making the output paths
+                for (const season of seasons) {
+                    let episodes;
+                    log(`Converting the episodes of season ${season}...`);
+                    await new Promise((resolve, reject) => {
+                        conn.exec(`ls /var/www/uploads/${inputPath}/${season}`, (error, stream) => {
+                            if (error) reject(error);
+                            stream.on('data', (data) => {
+                                // Retrieves info from the host terminal
+                                episodes = data.toString().trim().split('\n');
+                            });
+                            stream.on('close', (code) => {
+                                log(`Stream finished | Code : ${code}`);
+                                resolve();
+                            });
+                        });
+                    });
+                    for (const episode of episodes) {
+                        const episodeIdx = episode.split('.')[0];
+                        log(`Converting episode ${episodeIdx} of season ${season}...`);
+
+                        // Each episode path and command
+                        const episodeDir = `${mediaDir}/${season}/${episodeIdx}`;
+                        const hlsCommand = `ffmpeg -i "/var/www/uploads/${inputPath}/${season}/${episode}" -hls_time 10 -hls_list_size 0 -hls_segment_filename "${episodeDir}/segment_%03d.ts" -f hls "${episodeDir}/master.m3u8"`;
+                        const thumbCommand = `ffmpeg -i "/var/www/uploads/${inputPath}/${season}/${episode}" -vf "thumbnail" -frames:v 1 "${episodeDir}/thumbnail.jpeg"`;
+                        const fullCommand = `mkdir -p ${episodeDir} && ${hlsCommand} && ${thumbCommand}`;
+
+                        log(`Executing: ${fullCommand}`);
+                        await new Promise((resolve, reject) => {
+                            conn.exec(fullCommand, (error, stream) => {
+                                if (error) reject(error);
+                                stream.on('close', (code) => {
+                                    log(`Stream finished | Code : ${code}.`);
+                                    resolve();
+                                }).on('data', (data) => {
+                                    log(`<${process.env.SSH_USERNAME}@${process.env.SSH_HOST}:${process.env.SSH_PORT}> ${data}`);
+                                });
+                            });
+                        });
+                    }
+                }
+
+                log(`Series ${seriesId} successfully converted to HLS.`);
+                conn.end();
+                resolve();
+            } catch (error) {
+                conn.end();
+                reject(error);
+            }
+        }).connect({
+            host: process.env.SSH_HOST,
+            port: process.env.SSH_PORT,
+            username: process.env.SSH_USERNAME,
+            privateKey: readFileSync(process.env.EPUB_KEY_PATH)
+        });
+    });
+}
+
 // Converts the movie to hls format locally
-const localProcess = async () => {
-    // TODO: Make the local media process
+const localMovieProcess = async (inputPath, thumbnailPath, movieId) => {
+    log(`Converting the movie ${movieId} locally...`);
+
+    // Paths needed for the output
+    const mediaDir = `/var/www/hls/movies/${movieId}`;
+    const hlsCommand = `ffmpeg -i "/var/www/uploads/${inputPath}" -hls_time 10 -hls_list_size 0 -hls_segment_filename "${mediaDir}/segment_%03d.ts" -f hls "${mediaDir}/master.m3u8"`;
+    const thumbCommand = `ffmpeg -i "/var/www/uploads/${thumbnailPath}" -vframes 1 "${mediaDir}/thumbnail.jpeg"`;
+
+    const fullCommand = `mkdir -p ${mediaDir} && ${hlsCommand} && ${thumbCommand}`;
+
+    log(`Executing: ${fullCommand}`);
+    await execPromise(fullCommand);
+    log(`Movie ${movieId} successfully converted to HLS.`);
+}
+
+// Converts the series to hls format locally
+const localSeriesProcess = async (inputPath, thumbnailPath, seriesId) => {
+    log(`Converting the series ${seriesId} locally...`);
+
+    // Converting the series thumbnail
+    const mediaDir = `/var/www/hls/series/${seriesId}`;
+    const thumbCommand = `ffmpeg -i "/var/www/uploads/${thumbnailPath}" -vframes 1 -q:v 2 "${mediaDir}/thumbnail.jpeg"`;
+
+    const thumbFullCommand = `mkdir -p ${mediaDir} && ${thumbCommand}`;
+
+    log(`Executing: ${thumbFullCommand}`);
+    await execPromise(thumbFullCommand);
+
+    const seasons = await fs.readdir(`/var/www/uploads/${inputPath}`);
+
+    for (const season of seasons) {
+
+        const episodes = await fs.readdir(`/var/www/uploads/${inputPath}/${season}`);
+        for (const episode of episodes) {
+            const episodeIdx = episode.split('.')[0];
+            const episodeDir = `${mediaDir}/${season}/${episodeIdx}`;
+
+            const hlsCommand = `ffmpeg -i "/var/www/uploads/${inputPath}/${season}/${episode}" -hls_time 10 -hls_list_size 0 -hls_segment_filename "${episodeDir}/segment_%03d.ts" -f hls "${episodeDir}/master.m3u8"`;
+            const epThumbCommand = `ffmpeg -i "/var/www/uploads/${inputPath}/${season}/${episode}" -vf "thumbnail" -frames:v 1 "${episodeDir}/thumbnail.jpeg"`;
+
+            const fullCommand = `mkdir -p ${episodeDir} && ${hlsCommand} && ${epThumbCommand}`;
+
+            log(`Converting episode ${episodeIdx} of season ${season}...`);
+            log(`Executing: ${fullCommand}`);
+            await execPromise(fullCommand);
+        }
+    }
+    log(`Series ${seriesId} successfully converted to HLS.`);
 }
 
 // Main function to process the media
@@ -243,6 +397,8 @@ const processMedia = async () => {
     const contentType = contentFlag();
     const environment = environmentFlag();
     const paths = PathsFlag();
+    let movieId;
+    let seriesId;
 
     // Tries to connect to the database
     log('Connecting to the database, please wait...');
@@ -254,25 +410,25 @@ const processMedia = async () => {
         process.exit(1);
     }
 
-    // If the content type is movie creates a movie object and uploads it to the database
+    let movie;
+    let series;
+
+    // If the content type is movie creates a movie object
     if (contentType === 'movie') {
-        var movieId;
         try {
-            const movie = new Movie(await movieForm());
+            movie = new Movie(await movieForm());
             movieId = movie._id;
             movie.stream_url = `/movies/${movieId}/master.m3u8`;
             movie.thumbnail_url = `/movies/${movieId}/thumbnail.jpeg`;
             log('Movie object created successfully!');
             log(movie);
-            await movie.save();
         } catch (error) {
             log(error + '.');
             process.exit(1);
-        } // Otherwise, if the content type is series, it creates a series object and uploads it to the database
+        } // Otherwise, if the content type is series, it creates a series object
     } else if (contentType === 'series') {
-        var seriesId;
         try {
-            const series = new Series(await seriesForm());
+            series = new Series(await seriesForm());
             seriesId = series._id;
             series.thumbnail_url = `/series/${seriesId}/thumbnail.jpeg`;
             for (let i = 0; i < series.seasons.length; ++i) {
@@ -283,25 +439,36 @@ const processMedia = async () => {
             }
             log('Series object created successfully!');
             log(series);
-            await series.save();
         } catch (error) {
             log(error + '.');
             process.exit(1);
         }
     }
 
-    // If the environment is remote, tries to connect to the host terminal
-    if (environment === 'remote') {
-        log('Connecting to the SSH client, please wait...');
-        try {
+    // Starts the media processing
+    try {
+        if (environment === 'remote') {
+            log('Connecting to the SSH client, please wait...');
             if (contentType === 'movie') await remoteMovieProcess(paths.inputPath, paths.thumbnailPath, movieId);
-            else if (contentType === 'serires'); // TODO: Implement series SSH manipulation
-        } catch (error) {
-            log(error + '.');
-            process.exit(1);
+            else if (contentType === 'series') await remoteSeriesProcess(paths.inputPath, paths.thumbnailPath, seriesId);
+        } else if (environment === 'local') {
+            log('Processing media locally, please wait...');
+            if (contentType === 'movie') await localMovieProcess(paths.inputPath, paths.thumbnailPath, movieId);
+            else if (contentType === 'series') await localSeriesProcess(paths.inputPath, paths.thumbnailPath, seriesId);
         }
+
+        // Saves to the database only after successful processing
+        if (contentType === 'movie') {
+            await movie.save();
+            log('Movie saved to database successfully!');
+        } else if (contentType === 'series') {
+            await series.save();
+            log('Series saved to database successfully!');
+        }
+    } catch (error) {
+        log('Error during media processing: ' + error + '.');
+        process.exit(1);
     }
-    // TODO: Implement local logic
 
     // Closes the rl interface and the mongoose connection to finish the process without errors
     rl.close();
