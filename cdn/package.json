@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Content distribution network for Nodeflix.",
   "keywords": [
-    "cdn"
+    "cdn",
+    "hls",
+    "nodeflix"
   ],
   "license": "ISC",
   "author": "Yenterick",

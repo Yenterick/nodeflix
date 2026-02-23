@@ -1,0 +1,28 @@
+{
+  "name": "nodeflix-server",
+  "version": "1.0.0",
+  "description": "Backend server for Nodeflix",
+  "keywords": [
+    "backend",
+    "express",
+    "nodeflix"
+  ],
+  "license": "ISC",
+  "author": "Yenterick",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodemon app.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.2.2",
+    "pg": "^8.18.0",
+    "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
