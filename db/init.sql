@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     profile_pic VARCHAR(32) NOT NULL,
     is_kid BOOLEAN NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    user_id INT REFERENCES users(user_id) NOT NULL
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE NOT NULL
 );
 CREATE TABLE IF NOT EXISTS view_events (
     view_event_id SERIAL PRIMARY KEY,
@@ -22,5 +22,5 @@ CREATE TABLE IF NOT EXISTS view_events (
     watched_seconds INT NOT NULL,
     completed BOOLEAN NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    profile_id INT REFERENCES profiles(profile_id) NOT NULL
+    profile_id INT REFERENCES profiles(profile_id) ON DELETE CASCADE NOT NULL
 );
