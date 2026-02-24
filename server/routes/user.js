@@ -4,11 +4,17 @@ const router = express.Router();
 // Module imports
 const {
     registerUser,
-    loginUser
+    loginUser,
+    deleteUser,
+    getUserProfiles
 } = require('../controllers/user');
+const auth = require('../middlewares/auth.middleware.js');
 
-// Routes configuration
+// Non-protected routes configuration
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 
+// Protected routes configuration
+router.get('/profiles', auth, getUserProfiles);
+router.delete('/:userId', auth, deleteUser);
 module.exports = router;

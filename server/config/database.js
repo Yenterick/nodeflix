@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const { Sequelize } = require('sequelize');
 
+// Modules import
 const { getLogPrefix, log, sleep} = require('../utils/utils');
 
 //TODO: Remove when implementing Dockerfile

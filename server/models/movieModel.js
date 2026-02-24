@@ -27,14 +27,18 @@ const movieModel = {
     
     selectMovieById : async (id) => {
         return (
-            await Movie.find({ _id: ObjectId(id) })
+            await Movie.find({
+                _id: ObjectId(id)
+            })
         ); 
     },
 
     selectMoviesByGenre : async (genres) => { 
         return (
             await Movie.find({ 
-                genres: {$all: genres} 
+                genres: {
+                    $all: genres
+                } 
             })
         );
     },

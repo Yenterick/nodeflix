@@ -7,8 +7,12 @@ const path = require('path');
 const { getLogPrefix, log, sleep } = require('./utils/utils');
 const { mongoConnection, pgConnection } = require('./config/database');
 
+// Associations config
+require('./models/associations');
+
 // Routers imports
 const userRouter = require('./routes/user');
+const profileRouter = require('./routes/profile');
 
 // TODO: Remove when implementing Dockerfile
 const envPath = path.join(__dirname, '..', '.env');
@@ -26,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routers configuration
 app.use('/api/user', userRouter);
+app.use('/api/profile', profileRouter);
 
 // Server health check
 app.get('/health', (req, res) => {

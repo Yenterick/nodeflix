@@ -1,7 +1,7 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Association } = require('sequelize');
 
 // Module imports
-const { pgConnection, pgSequelize } = require('../config/database');
+const { pgSequelize } = require('../config/database');
 
 // Defines the user model
 const User = pgSequelize.define('User', {
@@ -26,7 +26,7 @@ const User = pgSequelize.define('User', {
     created_at: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: Date.now()
+        defaultValue: DataTypes.NOW
     }}, {
     tableName: 'users',
     timestamps: false
@@ -47,11 +47,36 @@ const userModel = {
     selectUserByEmail: async (email) => {
         return(
             User.findOne({
-                 where: { email: email } 
-                })
+                where: {
+                    email: email
+                } 
+            })
         );
     },
 
+    deleteUserById: async (userId) => {
+        return(
+            User.destroy({
+                where: {
+                    user_id: userId
+                }
+            })
+        )
+    },
+
+    selectUserProfiles: async (userId) => {
+        return(User.findOne({
+            where: {
+                user_id: userId
+            },
+            include: [
+                {
+                    association: 'profiles'
+                }
+            ]
+            }).profiles
+        )
+    }
 }
 
-module.exports = userModel;
+module.exports = { User, userModel };

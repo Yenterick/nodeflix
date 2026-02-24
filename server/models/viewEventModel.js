@@ -4,11 +4,48 @@ const { DataTypes } = require('sequelize');
 const { pgSequelize } = require('../config/database');
 
 // Defines the view event model
-const ViewEvent = pgSequelize.define(
-    'ViewEvent',
-    {},
+const ViewEvent = pgSequelize.define('ViewEvent', {
+    view_event_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    content_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    content_type: {
+        type: DataTypes.STRING(12),
+        allowNull: false
+    },
+    season: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    episode: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    watched_seconds: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    completed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
+    },
+    profile_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }},
     {
-        tableName: 'view_events'
+        tableName: 'view_events',
+        timestamps: false
     }
 );
 
@@ -17,4 +54,4 @@ const viewEventModel = {
 
 }
 
-module.exports = viewEventModel;
+module.exports = { ViewEvent, viewEventModel };
