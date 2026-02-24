@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Creates the mongoose movie Schema
 const movieSchema = new mongoose.Schema({
     title: String,
     description: String,
@@ -13,18 +14,37 @@ const movieSchema = new mongoose.Schema({
     created_at: { type: Date, default: Date.now }
 });
 
+// Converts the movie schema into a model
 const Movie = mongoose.model('Movie', movieSchema);
+
+// Movie model with all the required functions
 const movieModel = {
-    selectAllMovies: async () => {
-        return (await Movie.find());
+    selectAllMovies : async () => {
+        return (
+            await Movie.find()
+        );
+    },
+    
+    selectMovieById : async (id) => {
+        return (
+            await Movie.find({ _id: ObjectId(id) })
+        ); 
     },
 
-    selectMoviesByGenre: async (genres) => { 
-        return (await Movie.find({ genres: {$all: genres} }));
+    selectMoviesByGenre : async (genres) => { 
+        return (
+            await Movie.find({ 
+                genres: {$all: genres} 
+            })
+        );
     },
 
-    selectMovieBySearch: async (search) => {
-        return (await Movie.find({ $regex: `^${search}`, $options: 'i' }));
+    selectMovieBySearch : async (search) => {
+        return (
+            await Movie.find({ 
+                $regex: `^${search}`, $options: 'i' 
+            })
+        );
     }
 }
 

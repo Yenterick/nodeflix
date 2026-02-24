@@ -1,8 +1,7 @@
-CREATE DATABASE nodeflix;
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
     email VARCHAR(64) NOT NULL UNIQUE,
-    password VARCHAR(24) NOT NULL,
+    password TEXT NOT NULL,
     screens INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );

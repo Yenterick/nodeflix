@@ -10,6 +10,7 @@ const log = (message) => {
     console.log(`${getLogPrefix()}${message}`);
 }
 
+// Simulates time.sleep() from Python
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };

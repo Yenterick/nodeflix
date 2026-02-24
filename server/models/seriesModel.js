@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Creates the mongoose series schema
 const seriesSchema = new mongoose.Schema({
     title: String,
     description: String,
@@ -26,18 +27,37 @@ const seriesSchema = new mongoose.Schema({
     ]
 });
 
+// Converts the series schema into a model
 const Series = mongoose.model('Series', seriesSchema);
+
+// Series model with all the required functions
 const seriesModel = {
-    selectAllSeries: async () => {
-        return (await Series.find());
+    selectAllSeries : async () => {
+        return (
+            await Series.find()
+        );
     },
 
-    selectSeriesByGenre: async (genres) => { 
-        return (await Series.find({ genres: {$all: genres} }));
+    selectSeriesById : async (id) => {
+        return (
+            await Series.find({ _id: ObjectId(id) })
+        ); 
     },
 
-    selectSeriesBySearch: async (search) => {
-        return (await Series.find({ $regex: `^${search}`, $options: 'i' }));
+    selectSeriesByGenre : async (genres) => { 
+        return (
+            await Series.find({ 
+                genres: {$all: genres} 
+            })
+        );
+    },
+
+    selectSeriesBySearch : async (search) => {
+        return (
+            await Series.find({
+                 $regex: `^${search}`, $options: 'i' 
+                })
+        );
     }
 }
 
