@@ -46,7 +46,7 @@ const userModel = {
 
     selectUserByEmail: async (email) => {
         return(
-            User.findOne({
+             await User.findOne({
                 where: {
                     email: email
                 } 
@@ -56,7 +56,7 @@ const userModel = {
 
     deleteUserById: async (userId) => {
         return(
-            User.destroy({
+            await User.destroy({
                 where: {
                     user_id: userId
                 }
@@ -65,17 +65,16 @@ const userModel = {
     },
 
     selectUserProfiles: async (userId) => {
-        return(User.findOne({
-            where: {
-                user_id: userId
-            },
-            include: [
-                {
-                    association: 'profiles'
-                }
-            ]
-            }).profiles
+        const user = await User.findByPk(userId,
+            {
+                include: [
+                    {
+                        association: 'profiles'
+                    }
+                ]
+            }
         )
+        return user?.profiles || [];
     }
 }
 

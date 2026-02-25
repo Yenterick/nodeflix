@@ -38,9 +38,22 @@ const updateProfile = async (req, res) => {
     }
 }
 
+const getProfileViewEvents = async (req, res) => {
+    try {
+        const { profileId } = req.body;
+        const viewEvents = await profileModel.selectProfileViewEvents(profileId);
+        
+        res.status(200).json({ success: true, msg: 'View events successfully retrieved.', data: viewEvents });
+
+    } catch (error) {
+        res.status(500).json({ success: false, msg: error.message });
+    }
+}
+
 module.exports = {
     createProfile,
     deleteProfile,
-    updateProfile
+    updateProfile,
+    getProfileViewEvents
 }
 

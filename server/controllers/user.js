@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 // Modules import
 const { userModel } = require('../models/userModel');
 const { generateToken } = require('../config/jwt');
+const { log } = require('../utils/utils');
 
 // Configuring the salt rounds to encrypt the passwords
 const saltRounds = 3;

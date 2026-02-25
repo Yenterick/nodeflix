@@ -16,8 +16,7 @@ const Profile = pgSequelize.define('Profile', {
     },
     profile_pic: {
         type: DataTypes.STRING(64),
-        allowNull: false,
-        defaultValue: '/pics/default/1.jpeg'
+        allowNull: false
     },
     is_kid : {
         type: DataTypes.BOOLEAN,
@@ -44,9 +43,9 @@ const profileModel = {
     insertProfile: async (name, profilePic, isKid, userId) => {
         const createdProfile = await Profile.create({
             name: name,
-            profilePic: profilePic || null,
-            isKid: isKid,
-            userId: userId
+            profile_pic: profilePic || '/pics/default/1.jpeg',
+            is_kid: isKid,
+            user_id: userId
         });
 
         await createdProfile.save();
@@ -54,17 +53,13 @@ const profileModel = {
 
     selectProfileById: async (profileId) => {
         return(
-            Profile.findOne({
-                where: {
-                    profile_id: profileId
-                }
-            })
+           await Profile.findByPk(profileId)
         );
     },
 
     deleteProfileById: async (profileId) => {
         return(
-            Profile.destroy({
+            await Profile.destroy({
                 where: {
                     profile_id: profileId
                 }
@@ -85,6 +80,21 @@ const profileModel = {
                 }
             }
         )
+    },
+
+    selectProfileViewEvents: async (profileId) => {
+        const profile = await Profile.findByPk(profileId,
+            {
+                include: [
+                    {
+                        association: 'view_events',
+                        required: true
+                    }
+                ]
+            }
+        )
+
+        return profile?.view_events || [];
     }
 }
 

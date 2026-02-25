@@ -5,14 +5,17 @@ const router = express.Router();
 const {
     createProfile,
     deleteProfile,
-    updateProfile
+    updateProfile,
+    getProfileViewEvents
+    
 } = require('../controllers/profile');
 const auth = require('../middlewares/auth.middleware.js');
 
 // Protected routes configuration
 // TODO: Insert the middleware
-router.post('/', createProfile);
-router.delete('/:profileId', deleteProfile);
-router.put('/:profileId', updateProfile);
+router.post('/', auth, createProfile);
+router.delete('/:profileId', auth, deleteProfile);
+router.put('/:profileId', auth, updateProfile);
+router.get('/view_events', auth, getProfileViewEvents);
 
 module.exports = router;
