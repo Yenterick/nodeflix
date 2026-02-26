@@ -13,6 +13,8 @@ require('./models/associations');
 // Routers imports
 const userRouter = require('./routes/user');
 const profileRouter = require('./routes/profile');
+const movieRouter = require('./routes/movie');
+const seriesRouter = require('./routes/series');
 
 // TODO: Remove when implementing Dockerfile
 const envPath = path.join(__dirname, '..', '.env');
@@ -24,6 +26,7 @@ const replicaApp = process.env.APP_NAME;
 const app = express();
 
 // Previous app configuration
+// TODO: Change cors origins before deploying
 app.use(cors({origin: '*'}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,6 +34,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routers configuration
 app.use('/api/user', userRouter);
 app.use('/api/profile', profileRouter);
+app.use('/api/movie', movieRouter);
+app.use('/api/series', seriesRouter);
 
 // Server health check
 app.get('/health', (req, res) => {
