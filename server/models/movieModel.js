@@ -27,9 +27,7 @@ const movieModel = {
     
     selectMovieById : async (id) => {
         return (
-            await Movie.find({
-                _id: ObjectId(id)
-            })
+            await Movie.findById(id)
         ); 
     },
 
@@ -45,8 +43,11 @@ const movieModel = {
 
     selectMovieBySearch : async (search) => {
         return (
-            await Movie.find({ 
-                $regex: `^${search}`, $options: 'i' 
+            await Movie.find({
+                title: {
+                    $regex: `^${search}`,
+                    $options: 'i'
+                } 
             })
         );
     }

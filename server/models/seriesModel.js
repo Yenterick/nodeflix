@@ -40,9 +40,7 @@ const seriesModel = {
 
     selectSeriesById : async (id) => {
         return (
-            await Series.find({
-                _id: ObjectId(id)
-            })
+            await Series.findById(id)
         ); 
     },
 

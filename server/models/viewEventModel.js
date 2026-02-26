@@ -51,7 +51,42 @@ const ViewEvent = pgSequelize.define('ViewEvent', {
 
 // View event model with all the required functions
 const viewEventModel = {
+    insertViewEvent: async (contentId, contentType, season, episode, watchedSeconds, completed, profileId) => {
+        const createdViewEvent = await ViewEvent.create({
+            content_id: contentId,
+            content_type: contentType,
+            season: season || null,
+            episode: episode || null, 
+            watched_seconds: watchedSeconds,
+            completed: completed,
+            profile_id: profileId
+        });
+        await createdViewEvent.save();
+    },
 
+    updateViewEvent: async (viewEventId, watchedSeconds, completed) => {
+        await ViewEvent.update(
+            {
+                watched_seconds: watchedSeconds,
+                completed: completed
+            },
+            {
+                where: {
+                    view_event_id: viewEventId
+                }
+            }
+        );
+    },
+
+    deleteViewEvent: async (viewEventId) => {
+        await ViewEvent.destroy(
+            {
+                where: {
+                    view_event_id: viewEventId
+                }
+            }
+        );
+    }
 }
 
 module.exports = { ViewEvent, viewEventModel };

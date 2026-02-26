@@ -1,0 +1,1 @@
+const seriesModel = require('../models/seriesModel');
