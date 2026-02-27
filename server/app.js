@@ -1,7 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const path = require('path');
 
 // Module imports
 const { getLogPrefix, log, sleep } = require('./utils/utils');
@@ -15,10 +13,6 @@ const userRouter = require('./routes/user');
 const profileRouter = require('./routes/profile');
 const movieRouter = require('./routes/movie');
 const seriesRouter = require('./routes/series');
-
-// TODO: Remove when implementing Dockerfile
-const envPath = path.join(__dirname, '..', '.env');
-dotenv.config({ path: envPath, quiet: true });
 
 // Previous variable declarations
 const port = 5000;

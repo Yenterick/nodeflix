@@ -1,7 +1,7 @@
-
 services:
   pg:
     container_name: 'pg'
+    restart: always
     image: postgres:latest
     ports:
       - '5433:5432'
@@ -14,6 +14,7 @@ services:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
   mongo:
     container_name: 'mongo'
+    restart: always
     image: mongo:latest
     ports:
       - 27018:27017
@@ -24,6 +25,53 @@ services:
     volumes:
       - mongodb-data:/data/db
       - ./db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+  nodeflix-server-1:
+    container_name: nodeflix-server-1
+    restart: always
+    build: ./server
+    ports: 
+      - 5001:5000
+    env_file:
+      - .env
+    environment:
+      - APP_NAME=nodeflix-server-1
+    depends_on:
+      pg:
+        condition: service_started
+      mongo:
+        condition: service_started
+    
+  nodeflix-server-2:
+    container_name: nodeflix-server-2
+    restart: always
+    build: ./server
+    ports: 
+      - 5002:5000
+    env_file:
+      - .env
+    environment:
+      - APP_NAME=nodeflix-server-2
+    depends_on:
+      pg:
+        condition: service_started
+      mongo:
+        condition: service_started
+
+  nodeflix-server-3:
+    container_name: nodeflix-server-3
+    restart: always
+    build: ./server
+    ports: 
+      - 5003:5000
+    env_file:
+      - .env
+    environment:
+      - APP_NAME=nodeflix-server-3
+    depends_on:
+      pg:
+        condition: service_started
+      mongo:
+        condition: service_started
 
 volumes:
   pg-data:

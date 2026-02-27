@@ -12,7 +12,6 @@ const {
 const auth = require('../middlewares/auth.middleware.js');
 
 // Protected routes configuration
-// TODO: Insert the middleware
 router.post('/', auth, createProfile);
 router.delete('/:profileId', auth, deleteProfile);
 router.put('/:profileId', auth, updateProfile);

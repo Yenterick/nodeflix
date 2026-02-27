@@ -1,10 +1,4 @@
 const jwt = require('jsonwebtoken');
-const path = require('path');
-const dotenv = require('dotenv');
-
-//TODO: Remove when implementing Dockerfile
-const envPath = path.join(__dirname, '..', '..', '.env');
-dotenv.config({ path: envPath, quiet: true });
 
 // Getting the JWT secret key
 const SECRET_KEY = process.env.JWT_SECRET_KEY;

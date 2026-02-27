@@ -1,14 +1,8 @@
-const dotenv = require('dotenv');
-const path = require('path');
 const mongoose = require('mongoose');
 const { Sequelize } = require('sequelize');
 
 // Modules import
 const { getLogPrefix, log, sleep} = require('../utils/utils');
-
-//TODO: Remove when implementing Dockerfile
-const envPath = path.join(__dirname, '..', '..', '.env');
-dotenv.config({ path: envPath, quiet: true });
 
 // Preparing the connection URLs for the databases
 const mongoUri = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=admin`;

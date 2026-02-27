@@ -15,7 +15,7 @@ const Movie = require('./models/movie');
 const Series = require('./models/series');
 
 // Configuring the .env variables
-const envPath = path.join(__dirname, '..', '.env');
+const envPath = path.join(__dirname, '.env');
 dotenv.config({ path: envPath, quiet: true });
 
 // Retrieving the command flags
