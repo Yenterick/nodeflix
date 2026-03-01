@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useState } from 'react'
 
 // Component imports
 import Button from '../components/Button';
@@ -13,14 +13,11 @@ import Divider from '../components/Divider';
 import { funnelDisplay } from '../assets/fonts/funnelDisplay';
 import colorScheme from '../assets/color/colorScheme';
 
-// Login screen
-const Login = () => {
+// Register screen
+const Register = () => {
     // Navigation hook
     const navigation = useNavigation();
-
-    // Various hooks
     const insets = useSafeAreaInsets();
-    const [ secure, setSecure ] = useState(true);
 
     return (
         // General container with all the screen
@@ -31,9 +28,9 @@ const Login = () => {
                     paddingTop: insets.top
                 }
                 ]}>
-            {/* Login panel container */}
+            {/* Register panel container */}
             <View style={styles.loginContainer}>
-                {/* Login header container */}
+                {/* Register header container */}
                 <View style={styles.loginHeader}>
                     {/* Logos container */}
                     <View style={styles.loginLogos}>
@@ -54,10 +51,10 @@ const Login = () => {
                         funnelDisplay.bold,
                         styles.h1
                     ]}>
-                        Welcome back!{'\n'}Login to continue...
+                        Welcome!{'\n'}Register to continue...
                     </Text>
                 </View>
-                {/* Login form container */}
+                {/* Register form container */}
                 <View style={styles.loginForm}>
                     <Text style={[
                         funnelDisplay.semibold, 
@@ -68,7 +65,10 @@ const Login = () => {
                     <TextInput
                         placeholder='Insert your email...'
                         placeholderTextColor={'gray'}
-                        style={[funnelDisplay.medium, styles.input]}
+                        style={[
+                            funnelDisplay.medium, 
+                            styles.input
+                        ]}
                     />
                     <Text style={[
                         funnelDisplay.semibold, 
@@ -76,21 +76,30 @@ const Login = () => {
                     ]}>
                         Password
                     </Text>
-                    <View style={styles.passwordContainer}>
-                        <TextInput
-                            placeholder='Insert your password...'
-                            placeholderTextColor={'gray'}
-                            secureTextEntry={secure}
-                            style={[funnelDisplay.medium, styles.passwordInput]}
-                        />
-                        <TouchableOpacity onPress={() => setSecure(!secure)}>
-                            <Ionicons
-                                name={secure ? 'eye-off-outline' : 'eye-outline'}
-                                size={22}
-                                color='gray'
-                            />
-                        </TouchableOpacity>
-                    </View>
+                    <TextInput
+                        placeholder='Insert your password...'
+                        placeholderTextColor={'gray'}
+                        secureTextEntry={true}
+                        style={[
+                            funnelDisplay.medium, 
+                            styles.input
+                        ]}
+                    />
+                    <Text style={[
+                        funnelDisplay.semibold, 
+                        styles.label
+                    ]}>
+                        Confirm Password
+                    </Text>
+                    <TextInput
+                        placeholder='Insert your password again...'
+                        placeholderTextColor={'gray'}
+                        secureTextEntry={true}
+                        style={[
+                            funnelDisplay.medium, 
+                            styles.input
+                        ]}
+                    />
                     <Button style={styles.loginButton} onPress={() => {}}>
                         <Entypo
                             name='login'    
@@ -101,31 +110,31 @@ const Login = () => {
                             funnelDisplay.bold,
                             styles.buttonText
                         ]}>
-                            Login
+                            Register
                         </Text>
                     </Button>
                 </View>
-                {/* Login footer config */}
+                {/* Register footer container */}
                 <View style={styles.loginFooter}>
                     <Divider size={2} />
                     <Text style={[
                             funnelDisplay.semibold,
                             styles.footerText
                             ]}>
-                        Don't you have an account yet?{'\n'} 
+                        Do you already have an account?{'\n'} 
                         <Text style={
                             {
                                 color: colorScheme.lightGreen,
                                 textDecorationLine: 'underline'
                             }}
-                            onPress={() => {navigation.navigate('Register')}}
+                            onPress={() => {navigation.navigate('Login')}}
                         >
-                            Register
+                            Login
                         </Text>
-                        {' '}to create one!
+                        {' '}to continue!
                     </Text>
                 </View>
-            </View>
+           </View>
         </View>
     );
 }
@@ -139,7 +148,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
 
-    // Login container styles config
+    // Register container styles config
     loginContainer: {
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -202,7 +211,7 @@ const styles = StyleSheet.create({
     },
 
     loginButton: {
-        marginTop: 46
+        marginTop: 24
     },
 
     buttonText: {
@@ -225,4 +234,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Login;
+export default Register;

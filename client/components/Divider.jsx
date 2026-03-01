@@ -21,7 +21,7 @@ const Divider = ({
                         opacity: opacity,
                         width: isHorizontal ? length : size,
                         height: isHorizontal ? size : length,
-                        borderRadius: 25
+                        borderRadius: 50
                     },
                 style
             ]}
