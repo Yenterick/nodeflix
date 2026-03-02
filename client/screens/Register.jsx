@@ -10,14 +10,55 @@ import Button from '../components/Button';
 import Divider from '../components/Divider';
 
 // Module imports
+import useFetch from '../hooks/useFetch';
 import { funnelDisplay } from '../assets/fonts/funnelDisplay';
 import colorScheme from '../assets/color/colorScheme';
+import { ScreenStackHeaderSearchBarView } from 'react-native-screens';
 
 // Register screen
 const Register = () => {
     // Navigation hook
     const navigation = useNavigation();
+
+    // Various hooks
     const insets = useSafeAreaInsets();
+    const { request, loading, error } = useFetch();
+    const [ hasError, setHasError ] = useState(false);
+    const [ errorMessage, setErrorMessage ] = useState('An error ocurred while registering!');
+
+    // Form hooks
+    const [ email, setEmail ] = useState('');
+    const [ password, setPassword ] = useState('');
+    const [ confirmPassword, setConfirmPassword ] = useState('');
+
+    // Function to handle the fetch after pressing the button
+    const handleRegister = async () => {
+        if ( password !== confirmPassword ) {
+            setHasError(true);
+            setErrorMessage('The passwords must be the same!');
+            return;
+        };
+        
+        const response = await request(
+            '/api/user/register', 
+            'POST', 
+            {
+                email: email,
+                password: password,
+                screens: 2
+            }
+        );
+        
+        if (response && response.success) {
+            navigation.navigate('Login');
+        } else {
+            setHasError(true);
+            setErrorMessage(response?.msg || 'An error ocurred while registering!');
+        }
+    }
+
+
+    // Function to register a new user
 
     return (
         // General container with all the screen
@@ -65,6 +106,8 @@ const Register = () => {
                     <TextInput
                         placeholder='Insert your email...'
                         placeholderTextColor={'gray'}
+                        value={email}
+                        onChangeText={setEmail}
                         style={[
                             funnelDisplay.medium, 
                             styles.input
@@ -79,6 +122,8 @@ const Register = () => {
                     <TextInput
                         placeholder='Insert your password...'
                         placeholderTextColor={'gray'}
+                        value={password}
+                        onChangeText={setPassword}
                         secureTextEntry={true}
                         style={[
                             funnelDisplay.medium, 
@@ -94,13 +139,26 @@ const Register = () => {
                     <TextInput
                         placeholder='Insert your password again...'
                         placeholderTextColor={'gray'}
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
                         secureTextEntry={true}
                         style={[
                             funnelDisplay.medium, 
                             styles.input
                         ]}
                     />
-                    <Button style={styles.loginButton} onPress={() => {}}>
+                    <Text
+                        style={[
+                            funnelDisplay.semibold,
+                            styles.errorMessage,
+                            {
+                                color: (hasError ? 'red' : 'white')
+                            }
+                        ]}
+                    >
+                        {errorMessage}
+                    </Text>
+                    <Button onPress={() => {handleRegister()}}>
                         <Entypo
                             name='login'    
                             color='white'
@@ -210,8 +268,10 @@ const styles = StyleSheet.create({
         paddingVertical: 12
     },
 
-    loginButton: {
-        marginTop: 24
+    errorMessage: {
+        textAlign: 'center',
+        paddingTop: 8,
+        paddingBottom: 6
     },
 
     buttonText: {

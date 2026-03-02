@@ -10,6 +10,7 @@ import Button from '../components/Button';
 import Divider from '../components/Divider';
 
 // Module imports
+import useFetch from '../hooks/useFetch';
 import { funnelDisplay } from '../assets/fonts/funnelDisplay';
 import colorScheme from '../assets/color/colorScheme';
 
@@ -20,7 +21,34 @@ const Login = () => {
 
     // Various hooks
     const insets = useSafeAreaInsets();
+
+    const { request, loading, error } = useFetch();
+    const [ hasError, setHasError ] = useState(false);
     const [ secure, setSecure ] = useState(true);
+    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while logging in!');
+
+    // Form hooks
+    const [ email, setEmail ] = useState('');
+    const [ password, setPassword ] = useState('');
+
+    // Function to handle the login when pressing the button
+    const handleLogin = async () => {    
+        const response = await request(
+            '/api/user/login', 
+            'POST', 
+            {
+                email: email,
+                password: password
+            }
+        );
+        
+        if (response && response.success) {
+            navigation.navigate('ProfileSelector');
+        } else {
+            setHasError(true);
+            setErrorMessage(response?.msg || 'An error ocurred while registering!');
+        }
+    }
 
     return (
         // General container with all the screen
@@ -68,6 +96,8 @@ const Login = () => {
                     <TextInput
                         placeholder='Insert your email...'
                         placeholderTextColor={'gray'}
+                        value={email}
+                        onChangeText={setEmail}
                         style={[funnelDisplay.medium, styles.input]}
                     />
                     <Text style={[
@@ -80,6 +110,8 @@ const Login = () => {
                         <TextInput
                             placeholder='Insert your password...'
                             placeholderTextColor={'gray'}
+                            value={password}
+                            onChangeText={setPassword}
                             secureTextEntry={secure}
                             style={[funnelDisplay.medium, styles.passwordInput]}
                         />
@@ -91,7 +123,18 @@ const Login = () => {
                             />
                         </TouchableOpacity>
                     </View>
-                    <Button style={styles.loginButton} onPress={() => {}}>
+                    <Text
+                        style={[
+                            funnelDisplay.semibold,
+                            styles.errorMessage,
+                            {
+                                color: (hasError ? 'red' : 'white')
+                            }
+                        ]}
+                    >
+                        {errorMessage}
+                    </Text>
+                    <Button onPress={() => {handleLogin()}}>
                         <Entypo
                             name='login'    
                             color='white'
@@ -201,8 +244,10 @@ const styles = StyleSheet.create({
         paddingVertical: 12
     },
 
-    loginButton: {
-        marginTop: 46
+    errorMessage: {
+        textAlign: 'center',
+        paddingTop: 24,
+        paddingBottom: 14
     },
 
     buttonText: {
