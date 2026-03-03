@@ -72,6 +72,7 @@ const Login = () => {
                         <Divider
                             orientation='vertical'
                             size={2}
+                            color={colorScheme.green}
                         />
                         <Image
                             source={require('../assets/universidadLibre.png')}
@@ -79,7 +80,7 @@ const Login = () => {
                         />
                     </View>
                     <Text style={[
-                        funnelDisplay.bold,
+                        funnelDisplay.semibold,
                         styles.h1
                     ]}>
                         Welcome back!{'\n'}Login to continue...
@@ -128,7 +129,7 @@ const Login = () => {
                             funnelDisplay.semibold,
                             styles.errorMessage,
                             {
-                                color: (hasError ? 'red' : 'white')
+                                color: (hasError ? '#FF6B6B' : 'black')
                             }
                         ]}
                     >
@@ -150,7 +151,10 @@ const Login = () => {
                 </View>
                 {/* Login footer config */}
                 <View style={styles.loginFooter}>
-                    <Divider size={2} />
+                    <Divider 
+                        size={2} 
+                        color={colorScheme.green}    
+                    />
                     <Text style={[
                             funnelDisplay.semibold,
                             styles.footerText
@@ -187,10 +191,16 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: 350,
-        height: 650,
-        borderRadius: 25,
-        backgroundColor: 'white'
+        width: 360,
+        height: 680,
+        borderRadius: 30,
+        backgroundColor: 'black',
+        paddingVertical: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.4,
+        shadowRadius: 12,
+        elevation: 10,
     },
 
     loginLogos: {
@@ -206,10 +216,12 @@ const styles = StyleSheet.create({
     },
 
     h1: {
-        fontSize: 32,
-        marginTop: 24,
+        fontSize: 28,
+        marginTop: 40,
         textAlign: 'center',
-        lineHeight: 32
+        lineHeight: 32,
+        color: 'white',
+        letterSpacing: 0.5
     },
 
     // Form container styles config
@@ -218,9 +230,10 @@ const styles = StyleSheet.create({
     },
 
     label: {
-        fontSize: 24,
+        fontSize: 20,
         marginBottom: 6,
-        paddingLeft: 12
+        paddingLeft: 12,
+        color: 'white'
     },
 
     input: {
@@ -246,8 +259,9 @@ const styles = StyleSheet.create({
 
     errorMessage: {
         textAlign: 'center',
-        paddingTop: 24,
-        paddingBottom: 14
+        paddingTop: 18,
+        paddingBottom: 10,
+        fontSize: 14,
     },
 
     buttonText: {
@@ -259,14 +273,14 @@ const styles = StyleSheet.create({
     loginFooter: {
         width: '100%',
         alignItems: 'center',
-        marginBottom: 20,
         gap: 15
     },
 
     footerText: {
         opacity: 0.8,
         fontSize: 18,
-        textAlign: 'center'
+        textAlign: 'center',
+        color: 'white'
     }
 });
 

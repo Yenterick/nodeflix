@@ -24,7 +24,7 @@ const Button  = ({
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        paddingVertical: 8,
+                        paddingVertical: 10,
                         paddingHorizontal: 12,
                         gap: 8
                     }
