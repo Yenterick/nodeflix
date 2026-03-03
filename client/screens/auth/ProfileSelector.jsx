@@ -148,8 +148,6 @@ const ProfileSelector = () => {
     )
 }
 
-export default ProfileSelector
-
 const styles = StyleSheet.create({
     // Background style config
     background: {
@@ -219,3 +217,5 @@ const styles = StyleSheet.create({
         color: 'white'
     }
 });
+
+export default ProfileSelector;

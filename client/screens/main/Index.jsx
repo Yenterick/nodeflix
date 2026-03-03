@@ -2,7 +2,13 @@ import { View, Text, StyleSheet } from 'react-native'
 
 const Index = () => {
     return(
-        <View>
+        <View
+            style={
+                {
+                    flex: 1
+                }
+            }
+        >
             <Text>Hello Index!</Text>
         </View>
     )
