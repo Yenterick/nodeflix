@@ -14,26 +14,24 @@ const Button  = ({
     }) => {
 
     return(
-        <View>
-            <Pressable
-                style={[
-                    {
-                        width: '100%',
-                        backgroundColor: color,
-                        borderRadius: borderRadius,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        paddingVertical: 10,
-                        paddingHorizontal: 12,
-                        gap: 8
-                    }
-                , style]}
-                onPress={() => {onPress()}}
-            >
-                {children}
-            </Pressable>
-        </View>
+        <Pressable
+            style={[
+                {
+                    width: '100%',
+                    backgroundColor: color,
+                    borderRadius: borderRadius,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 10,
+                    paddingHorizontal: 12,
+                    gap: 8
+                }
+            , style]}
+            onPress={() => {onPress()}}
+        >
+            {children}
+        </Pressable>
     );
 }
 

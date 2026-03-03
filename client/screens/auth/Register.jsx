@@ -3,47 +3,55 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useState } from 'react'
 
 // Component imports
-import Button from '../components/Button';
-import Divider from '../components/Divider';
+import Button from '../../components/Button';
+import Divider from '../../components/Divider';
 
 // Module imports
-import useFetch from '../hooks/useFetch';
-import { funnelDisplay } from '../assets/fonts/funnelDisplay';
-import colorScheme from '../assets/color/colorScheme';
+import useFetch from '../../hooks/useFetch';
+import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
+import colorScheme from '../../assets/color/colorScheme';
 
-// Login screen
-const Login = () => {
+// Register screen
+const Register = () => {
     // Navigation hook
     const navigation = useNavigation();
 
     // Various hooks
     const insets = useSafeAreaInsets();
-
     const { request, loading, error } = useFetch();
     const [ hasError, setHasError ] = useState(false);
     const [ secure, setSecure ] = useState(true);
-    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while logging in!');
+    const [ secureConfirm, setSecureConfirm ] = useState(true);
+    const [ errorMessage, setErrorMessage ] = useState('An error ocurred while registering!');
 
     // Form hooks
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
+    const [ confirmPassword, setConfirmPassword ] = useState('');
 
-    // Function to handle the login when pressing the button
-    const handleLogin = async () => {    
+    // Function to handle the fetch after pressing the button
+    const handleRegister = async () => {
+        if (password !== confirmPassword) {
+            setHasError(true);
+            setErrorMessage('The passwords must be the same!');
+            return;
+        };
+
         const response = await request(
-            '/api/user/login', 
-            'POST', 
+            '/api/user/register',
+            'POST',
             {
                 email: email,
-                password: password
+                password: password,
+                screens: 2
             }
         );
-        
+
         if (response && response.success) {
-            navigation.navigate('ProfileSelector');
+            navigation.navigate('Login');
         } else {
             setHasError(true);
             setErrorMessage(response?.msg || 'An error ocurred while registering!');
@@ -53,20 +61,20 @@ const Login = () => {
     return (
         // General container with all the screen
         <View style={[
-                styles.background,
-                {
-                    paddingBottom: insets.bottom,
-                    paddingTop: insets.top
-                }
-                ]}>
-            {/* Login panel container */}
+            styles.background,
+            {
+                paddingBottom: insets.bottom,
+                paddingTop: insets.top
+            }
+        ]}>
+            {/* Register panel container */}
             <View style={styles.loginContainer}>
-                {/* Login header container */}
+                {/* Register header container */}
                 <View style={styles.loginHeader}>
                     {/* Logos container */}
                     <View style={styles.loginLogos}>
                         <Image
-                            source={require('../assets/icon.png')}
+                            source={require('../../assets/icon.png')}
                             style={styles.image}
                         />
                         <Divider
@@ -75,7 +83,7 @@ const Login = () => {
                             color={colorScheme.green}
                         />
                         <Image
-                            source={require('../assets/universidadLibre.png')}
+                            source={require('../../assets/universidadLibre.png')}
                             style={styles.image}
                         />
                     </View>
@@ -83,13 +91,13 @@ const Login = () => {
                         funnelDisplay.semibold,
                         styles.h1
                     ]}>
-                        Welcome back!{'\n'}Login to continue...
+                        Welcome!{'\n'}Register to continue...
                     </Text>
                 </View>
-                {/* Login form container */}
+                {/* Register form container */}
                 <View style={styles.loginForm}>
                     <Text style={[
-                        funnelDisplay.semibold, 
+                        funnelDisplay.semibold,
                         styles.label
                     ]}>
                         Email
@@ -102,7 +110,7 @@ const Login = () => {
                         style={[funnelDisplay.medium, styles.input]}
                     />
                     <Text style={[
-                        funnelDisplay.semibold, 
+                        funnelDisplay.semibold,
                         styles.label
                     ]}>
                         Password
@@ -124,20 +132,43 @@ const Login = () => {
                             />
                         </TouchableOpacity>
                     </View>
+                    <Text style={[
+                        funnelDisplay.semibold,
+                        styles.label
+                    ]}>
+                        Confirm Password
+                    </Text>
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            placeholder='Insert your password again...'
+                            placeholderTextColor={'gray'}
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            secureTextEntry={secureConfirm}
+                            style={[funnelDisplay.medium, styles.passwordInput]}
+                        />
+                        <TouchableOpacity onPress={() => setSecureConfirm(!secureConfirm)}>
+                            <Ionicons
+                                name={secureConfirm ? 'eye-off-outline' : 'eye-outline'}
+                                size={22}
+                                color='gray'
+                            />
+                        </TouchableOpacity>
+                    </View>
                     <Text
                         style={[
                             funnelDisplay.semibold,
                             styles.errorMessage,
                             {
-                                color: (hasError ? '#FF6B6B' : 'black')
+                                color: (hasError ? '#FF6B6B' : colorScheme.bgDarkGreen)
                             }
                         ]}
                     >
                         {errorMessage}
                     </Text>
-                    <Button onPress={() => {handleLogin()}}>
+                    <Button onPress={() => { handleRegister() }}>
                         <Entypo
-                            name='login'    
+                            name='login'
                             color='white'
                             size={22}
                         />
@@ -145,31 +176,31 @@ const Login = () => {
                             funnelDisplay.bold,
                             styles.buttonText
                         ]}>
-                            Login
+                            Register
                         </Text>
                     </Button>
                 </View>
-                {/* Login footer config */}
+                {/* Register footer container */}
                 <View style={styles.loginFooter}>
-                    <Divider 
-                        size={2} 
-                        color={colorScheme.green}    
+                    <Divider
+                        size={2}
+                        color={colorScheme.green}
                     />
                     <Text style={[
-                            funnelDisplay.semibold,
-                            styles.footerText
-                            ]}>
-                        Don't you have an account yet?{'\n'} 
+                        funnelDisplay.semibold,
+                        styles.footerText
+                    ]}>
+                        Do you already have an account?{'\n'}
                         <Text style={
                             {
                                 color: colorScheme.lightGreen,
                                 textDecorationLine: 'underline'
                             }}
-                            onPress={() => {navigation.navigate('Register')}}
+                            onPress={() => { navigation.navigate('Login') }}
                         >
-                            Register
+                            Login
                         </Text>
-                        {' '}to create one!
+                        {' '}to continue!
                     </Text>
                 </View>
             </View>
@@ -217,7 +248,7 @@ const styles = StyleSheet.create({
 
     h1: {
         fontSize: 28,
-        marginTop: 40,
+        marginTop: 24,
         textAlign: 'center',
         lineHeight: 32,
         color: 'white',
@@ -249,7 +280,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: colorScheme.beige,
         borderRadius: 14,
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
+        marginBottom: 8
     },
 
     passwordInput: {
@@ -259,7 +291,7 @@ const styles = StyleSheet.create({
 
     errorMessage: {
         textAlign: 'center',
-        paddingTop: 18,
+        paddingTop: 14,
         paddingBottom: 10,
         fontSize: 14,
     },
@@ -268,7 +300,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18
     },
-    
+
     // Footer container styles config
     loginFooter: {
         width: '100%',
@@ -284,4 +316,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Login;
+export default Register;
