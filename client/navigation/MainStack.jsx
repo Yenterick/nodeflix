@@ -1,24 +1,26 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Module and components imports
-import MainLayout from '../components/MainLayout';
+import Footer from '../components/Footer';
 import Index from '../screens/main/Index';
+import Movies from '../screens/main/Movies';
 
 // Stack creation
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-// Main Stack (Index ...)
+// Main Stack (Index, Movies, Series, Log Out)
 const MainStack = ({}) => {
     return (
-        <MainLayout>
-            <Stack.Navigator screenOptions={{ 
-                    headerShown: false,
-                    unmountOnBlur: false,
-                    contentStyle: { backgroundColor: 'transparent' }
-            }}>
-                    <Stack.Screen name='Index' component={Index} />  
-            </Stack.Navigator>
-        </MainLayout>
+        <Tab.Navigator
+            screenOptions={{
+                headerShown: false,
+            }}
+            tabBar={(props) => <Footer {...props} />}
+        >
+            <Tab.Screen name="Index" component={Index} />
+            <Tab.Screen name="Movies" component={Movies} />
+            {/* TODO: Implement series Tab */}
+        </Tab.Navigator>
     );
 }
 

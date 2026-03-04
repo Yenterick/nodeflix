@@ -28,7 +28,7 @@ const AuthStack = ({ navigation }) => {
 
     return (
         // TODO: Invert ProfileSelector and Login after debugging 
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false, gestureEnabled: false }}>
             <Stack.Screen name='ProfileSelector' component={ProfileSelector} />
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Register' component={Register} />

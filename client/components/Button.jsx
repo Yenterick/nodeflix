@@ -28,7 +28,7 @@ const Button  = ({
                     gap: 8
                 }
             , style]}
-            onPress={() => {onPress()}}
+            onPress={onPress}
         >
             {children}
         </Pressable>
