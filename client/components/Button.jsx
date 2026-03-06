@@ -6,7 +6,7 @@ import colorScheme from '../assets/color/colorScheme';
 
 // Button component
 const Button  = ({
-        color = colorScheme.lightGreen,
+        color = colorScheme.green,
         borderRadius = 12,
         onPress,
         style,
@@ -25,7 +25,12 @@ const Button  = ({
                     justifyContent: 'center',
                     paddingVertical: 10,
                     paddingHorizontal: 12,
-                    gap: 8
+                    gap: 8,
+                    shadowColor: color,
+                    shadowOffset: { width: 0, height: 8 },
+                    shadowOpacity: 0.4,
+                    shadowRadius: 12,
+                    elevation: 10,
                 }
             , style]}
             onPress={onPress}

@@ -16,14 +16,14 @@ function useFetch(baseUrl = process.env.EXPO_PUBLIC_API_URL) {
 
         // If token is avaiable in async storage, it adds it to the headers
         try {
-        const token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('token');
 
         // Config the method, headers and body
-        const options = {
-            method: method.toUpperCase(),
-            headers: {
-            'Content-Type': 'application/json',
-            ...(token && { Authorization: `Bearer ${token}` }),
+            const options = {
+                method: method.toUpperCase(),
+                headers: {
+                'Content-Type': 'application/json',
+                ...(token && { Authorization: `Bearer ${token}` }),
             },
         };
 

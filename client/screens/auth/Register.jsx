@@ -40,21 +40,26 @@ const Register = () => {
             return;
         };
 
-        const response = await request(
-            '/api/user/register',
-            'POST',
-            {
-                email: email,
-                password: password,
-                screens: 2
-            }
-        );
+        try {
+            const response = await request(
+                '/api/user/register',
+                'POST',
+                {
+                    email: email,
+                    password: password,
+                    screens: 2
+                }
+            );
 
-        if (response && response.success) {
-            navigation.navigate('Login');
-        } else {
+            if (response && response.success) {
+                navigation.navigate('Login');
+            } else {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error ocurred while registering!');
+            }
+        } catch (error) {
             setHasError(true);
-            setErrorMessage(response?.msg || 'An error ocurred while registering!');
+            setErrorMessage(error.message);
         }
     }
 
@@ -106,7 +111,9 @@ const Register = () => {
                         placeholder='Insert your email...'
                         placeholderTextColor={'gray'}
                         value={email}
+                        maxLength={64}
                         onChangeText={setEmail}
+                        keyboardAppearance='dark'
                         style={[funnelDisplay.medium, styles.input]}
                     />
                     <Text style={[
@@ -120,8 +127,10 @@ const Register = () => {
                             placeholder='Insert your password...'
                             placeholderTextColor={'gray'}
                             value={password}
+                            maxLength={24}
                             onChangeText={setPassword}
                             secureTextEntry={secure}
+                            keyboardAppearance='dark'
                             style={[funnelDisplay.medium, styles.passwordInput]}
                         />
                         <TouchableOpacity onPress={() => setSecure(!secure)}>
@@ -143,8 +152,10 @@ const Register = () => {
                             placeholder='Insert your password again...'
                             placeholderTextColor={'gray'}
                             value={confirmPassword}
+                            maxLength={24}
                             onChangeText={setConfirmPassword}
                             secureTextEntry={secureConfirm}
+                            keyboardAppearance='dark'
                             style={[funnelDisplay.medium, styles.passwordInput]}
                         />
                         <TouchableOpacity onPress={() => setSecureConfirm(!secureConfirm)}>
@@ -227,7 +238,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         backgroundColor: colorScheme.bgDarkGreen,
         paddingVertical: 20,
-        shadowColor: 'black',
+        shadowColor: colorScheme.green,
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.4,
         shadowRadius: 12,

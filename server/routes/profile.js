@@ -15,6 +15,6 @@ const auth = require('../middlewares/auth.middleware.js');
 router.post('/', auth, createProfile);
 router.delete('/:profileId', auth, deleteProfile);
 router.put('/:profileId', auth, updateProfile);
-router.get('/view_events', auth, getProfileViewEvents);
+router.get('/view_events/:profileId', auth, getProfileViewEvents);
 
 module.exports = router;

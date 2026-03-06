@@ -33,38 +33,43 @@ const Login = () => {
     const [ password, setPassword ] = useState('');
 
     // Function to handle the login when pressing the button
-    const handleLogin = async () => {    
-        const response = await request(
-            '/api/user/login', 
-            'POST', 
-            {
-                email: email,
-                password: password
+    const handleLogin = async () => {
+        try {
+            const response = await request(
+                '/api/user/login',
+                'POST',
+                {
+                    email: email,
+                    password: password
+                }
+            );
+
+            if (response && response.success) {
+                await AsyncStorage.multiSet([
+                    ['token', response.token],
+                    ['userId', String(response.id)],
+                    ['screens', String(response.screens)]
+                ]);
+                navigation.navigate('ProfileSelector');
+            } else {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error ocurred while logging in!');
             }
-        );
-        
-        if (response && response.success) {
-            await AsyncStorage.multiSet([
-                ['token', response.token],
-                ['userId', response.id],
-                ['screens', response.screens]
-            ]);
-            navigation.navigate('ProfileSelector');
-        } else {
+        } catch (error) {
             setHasError(true);
-            setErrorMessage(response?.msg || 'An error ocurred while registering!');
+            setErrorMessage(error.message);
         }
     }
 
     return (
         // General container with all the screen
         <View style={[
-                styles.background,
-                {
-                    paddingBottom: insets.bottom,
-                    paddingTop: insets.top
-                }
-                ]}>
+            styles.background,
+            {
+                paddingBottom: insets.bottom,
+                paddingTop: insets.top
+            }
+        ]}>
             {/* Login panel container */}
             <View style={styles.loginContainer}>
                 {/* Login header container */}
@@ -95,7 +100,7 @@ const Login = () => {
                 {/* Login form container */}
                 <View style={styles.loginForm}>
                     <Text style={[
-                        funnelDisplay.semibold, 
+                        funnelDisplay.semibold,
                         styles.label
                     ]}>
                         Email
@@ -104,11 +109,13 @@ const Login = () => {
                         placeholder='Insert your email...'
                         placeholderTextColor={'gray'}
                         value={email}
+                        maxLength={64}
                         onChangeText={setEmail}
+                        keyboardAppearance='dark'
                         style={[funnelDisplay.medium, styles.input]}
                     />
                     <Text style={[
-                        funnelDisplay.semibold, 
+                        funnelDisplay.semibold,
                         styles.label
                     ]}>
                         Password
@@ -118,8 +125,10 @@ const Login = () => {
                             placeholder='Insert your password...'
                             placeholderTextColor={'gray'}
                             value={password}
+                            maxLength={24}
                             onChangeText={setPassword}
                             secureTextEntry={secure}
+                            keyboardAppearance='dark'
                             style={[funnelDisplay.medium, styles.passwordInput]}
                         />
                         <TouchableOpacity onPress={() => setSecure(!secure)}>
@@ -141,9 +150,9 @@ const Login = () => {
                     >
                         {errorMessage}
                     </Text>
-                    <Button onPress={() => {handleLogin()}}>
+                    <Button onPress={() => { handleLogin() }}>
                         <Entypo
-                            name='login'    
+                            name='login'
                             color='white'
                             size={22}
                         />
@@ -157,21 +166,21 @@ const Login = () => {
                 </View>
                 {/* Login footer config */}
                 <View style={styles.loginFooter}>
-                    <Divider 
-                        size={2} 
-                        color={colorScheme.green}    
+                    <Divider
+                        size={2}
+                        color={colorScheme.green}
                     />
                     <Text style={[
-                            funnelDisplay.semibold,
-                            styles.footerText
-                            ]}>
-                        Don't you have an account yet?{'\n'} 
+                        funnelDisplay.semibold,
+                        styles.footerText
+                    ]}>
+                        Don't you have an account yet?{'\n'}
                         <Text style={
                             {
                                 color: colorScheme.lightGreen,
                                 textDecorationLine: 'underline'
                             }}
-                            onPress={() => {navigation.navigate('Register')}}
+                            onPress={() => { navigation.navigate('Register') }}
                         >
                             Register
                         </Text>
@@ -202,7 +211,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         backgroundColor: colorScheme.bgDarkGreen,
         paddingVertical: 20,
-        shadowColor: 'black',
+        shadowColor: colorScheme.green,
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.4,
         shadowRadius: 12,
@@ -274,7 +283,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18
     },
-    
+
     // Footer container styles config
     loginFooter: {
         width: '100%',

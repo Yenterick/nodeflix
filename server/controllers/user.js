@@ -53,9 +53,9 @@ const deleteUser = async (req, res) => {
 // Gets the user's profiles
 const getUserProfiles = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const { userId } = req.params;
         const profiles = await userModel.selectUserProfiles(userId);
-        
+
         res.status(200).json({ success: true, msg: 'Profiles successfully retrieved.', data: profiles });
 
     } catch (error) {
