@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.4,
         shadowRadius: 12,
         elevation: 10,
+        zIndex: 20,
         alignItems: 'center'
     },
 

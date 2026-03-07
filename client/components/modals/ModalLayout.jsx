@@ -15,9 +15,12 @@ const ModalLayout = ({ children, onClose }) => {
             ]}
             onPress={onClose}
         >
-            <View style={styles.modalContainer}>
+            <Pressable
+                style={styles.modalContainer}
+                onPress={() => { }}
+            >
                 {children}
-            </View>
+            </Pressable>
         </Pressable>
     );
 };
@@ -32,12 +35,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.6)',
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 100,
+        zIndex: 10,
     },
 
     // Prevents the window from closing the tab
     modalContainer: {
-        
+
     }
 });
 

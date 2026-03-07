@@ -170,6 +170,7 @@ const Movies = () => {
                 }
             ]}
         >
+            {/* TODO: Implement functionality on all the modal buttons */}
             {showMovieInfoModal && 
                 <MovieInfoModal movie={selectedMovie} onClose={() => setShowMovieInfoModal(false)} />
             }
