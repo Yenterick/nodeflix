@@ -1,35 +1,44 @@
-import { View } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// Module imports
-import colorScheme from '../../assets/color/colorScheme';
-
-// Background for modals
-const ModalLayout = ({ children }) => {
-    // Insets hook
+const ModalLayout = ({ children, onClose }) => {
     const insets = useSafeAreaInsets();
 
-    return(
-        <View
-            style={
-                {   
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    zIndex: 100,
+    return (
+        <Pressable
+            style={[
+                styles.overlay,
+                {
                     paddingTop: insets.top,
-                    paddingBottom: insets.bottom,
-                    backgroundColor: 'rgba(0,0,0,0.6)',
-                    justifyContent: 'center',
-                    alignItems: 'center'
+                    paddingBottom: insets.bottom
                 }
-            }   
+            ]}
+            onPress={onClose}
         >
-            {children}
-        </View>
+            <View style={styles.modalContainer}>
+                {children}
+            </View>
+        </Pressable>
     );
-}
+};
 
-export default ModalLayout
+const styles = StyleSheet.create({
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 100,
+    },
+
+    // Prevents the window from closing the tab
+    modalContainer: {
+        
+    }
+});
+
+export default ModalLayout;

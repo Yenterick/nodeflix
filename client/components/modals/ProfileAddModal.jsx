@@ -38,7 +38,6 @@ const ProfileAddModal = ({ onClose }) => {
                     isKid: isKid
                 }
             );
-            console.log(response)
 
             if (response && response.success) {
                 onClose();
@@ -55,7 +54,7 @@ const ProfileAddModal = ({ onClose }) => {
     }
 
     return (
-        <ModalLayout>
+        <ModalLayout onClose={onClose}>
             <View style={styles.modalContainer}>
                 {/* Modal title */}
                 <Text style={[

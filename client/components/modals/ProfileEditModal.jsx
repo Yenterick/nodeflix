@@ -74,7 +74,7 @@ const ProfileEditModal = ({ profile, onClose }) => {
     }
 
     return (
-        <ModalLayout>
+        <ModalLayout onClose={onClose}>
             {/* Delete confirmation modal */}
             {showConfirmation &&
                 <ConfirmationModal

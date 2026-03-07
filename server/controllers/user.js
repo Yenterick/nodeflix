@@ -27,6 +27,8 @@ const loginUser = async (req, res) => {
         const { email, password } = req.body;
         const user = await userModel.selectUserByEmail(email);
 
+        if (!user) return res.status(401).json({ success: false, msg: "That email is not registered." });
+
         const valid = await bcrypt.compare(password, user.password);
 
         if (!valid) return res.status(401).json({ success: false, msg: "Incorrect password." });
