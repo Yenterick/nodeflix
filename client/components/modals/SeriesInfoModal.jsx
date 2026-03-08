@@ -1,6 +1,8 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useState } from 'react'
+import { useState } from 'react';
+import { useEvent } from 'expo';
+import { useVideoPlayer, VideoView } from 'expo-video';
 
 // Modules and components imports
 import colorScheme from '../../assets/color/colorScheme';
@@ -13,9 +15,31 @@ import Divider from '../Divider';
 // Modal to show the series info
 const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike, interaction }) => {
 
+    const videoUrl = series.seasons
+        .find(season => season.season_number === 1)?.episodes
+        .find(episode => episode.episode_number === 1)?.stream_url;
+
+    // Video player hooks
+    const player = useVideoPlayer(videoUrl, player => {
+        player.loop = true;
+        player.muted = true;
+        player.play();
+    }); 
+
+    const [ mutedIcon, setMutedIcon ] = useState(true);
+
+    const toggleMute = () => {
+        if (!player) return;
+        player.muted = !player.muted;
+        setMutedIcon(player.muted);
+    };
+
+
+    // Hooks for the season selection dropdown
     const [showDropdown, setShowDropdown] = useState(false);
     const [selectedSeason, setSelectedSeason] = useState(1);
 
+    // Function to format raw seconds to hours and minutes
     const formatSeconds = (duration) => {
         const hours = Math.floor(duration / 60);
         const minutes = Math.floor(duration % 60);
@@ -39,9 +63,23 @@ const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                 >
-                    {/* TODO: Use the video */}
                     <View style={styles.videoContainer}>
-
+                        <VideoView 
+                            style={styles.video}
+                            player={player}
+                            fullscreenOptions={{ allowFullscreen: false }}
+                            nativeControls={false}
+                        />
+                        <TouchableOpacity 
+                            style={styles.muteButton}
+                            onPress={() => toggleMute()}
+                        >
+                            <MaterialIcons 
+                                name={mutedIcon ? 'volume-off' : 'volume-up'}
+                                size={18} 
+                                color='white'
+                            />
+                        </TouchableOpacity>
                     </View>
                     {/* Series header */}
                     <View style={styles.seriesHeader}>
@@ -299,7 +337,7 @@ const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike
                     {/* Episodes List */}
                     <View style={styles.episodesContainer}>
                         {series.seasons
-                            .find(s => s.season_number === selectedSeason)
+                            .find(season => season.season_number === selectedSeason)
                             ?.episodes.map((episode) => (
                                 <View 
                                     key={episode.episode_number} 
@@ -371,6 +409,22 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 12,
         elevation: 10
+    },
+
+    video: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 25
+    },
+
+    muteButton: {
+        position: 'absolute',
+        right: 15,
+        bottom: 15,
+        padding: 5,
+        backgroundColor: colorScheme.darkGreen,
+        borderRadius: 25,
+        opacity: 0.8
     },
 
     // Series header styles config

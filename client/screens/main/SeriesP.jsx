@@ -31,7 +31,7 @@ const seriesList1 = [
                         description: 'A boy mysteriously disappears.',
                         duration: 47,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=101',
-                        stream_url: 'https://example.com/stream/st-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     },
                     {
                         episode_number: 2,
@@ -39,7 +39,7 @@ const seriesList1 = [
                         description: 'The boys meet a mysterious girl.',
                         duration: 50,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=102',
-                        stream_url: 'https://example.com/stream/st-s1-e2'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             },
@@ -52,7 +52,7 @@ const seriesList1 = [
                         description: 'A boy mysteriously disappears.',
                         duration: 47,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=101',
-                        stream_url: 'https://example.com/stream/st-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     },
                     {
                         episode_number: 2,
@@ -60,7 +60,7 @@ const seriesList1 = [
                         description: 'The boys meet a mysterious girl.',
                         duration: 50,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=102',
-                        stream_url: 'https://example.com/stream/st-s1-e2'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             },
@@ -87,7 +87,7 @@ const seriesList1 = [
                         description: 'Walter White begins his journey.',
                         duration: 58,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=103',
-                        stream_url: 'https://example.com/stream/bb-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             }
@@ -113,7 +113,7 @@ const seriesList1 = [
                         description: 'The Mandalorian accepts a bounty.',
                         duration: 39,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=104',
-                        stream_url: 'https://example.com/stream/mando-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             }
@@ -139,7 +139,7 @@ const seriesList1 = [
                         description: 'The Stark family receives a royal visit.',
                         duration: 62,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=105',
-                        stream_url: 'https://example.com/stream/got-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             }
@@ -165,7 +165,7 @@ const seriesList1 = [
                         description: 'A look inside Dunder Mifflin.',
                         duration: 23,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=106',
-                        stream_url: 'https://example.com/stream/office-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             }
@@ -194,7 +194,7 @@ const seriesList2 = [
                         description: 'Loki is captured by the TVA.',
                         duration: 52,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=107',
-                        stream_url: 'https://example.com/stream/loki-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             }
@@ -220,7 +220,7 @@ const seriesList2 = [
                         description: 'Geralt hunts a monster.',
                         duration: 61,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=108',
-                        stream_url: 'https://example.com/stream/witcher-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             }
@@ -246,7 +246,7 @@ const seriesList2 = [
                         description: 'A child disappears.',
                         duration: 52,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=109',
-                        stream_url: 'https://example.com/stream/dark-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             }
@@ -272,7 +272,7 @@ const seriesList2 = [
                         description: 'Wednesday joins Nevermore Academy.',
                         duration: 50,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=110',
-                        stream_url: 'https://example.com/stream/wed-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             }
@@ -298,7 +298,7 @@ const seriesList2 = [
                         description: 'Hughie joins The Boys.',
                         duration: 60,
                         thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=111',
-                        stream_url: 'https://example.com/stream/boys-s1-e1'
+                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                     }
                 ]
             }

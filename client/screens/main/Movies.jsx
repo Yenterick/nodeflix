@@ -20,7 +20,7 @@ const movieList1 = [
     release_year: 2010,
     duration: 14800,
     thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=1',
-    stream_url: 'https://example.com/stream/inception',
+    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     is_for_kids: false,
     created_at: new Date('2024-01-10')
 },
@@ -33,7 +33,7 @@ const movieList1 = [
     release_year: 2014,
     duration: 16900,
     thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=2',
-    stream_url: 'https://example.com/stream/interstellar',
+    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     is_for_kids: false,
     created_at: new Date('2024-01-11')
 },
@@ -46,7 +46,7 @@ const movieList1 = [
     release_year: 2008,
     duration: 15200,
     thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=3',
-    stream_url: 'https://example.com/stream/darkknight',
+    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     is_for_kids: false,
     created_at: new Date('2024-01-12')
 },
@@ -59,7 +59,7 @@ const movieList1 = [
     release_year: 2019,
     duration: 18100,
     thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=4',
-    stream_url: 'https://example.com/stream/endgame',
+    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     is_for_kids: true,
     created_at: new Date('2024-01-13')
 },
@@ -72,7 +72,7 @@ const movieList1 = [
     release_year: 2019,
     duration: 12200,
     thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=5',
-    stream_url: 'https://example.com/stream/joker',
+    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     is_for_kids: false,
     created_at: new Date('2024-01-14')
 }
@@ -88,7 +88,7 @@ const movieList2 = [
     release_year: 1999,
     duration: 13600,
     thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=6',
-    stream_url: 'https://example.com/stream/matrix',
+    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     is_for_kids: false,
     created_at: new Date('2024-01-15')
 },
@@ -101,7 +101,7 @@ const movieList2 = [
     release_year: 2000,
     duration: 15500,
     thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=7',
-    stream_url: 'https://example.com/stream/gladiator',
+    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     is_for_kids: false,
     created_at: new Date('2024-01-16')
 },
@@ -114,7 +114,7 @@ const movieList2 = [
     release_year: 1997,
     duration: 19500,
     thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=8',
-    stream_url: 'https://example.com/stream/titanic',
+    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     is_for_kids: true,
     created_at: new Date('2024-01-17')
 },
@@ -127,7 +127,7 @@ const movieList2 = [
     release_year: 2019,
     duration: 13200,
     thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=9',
-    stream_url: 'https://example.com/stream/parasite',
+    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     is_for_kids: false,
     created_at: new Date('2024-01-18')
 },
@@ -140,7 +140,7 @@ const movieList2 = [
     release_year: 2021,
     duration: 14800,
     thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=10',
-    stream_url: 'https://example.com/stream/spiderman',
+    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     is_for_kids: true,
     created_at: new Date('2024-01-19')
 }
