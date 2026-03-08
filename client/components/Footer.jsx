@@ -118,8 +118,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
+        paddingTop: 10,
         width: '100%',
-        height: 100,
+        height: 'auto',
         backgroundColor: colorScheme.bgDarkGreen,
     },
 

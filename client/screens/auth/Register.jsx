@@ -34,6 +34,12 @@ const Register = () => {
 
     // Function to handle the fetch after pressing the button
     const handleRegister = async () => {
+        if (!email.trim() || !password.trim()) {
+            setHasError(true);
+            setErrorMessage("You can't send empty values!");
+            return;
+        }
+
         if (password !== confirmPassword) {
             setHasError(true);
             setErrorMessage('The passwords must be the same!');
@@ -166,18 +172,10 @@ const Register = () => {
                             />
                         </TouchableOpacity>
                     </View>
-                    <Text
-                        style={[
-                            funnelDisplay.semibold,
-                            styles.errorMessage,
-                            {
-                                color: (hasError ? '#FF6B6B' : colorScheme.bgDarkGreen)
-                            }
-                        ]}
+                    <Button 
+                        onPress={() => { handleRegister() }}
+                        style={styles.button}
                     >
-                        {errorMessage}
-                    </Text>
-                    <Button onPress={() => { handleRegister() }}>
                         <Entypo
                             name='login'
                             color='white'
@@ -297,14 +295,12 @@ const styles = StyleSheet.create({
 
     passwordInput: {
         flex: 1,
-        paddingVertical: 12
+        paddingVertical: 12,
     },
 
-    errorMessage: {
-        textAlign: 'center',
-        paddingTop: 14,
-        paddingBottom: 10,
-        fontSize: 14,
+    // Button styles config
+    button: {
+        marginTop: 24
     },
 
     buttonText: {

@@ -12,6 +12,8 @@ const saltRounds = 3;
 const registerUser = async (req, res) => {
     try {
         const { email, password, screens } = req.body;
+        if (!email.trim() || !password.trim()) return res.status(400).json({ success: false, msg: 'Data missing.' });
+
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         await userModel.insertUser(email, hashedPassword, screens);
@@ -25,6 +27,8 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+        if (!email.trim() || !password.trim()) return res.status(400).json({ success: false, msg: 'Data missing.' });
+        
         const user = await userModel.selectUserByEmail(email);
 
         if (!user) return res.status(401).json({ success: false, msg: "That email is not registered." });

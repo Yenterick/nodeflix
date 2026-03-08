@@ -34,6 +34,11 @@ const Login = () => {
 
     // Function to handle the login when pressing the button
     const handleLogin = async () => {
+        if (!email.trim() || !password.trim()) {
+            setHasError(true);
+            setErrorMessage("You can't send empty values!");
+            return;
+        }
         try {
             const response = await request(
                 '/api/user/login',
@@ -43,7 +48,6 @@ const Login = () => {
                     password: password
                 }
             );
-
             if (response && response.success) {
                 await AsyncStorage.multiSet([
                     ['token', response.token],
@@ -113,6 +117,7 @@ const Login = () => {
                         onChangeText={setEmail}
                         keyboardAppearance='dark'
                         style={[funnelDisplay.medium, styles.input]}
+                        
                     />
                     <Text style={[
                         funnelDisplay.semibold,
@@ -139,18 +144,10 @@ const Login = () => {
                             />
                         </TouchableOpacity>
                     </View>
-                    <Text
-                        style={[
-                            funnelDisplay.semibold,
-                            styles.errorMessage,
-                            {
-                                color: (hasError ? '#FF6B6B' : colorScheme.bgDarkGreen)
-                            }
-                        ]}
+                    <Button 
+                        onPress={() => { handleLogin() }}
+                        style={styles.button}    
                     >
-                        {errorMessage}
-                    </Text>
-                    <Button onPress={() => { handleLogin() }}>
                         <Entypo
                             name='login'
                             color='white'
@@ -264,7 +261,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: colorScheme.beige,
         borderRadius: 14,
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
+        marginBottom: 8
     },
 
     passwordInput: {
@@ -272,11 +270,10 @@ const styles = StyleSheet.create({
         paddingVertical: 12
     },
 
-    errorMessage: {
-        textAlign: 'center',
-        paddingTop: 18,
-        paddingBottom: 10,
-        fontSize: 14,
+    // Button styles config
+
+    button: {
+        marginTop: 24
     },
 
     buttonText: {

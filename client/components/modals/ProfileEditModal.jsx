@@ -14,16 +14,16 @@ import useFetch from '../../hooks/useFetch';
 // Profile edit modal
 const ProfileEditModal = ({ profile, onClose }) => {
     // Various hooks
-    const [hasError, setHasErrors] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('An error has ocurred while editing the profile!');
-    const [showConfirmation, setShowConfirmation] = useState(false)
+    const [ hasError, setHasError ] = useState(false);
+    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while editing the profile!');
+    const [ showConfirmation, setShowConfirmation ] = useState(false)
 
     const { request, loading, error } = useFetch();
 
     // Profile hooks
-    const [profileName, setProfileName] = useState(profile.name);
-    const [profilePic, setProfilePic] = useState(profile.profile_pic);
-    const [isKid, setIsKid] = useState(profile.is_kid);
+    const [ profileName, setProfileName ] = useState(profile.name);
+    const [ profilePic, setProfilePic ] = useState(profile.profile_pic);
+    const [ isKid, setIsKid ] = useState(profile.is_kid);
 
     // Function to save the changes
     const handleProfileEdit = async () => {
@@ -53,6 +53,7 @@ const ProfileEditModal = ({ profile, onClose }) => {
     }
 
     const handleProfileDelete = async () => {
+        console.log('Button pressed');
         try {
             const response = await request(
                 `/api/profile/${profile.profile_id}`,
@@ -74,7 +75,7 @@ const ProfileEditModal = ({ profile, onClose }) => {
     }
 
     return (
-        <ModalLayout onClose={onClose}>
+        <ModalLayout onClose={onClose}> 
             {/* Delete confirmation modal */}
             {showConfirmation &&
                 <ConfirmationModal
@@ -144,12 +145,17 @@ const ProfileEditModal = ({ profile, onClose }) => {
                         >
                             Kid Profile
                         </Text>
-                        <Switch
-                            trackColor={{ false: '#3e3e3e', true: colorScheme.green }}
-                            thumbColor={isKid ? 'white' : '#f4f3f4'}
-                            onValueChange={() => setIsKid(!isKid)}
-                            value={isKid}
-                        />
+                        <TouchableOpacity 
+                            onPress={() => setIsKid(!isKid)} 
+                            activeOpacity={0.8}
+                        >
+                            <Switch
+                                trackColor={{ false: '#3e3e3e', true: colorScheme.green }}
+                                thumbColor={isKid ? 'white' : '#f4f3f4'}
+                                value={isKid}
+                                onValueChange={setIsKid}
+                            />
+                        </TouchableOpacity>
                     </View>
                 </View>
 

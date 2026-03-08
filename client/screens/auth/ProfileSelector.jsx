@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 15,
         width: '80%',
-        height: 360,
+        height: 370,
         backgroundColor: colorScheme.bgDarkGreen,
         borderRadius: 25,
         padding: 20,
@@ -272,6 +272,7 @@ const styles = StyleSheet.create({
     },
 
     profile: {
+        width: '40%',
         flexDirection: 'column',
         alignItems: 'center',
         margin: 10,

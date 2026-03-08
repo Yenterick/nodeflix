@@ -114,12 +114,14 @@ const ProfileAddModal = ({ onClose }) => {
                         >
                             Kid Profile
                         </Text>
-                        <Switch
-                            trackColor={{ false: '#3e3e3e', true: colorScheme.green }}
-                            thumbColor={isKid ? 'white' : '#f4f3f4'}
-                            onValueChange={() => setIsKid(!isKid)}
-                            value={isKid}
-                        />
+                        <TouchableOpacity onPress={() => setIsKid(!isKid)} activeOpacity={0.8}>
+                            <Switch
+                                trackColor={{ false: '#3e3e3e', true: colorScheme.green }}
+                                thumbColor={isKid ? 'white' : '#f4f3f4'}
+                                value={isKid}
+                                onValueChange={setIsKid}
+                            />
+                        </TouchableOpacity>
                     </View>
                 </View>
 
