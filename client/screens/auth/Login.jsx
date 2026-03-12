@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Component imports
 import Button from '../../components/Button';
 import Divider from '../../components/Divider';
+import InfoModal from '../../components/modals/InfoModal';
 
 // Module imports
 import useFetch from '../../hooks/useFetch';
@@ -74,6 +75,12 @@ const Login = () => {
                 paddingTop: insets.top
             }
         ]}>
+
+        {/* Error modal */}
+        {hasError && 
+            <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)}/>
+        }
+
             {/* Login panel container */}
             <View style={styles.loginContainer}>
                 {/* Login header container */}
@@ -146,19 +153,29 @@ const Login = () => {
                     </View>
                     <Button 
                         onPress={() => { handleLogin() }}
-                        style={styles.button}    
+                        style={styles.button}
+                        disabled={loading}
                     >
-                        <Entypo
-                            name='login'
-                            color='white'
-                            size={22}
-                        />
-                        <Text style={[
-                            funnelDisplay.bold,
-                            styles.buttonText
-                        ]}>
-                            Login
-                        </Text>
+                        {loading ?
+                            <ActivityIndicator 
+                                size="small" 
+                                color="white" 
+                            />
+                            :
+                            <View style={styles.buttonContent}>
+                                <Entypo
+                                    name='login'
+                                    color='white'
+                                    size={22}
+                                />
+                                <Text style={[
+                                    funnelDisplay.bold,
+                                    styles.buttonText
+                                ]}>
+                                    Login
+                                </Text>
+                            </View>
+                        }
                     </Button>
                 </View>
                 {/* Login footer config */}
@@ -274,6 +291,11 @@ const styles = StyleSheet.create({
 
     button: {
         marginTop: 24
+    },
+
+    buttonContent: {
+        flexDirection: 'row',
+        gap: 10
     },
 
     buttonText: {

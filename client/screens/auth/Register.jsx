@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,6 +6,7 @@ import { Entypo } from '@expo/vector-icons';
 import { useState } from 'react'
 
 // Component imports
+import InfoModal from '../../components/modals/InfoModal';
 import Button from '../../components/Button';
 import Divider from '../../components/Divider';
 
@@ -31,6 +32,8 @@ const Register = () => {
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ confirmPassword, setConfirmPassword ] = useState('');
+
+    const [ showInfoModal, setShowInfoModal ] = useState(false);
 
     // Function to handle the fetch after pressing the button
     const handleRegister = async () => {
@@ -58,7 +61,7 @@ const Register = () => {
             );
 
             if (response && response.success) {
-                navigation.navigate('Login');
+                setShowInfoModal(true);
             } else {
                 setHasError(true);
                 setErrorMessage(error || response?.msg || 'An error ocurred while registering!');
@@ -78,6 +81,19 @@ const Register = () => {
                 paddingTop: insets.top
             }
         ]}>
+            {/* Succesfully register modal */}
+            {showInfoModal && 
+                <InfoModal text='Succesfully registered! Please log in...' icon='check' onExit={() => {
+                    setShowInfoModal(false);
+                    navigation.navigate('Login');
+                }}/>
+            }
+
+            {/* Error modal */}
+            {hasError && 
+                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)}/>
+            }
+
             {/* Register panel container */}
             <View style={styles.loginContainer}>
                 {/* Register header container */}
@@ -176,17 +192,26 @@ const Register = () => {
                         onPress={() => { handleRegister() }}
                         style={styles.button}
                     >
-                        <Entypo
-                            name='login'
-                            color='white'
-                            size={22}
-                        />
-                        <Text style={[
-                            funnelDisplay.bold,
-                            styles.buttonText
-                        ]}>
-                            Register
-                        </Text>
+                        {loading ?
+                            <ActivityIndicator 
+                                size="small" 
+                                color="white" 
+                            />
+                            :
+                            <View style={styles.buttonContent}>
+                                <Entypo
+                                    name='login'
+                                    color='white'
+                                    size={22}
+                                />
+                                <Text style={[
+                                    funnelDisplay.bold,
+                                    styles.buttonText
+                                ]}>
+                                   Register
+                                </Text>
+                            </View>
+                        }
                     </Button>
                 </View>
                 {/* Register footer container */}
@@ -301,6 +326,11 @@ const styles = StyleSheet.create({
     // Button styles config
     button: {
         marginTop: 24
+    },
+
+    buttonContent: {
+        flexDirection: 'row',
+        gap: 10
     },
 
     buttonText: {

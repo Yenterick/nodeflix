@@ -10,14 +10,19 @@ import colorScheme from '../../assets/color/colorScheme';
 // TODO: Implement info modal in all screens
 
 // Info Modal
-const InfoModal = ({ text, icon, onExit, iconColor }) => {
+const InfoModal = ({ text, icon, onExit, color = colorScheme.green}) => {
     return (
         <ModalLayout>
-            <View style={styles.modalContainer}>
+            <View style={[
+                styles.modalContainer,
+                {
+                    shadowColor: color
+                }
+                ]}>
                 <MaterialIcons 
                     name= {icon || 'check'}
-                    size={24} 
-                    color= {iconColor || 'iconColor'}
+                    size={64} 
+                    color= {color || colorScheme.green}
                 />
                 <Text
                     style={[
@@ -29,7 +34,7 @@ const InfoModal = ({ text, icon, onExit, iconColor }) => {
                 </Text>
                 <View style={styles.buttonsContainer}>
                     <Button
-                        color={colorScheme.green}
+                        color={color}
                         style={styles.button}
                         onPress={() => onExit()}
                     >
@@ -63,8 +68,8 @@ const styles = StyleSheet.create({
         backgroundColor: colorScheme.bgDarkGreen,
         borderRadius: 30,
         padding: 24,
+        gap: 12,
         alignItems: 'center',
-        shadowColor: colorScheme.green,
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.4,
         shadowRadius: 12,
@@ -76,14 +81,13 @@ const styles = StyleSheet.create({
     h1: {
         fontSize: 24,
         color: 'white',
-        marginBottom: 20,
-        textAlign: 'center'
+        textAlign: 'center',
+        marginBottom: 12
     },
 
     // Buttons container styles config
     buttonsContainer: {
-        flexDirection: 'row',
-        gap: 12
+        flexDirection: 'row'
     },
     
     button: {

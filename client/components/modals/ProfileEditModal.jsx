@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
 // Module and components imports
+import InfoModal from './InfoModal';
 import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import ConfirmationModal from './ConfirmationModal';
@@ -61,7 +62,7 @@ const ProfileEditModal = ({ profile, onClose }) => {
             );
 
             if (response && response.success) {
-                // Pass
+                onClose();
             } else {
                 setHasError(true);
                 setErrorMessage(error || response?.msg || 'An error ocurred while editing the profile!');
@@ -69,13 +70,14 @@ const ProfileEditModal = ({ profile, onClose }) => {
         } catch (error) {
             setHasError(true);
             setErrorMessage(error.message);
-        } finally {
-            onClose();
         }
     }
 
     return (
         <ModalLayout onClose={onClose}> 
+            {hasError && 
+                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)}/>
+            }
             {/* Delete confirmation modal */}
             {showConfirmation &&
                 <ConfirmationModal

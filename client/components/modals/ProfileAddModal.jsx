@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Module and components imports
+import InfoModal from './InfoModal';
 import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import ModalLayout from './ModalLayout';
@@ -48,13 +49,16 @@ const ProfileAddModal = ({ onClose }) => {
         } catch (error) {
             setHasError(true);
             setErrorMessage(error.message);
-        } finally {
-            onClose();
         }
     }
 
     return (
         <ModalLayout onClose={onClose}>
+            {/* Error modal */}
+            {hasError && 
+                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)}/>
+            }
+
             <View style={styles.modalContainer}>
                 {/* Modal title */}
                 <Text style={[

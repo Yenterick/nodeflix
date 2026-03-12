@@ -10,7 +10,8 @@ const Button  = ({
         borderRadius = 12,
         onPress,
         style,
-        children
+        children,
+        disabled
     }) => {
 
     return(
@@ -31,9 +32,11 @@ const Button  = ({
                     shadowOpacity: 0.4,
                     shadowRadius: 12,
                     elevation: 10,
+                    minHeight: 46
                 }
             , style]}
             onPress={onPress}
+            disabled={disabled}
         >
             {children}
         </Pressable>

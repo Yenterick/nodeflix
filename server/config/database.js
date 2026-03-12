@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Sequelize } = require('sequelize');
 
 // Modules import
-const { getLogPrefix, log, sleep} = require('../utils/utils');
+const { getLogPrefix, log, sleep } = require('../utils/utils');
 
 // Preparing the connection URLs for the databases
 const mongoUri = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=admin`;

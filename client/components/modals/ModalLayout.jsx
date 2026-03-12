@@ -12,7 +12,6 @@ const ModalLayout = ({ children, onClose }) => {
             navigationBarTranslucent={true}
             animationType="fade"
             onRequestClose={onClose}
-            allowSwipeDismissal={true}
         >
             <Pressable
                 style={[

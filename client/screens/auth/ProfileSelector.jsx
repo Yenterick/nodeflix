@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 
 // Module imports
 import useFetch from '../../hooks/useFetch';
+import InfoModal from '../../components/modals/InfoModal';
 import ProfileEditModal from '../../components/modals/ProfileEditModal';
 import ProfileAddModal from '../../components/modals/ProfileAddModal';
 import Button from '../../components/Button';
@@ -97,6 +98,10 @@ const ProfileSelector = () => {
                 }
             ]}
         >
+        {/* Error modal */}
+        {hasError && 
+            <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)}/>
+        }
             {/* Edit Modal */}
             {showProfileEditModal &&
                 <ProfileEditModal
