@@ -13,6 +13,7 @@ const registerUser = async (req, res) => {
     try {
         const { email, password, screens } = req.body;
         if (!email.trim() || !password.trim()) return res.status(400).json({ success: false, msg: 'Data missing.' });
+        if (userModel.selectUserByEmail(email.trim())) return res.status(400).json({ success: false, msg: 'Email already exists.' });
 
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
