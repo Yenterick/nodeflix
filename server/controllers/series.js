@@ -14,7 +14,7 @@ const getSeries = async (req, res) => {
     try {
         const { seriesId } = req.params;
 
-        const series = await seriesModel.getSeries(seriesId);
+        const series = await seriesModel.selectSeriesById(seriesId);
         res.status(200).json({ success: true, msg: 'Series successfully retrieved.', data: series });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });

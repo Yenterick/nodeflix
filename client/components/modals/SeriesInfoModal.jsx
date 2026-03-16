@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'rea
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useVideoPlayer, VideoView } from 'expo-video';
+import { useNavigation } from '@react-navigation/native';
 
 // Modules and components imports
 import colorScheme from '../../assets/color/colorScheme';
@@ -12,7 +13,16 @@ import Divider from '../Divider';
 
 // TODO: Check if i'll handle the interactions in the modal or in the screen
 // Modal to show the series info
-const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike, interaction }) => {
+const SeriesInfoModal = ({ series, onClose }) => {
+
+    // Navigation hook
+    const navigation = useNavigation();
+
+    // Interaction hook
+    const [ interaction, setInteraction ] = useState(undefined);
+
+    // FIXME: FKN NUCLEAR SCREEN ALTERNATIVE
+    const [ nuke, setNuke ] = useState(false);
 
 const videoUrl = series.seasons
     ?.find(season => season.season_number === 1)
@@ -50,6 +60,40 @@ const videoUrl = series.seasons
 
     const seasonCount = series.seasons ? series.seasons.length : 0;
     const seasonText = seasonCount === 1 ? '1 Season' : `${seasonCount} Seasons`;
+
+    // Function to redirect to VideoPlayer
+    const handlePlay = (seasonNumber, episodeNumber) => {
+        setNuke(true);
+
+        setTimeout(() => {
+            navigation.navigate('VideoPlayer', {
+                contentId: series._id,
+                contentType: 'series',
+                season: seasonNumber || 1,
+                episode: episodeNumber || 1
+            });
+            onClose();
+        }, 50);
+    }
+
+    if (nuke) {
+        return(
+            <View
+                style={
+                    {
+                        position: 'absolute',
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        zIndex: 9999,
+                        elevation: 9999
+                    }
+                }
+            />
+        )
+    }
 
     return (
         // General container with all the screen
@@ -127,7 +171,7 @@ const videoUrl = series.seasons
                     />
                     <View style={styles.buttonsContainer}>
                         <Button
-                            onPress={onPlay}
+                            onPress={() => handlePlay()}
                         >
                             <MaterialIcons
                                 name='play-arrow'
@@ -211,7 +255,7 @@ const videoUrl = series.seasons
                     >
                         <TouchableOpacity
                             style={styles.extraButton}
-                            onPress={onAddList}
+                            onPress={() => console.log('Add to list')}
                         >
                             <MaterialIcons
                                 name="add"
@@ -237,7 +281,7 @@ const videoUrl = series.seasons
                                     opacity: interaction == 'like' ? 1.0 : 0.5
                                 }
                             ]}
-                            onPress={onLike}
+                            onPress={() => setInteraction(interaction === 'like' ? undefined : 'like')}
                         >
                             <MaterialIcons
                                 name="thumb-up-off-alt"
@@ -263,7 +307,7 @@ const videoUrl = series.seasons
                                     opacity: interaction == 'dislike' ? 1.0 : 0.5
                                 }
                             ]}
-                            onPress={onDislike}
+                            onPress={() => setInteraction(interaction === 'dislike' ? undefined : 'dislike')}
                         >
                             <MaterialIcons
                                 name="thumb-down-off-alt"
@@ -341,9 +385,10 @@ const videoUrl = series.seasons
                         {series.seasons
                             .find(season => season.season_number === selectedSeason)
                             ?.episodes.map((episode) => (
-                                <View 
+                                <TouchableOpacity 
                                     key={episode.episode_number} 
                                     style={styles.episodeCard}
+                                    onPress={() => handlePlay(selectedSeason, episode.episode_number)}
                                 >
                                     <View style={styles.episodeHeader}>
                                         <Image
@@ -374,7 +419,7 @@ const videoUrl = series.seasons
                                     >
                                         {episode.description}
                                     </Text>
-                                </View>
+                                </TouchableOpacity>
                             ))}
                     </View>
                 </ScrollView>

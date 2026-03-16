@@ -7,6 +7,7 @@ import { useFonts } from '@expo-google-fonts/funnel-display';
 // Modules and components imports
 import AuthStack from './navigation/AuthStack';
 import MainStack from './navigation/MainStack';
+import VideoPlayer from './screens/main/VideoPlayer';
 import { funnelDisplayFonts } from './assets/fonts/funnelDisplay';
 
 export default function App() {
@@ -22,6 +23,14 @@ export default function App() {
     screens: {
       Auth: { screen: AuthStack },
       Main: { screen: MainStack },
+      VideoPlayer: { 
+        screen: VideoPlayer, 
+        options: {
+          headerShown: false,
+          presentation: 'fullScreenModal',
+          animation: 'fade'
+        } 
+      }
     },
   });
 

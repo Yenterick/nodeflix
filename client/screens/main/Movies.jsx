@@ -40,8 +40,7 @@ const Movies = () => {
     const fetchMovies = async () => {
         try {
             const response = await request(`/movie/`, 'GET');
-
-            console.log(response);
+            
             if (response && response.success) {
                 if (!response.data || response.data.length === 0) {
                     setHasError(true);

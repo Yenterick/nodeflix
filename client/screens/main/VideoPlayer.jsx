@@ -9,8 +9,12 @@ import { useVideoPlayer, VideoView } from 'expo-video';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import colorScheme from '../../assets/color/colorScheme';
 import useFetch from '../../hooks/useFetch';
+import InfoModal from '../../components/modals/InfoModal';
 
-const VideoPlayer = ({ contentId, contentType }) => {
+const VideoPlayer = ({ route }) => {
+    // Getting the route params
+    const { contentId, contentType, episode, season } = route.params;  
+
     // Navigation hook
     const navigation = useNavigation();
 
@@ -21,20 +25,28 @@ const VideoPlayer = ({ contentId, contentType }) => {
     const [ hasError, setHasError ] = useState(false);
     const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while playing the content!');
     const [ content, setContent ] = useState(undefined);
-    const [ season, setSeason ] = useState(1);
-    const [ episode, setEpisode ] = useState(1);
+    const [ currentSeason, setCurrentSeason ] = useState(season || 1);
+    const [ currentEpisode, setCurrentEpisode ] = useState(episode || 1);
     const { request, loading, error } = useFetch();
+
+    // Orientation state to prevent double change
+    const [orientationReady, setOrientationReady] = useState(false);
 
     // Screen orientation config
     useEffect(() => {
+
         // Orientation Lock
         const lockOrientation = async () => {
             await ScreenOrientation.lockAsync(
                 ScreenOrientation.OrientationLock.LANDSCAPE
             );
+
+            setOrientationReady(true);
         };
 
         lockOrientation();
+
+        
 
         // Content getter
         const getContent = async () => {
@@ -53,12 +65,15 @@ const VideoPlayer = ({ contentId, contentType }) => {
         }
 
         getContent();
+
         // Free screens orientation again
         return () => {
             ScreenOrientation.unlockAsync();
         };
 
-    }, [season, episode]);
+        
+
+    }, [contentId, contentType, currentEpisode, currentSeason]);
 
     // TODO: Maybe change the episode finder later :D
     // Video player creation
@@ -66,15 +81,23 @@ const VideoPlayer = ({ contentId, contentType }) => {
         contentType === 'movie'
             ? content?.stream_url
             : content?.seasons
-                ?.find(s => s.season_number === season)
+                ?.find(s => s.season_number === currentSeason)
                 ?.episodes
-                ?.find(e => e.episode_number === episode)
+                ?.find(e => e.episode_number === currentEpisode)
                 ?.stream_url;
 
     const player = useVideoPlayer(videoUrl ? `${process.env.EXPO_PUBLIC_CDN_URL}${videoUrl}` : null, player => {
         player.loop = false;
         player.play();
     }); 
+
+    if (!orientationReady) {
+        return(
+            <View
+                style={styles.background}
+            />
+        )
+    }
 
     return(
         // General container with all the screen
@@ -91,7 +114,7 @@ const VideoPlayer = ({ contentId, contentType }) => {
         {hasError && 
             <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => navigation.navigate('Index')}/>
         }
-        {player &&
+        {videoUrl && player &&
             <VideoView 
                 style={styles.video}
                 player={player}
@@ -108,7 +131,7 @@ const styles = StyleSheet.create({
     // Background style config
     background: {
         flex: 1,
-        backgroundColor: colorScheme.darkGreen
+        backgroundColor: 'black'
     },
 
     // Video style config

@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useVideoPlayer, VideoView } from 'expo-video';
+import { useNavigation } from '@react-navigation/native';
 
 // Modules and components imports
 import colorScheme from '../../assets/color/colorScheme';
@@ -12,7 +13,13 @@ import Divider from '../Divider';
 
 // TODO: Check if i'll handle the interactions in the modal or in the screen
 // Modal to show the movie info
-const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, interaction }) => {
+const MovieInfoModal = ({ movie, onClose }) => {
+
+    // Navigation hook
+    const navigation = useNavigation();
+
+    // Interaction hook
+    const [ interaction, setInteraction ] = useState(undefined);
 
     // Video player hooks
     const player = useVideoPlayer(process.env.EXPO_PUBLIC_CDN_URL + movie.stream_url, player => {
@@ -20,6 +27,9 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
         player.muted = true;
         player.play();
     }); 
+
+    // FIXME: FKN NUCLEAR SCREEN ALTERNATIVE
+    const [ nuke, setNuke ] = useState(false);
 
     const [ mutedIcon, setMutedIcon ] = useState(true);
 
@@ -36,6 +46,38 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
         if (hours === 0) return `${minutes}m`;
         if (minutes === 0) return `${hours}h`;
         return `${hours}h ${minutes}m`;
+    }
+
+    // Function to redirect to VideoPlayer
+    const handlePlay = () => {
+        setNuke(true);
+
+        setTimeout(() => {
+            navigation.navigate('VideoPlayer', {
+                contentId: movie._id,
+                contentType: 'movie'
+            });
+            onClose();
+        }, 50);
+    }
+
+    if (nuke) {
+        return(
+            <View
+                style={
+                    {
+                        position: 'absolute',
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        zIndex: 9999,
+                        elevation: 9999
+                    }
+                }
+            />
+        )
     }
 
     return (
@@ -114,7 +156,7 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
                     />
                     <View style={styles.buttonsContainer}>
                         <Button
-                            onPress={onPlay}
+                            onPress={() => handlePlay()}
                         >
                             <MaterialIcons
                                 name='play-arrow'
@@ -198,7 +240,7 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
                     >
                         <TouchableOpacity
                             style={styles.extraButton}
-                            onPress={onAddList}
+                            // TODO: Add On Press
                         >
                             <MaterialIcons
                                 name="add"
@@ -224,7 +266,6 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
                                     opacity: interaction == 'like' ? 1.0 : 0.5
                                 }
                             ]}
-                            onPress={onLike}
                         >
                             <MaterialIcons
                                 name="thumb-up-off-alt"
@@ -250,7 +291,7 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
                                     opacity: interaction == 'dislike' ? 1.0 : 0.5
                                 }
                             ]}
-                            onPress={onDislike}
+                            // TODO: Add onPress
                         >
                             <MaterialIcons
                                 name="thumb-down-off-alt"
