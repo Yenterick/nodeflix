@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 
 // Modules and components imports
@@ -15,12 +14,13 @@ import Divider from '../Divider';
 // Modal to show the series info
 const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike, interaction }) => {
 
-    const videoUrl = series.seasons
-        .find(season => season.season_number === 1)?.episodes
-        .find(episode => episode.episode_number === 1)?.stream_url;
+const videoUrl = series.seasons
+    ?.find(season => season.season_number === 1)
+    ?.episodes?.find(episode => episode.episode_number === 1)
+    ?.stream_url;
 
     // Video player hooks
-    const player = useVideoPlayer(videoUrl, player => {
+    const player = useVideoPlayer(process.env.EXPO_PUBLIC_CDN_URL + videoUrl, player => {
         player.loop = true;
         player.muted = true;
         player.play();
@@ -41,10 +41,11 @@ const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike
 
     // Function to format raw seconds to hours and minutes
     const formatSeconds = (duration) => {
-        const hours = Math.floor(duration / 60);
-        const minutes = Math.floor(duration % 60);
-        if (hours > 0) return `${hours}h ${minutes}m`;
-        return `${minutes}m`;
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        if (hours === 0) return `${minutes}m`;
+        if (minutes === 0) return `${hours}h`;
+        return `${hours}h ${minutes}m`;
     }
 
     const seasonCount = series.seasons ? series.seasons.length : 0;
@@ -62,6 +63,7 @@ const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike
             ]}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
+                    nestedScrollEnabled
                 >
                     <View style={styles.videoContainer}>
                         <VideoView 
@@ -184,7 +186,7 @@ const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike
                                 }
                             ]}
                         >
-                            {`Genres:  ${series.genres.join(", ")}`}
+                            {`Genres: ${series.genres.join(", ").replace(/(^|\s)\S/g, match => match.toUpperCase())}`}
                         </Text>
                         <Text
                             style={[
@@ -197,7 +199,7 @@ const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike
                                 }
                             ]}
                         >
-                            {`Cast:  ${series.cast.join(", ")}`}
+                            {`Cast: ${series.cast.join(", ")}`}
                         </Text>
                     </View>
                     <Divider
@@ -258,7 +260,7 @@ const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike
                             style={[
                                 styles.extraButton,
                                 {
-                                    opacity: interaction == 'like' ? 1.0 : 0.5
+                                    opacity: interaction == 'dislike' ? 1.0 : 0.5
                                 }
                             ]}
                             onPress={onDislike}
@@ -345,7 +347,7 @@ const SeriesInfoModal = ({ series, onClose, onPlay, onAddList, onLike, onDislike
                                 >
                                     <View style={styles.episodeHeader}>
                                         <Image
-                                            source={{ uri: episode.thumbnail_url }}
+                                            source={{ uri: process.env.EXPO_PUBLIC_CDN_URL + episode.thumbnail_url }}
                                             style={styles.episodeThumbnail}
                                         />
                                         <View style={styles.episodeMainInfo}>
@@ -534,7 +536,6 @@ const styles = StyleSheet.create({
         width: 100,
         height: 56,
         borderRadius: 8,
-        backgroundColor: 'black'
     },
 
     episodeMainInfo: {

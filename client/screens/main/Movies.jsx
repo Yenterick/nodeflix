@@ -1,154 +1,31 @@
 import { View, Text, StyleSheet, FlatList, ScrollView, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 // Module and componets imports
 import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import Movie from '../../components/Movie';
-import MovieInfoModal from '../../components/modals/MovieInfoModal'
-
-// Debugging mock movies list
-// TODO: Implement API fetch
-const movieList1 = [
-{
-    _id: '1',
-    title: 'Inception',
-    description: 'A thief who steals corporate secrets through dream-sharing technology.',
-    genres: ['Sci-Fi', 'Action', 'Thriller'],
-    cast: ['Leonardo DiCaprio', 'Joseph Gordon-Levitt', 'Elliot Page'],
-    release_year: 2010,
-    duration: 14800,
-    thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=1',
-    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    is_for_kids: false,
-    created_at: new Date('2024-01-10')
-},
-{
-    _id: '2',
-    title: 'Interstellar',
-    description: 'A team of explorers travel through a wormhole in space.',
-    genres: ['Sci-Fi', 'Drama'],
-    cast: ['Matthew McConaughey', 'Anne Hathaway', 'Jessica Chastain'],
-    release_year: 2014,
-    duration: 16900,
-    thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=2',
-    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    is_for_kids: false,
-    created_at: new Date('2024-01-11')
-},
-{
-    _id: '3',
-    title: 'The Dark Knight',
-    description: 'Batman faces the Joker in Gotham City.',
-    genres: ['Action', 'Crime', 'Drama'],
-    cast: ['Christian Bale', 'Heath Ledger', 'Gary Oldman'],
-    release_year: 2008,
-    duration: 15200,
-    thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=3',
-    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    is_for_kids: false,
-    created_at: new Date('2024-01-12')
-},
-{
-    _id: '4',
-    title: 'Avengers: Endgame',
-    description: 'The Avengers assemble for one final battle against Thanos.',
-    genres: ['Action', 'Adventure', 'Sci-Fi'],
-    cast: ['Robert Downey Jr.', 'Chris Evans', 'Scarlett Johansson'],
-    release_year: 2019,
-    duration: 18100,
-    thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=4',
-    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    is_for_kids: true,
-    created_at: new Date('2024-01-13')
-},
-{
-    _id: '5',
-    title: 'Joker',
-    description: 'The origin story of the infamous Gotham villain.',
-    genres: ['Crime', 'Drama', 'Thriller'],
-    cast: ['Joaquin Phoenix', 'Robert De Niro'],
-    release_year: 2019,
-    duration: 12200,
-    thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=5',
-    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    is_for_kids: false,
-    created_at: new Date('2024-01-14')
-}
-];
-
-const movieList2 = [
-{
-    _id: '6',
-    title: 'The Matrix',
-    description: 'A hacker discovers the true nature of reality.',
-    genres: ['Sci-Fi', 'Action'],
-    cast: ['Keanu Reeves', 'Laurence Fishburne', 'Carrie-Anne Moss'],
-    release_year: 1999,
-    duration: 13600,
-    thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=6',
-    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    is_for_kids: false,
-    created_at: new Date('2024-01-15')
-},
-{
-    _id: '7',
-    title: 'Gladiator',
-    description: 'A Roman general seeks revenge after betrayal.',
-    genres: ['Action', 'Drama', 'History'],
-    cast: ['Russell Crowe', 'Joaquin Phoenix'],
-    release_year: 2000,
-    duration: 15500,
-    thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=7',
-    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    is_for_kids: false,
-    created_at: new Date('2024-01-16')
-},
-{
-    _id: '8',
-    title: 'Titanic',
-    description: 'A love story aboard the ill-fated RMS Titanic.',
-    genres: ['Drama', 'Romance'],
-    cast: ['Leonardo DiCaprio', 'Kate Winslet'],
-    release_year: 1997,
-    duration: 19500,
-    thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=8',
-    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    is_for_kids: true,
-    created_at: new Date('2024-01-17')
-},
-{
-    _id: '9',
-    title: 'Parasite',
-    description: 'A poor family schemes to become employed by a wealthy household.',
-    genres: ['Thriller', 'Drama'],
-    cast: ['Song Kang-ho', 'Lee Sun-kyun'],
-    release_year: 2019,
-    duration: 13200,
-    thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=9',
-    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    is_for_kids: false,
-    created_at: new Date('2024-01-18')
-},
-{
-    _id: '10',
-    title: 'Spider-Man: No Way Home',
-    description: 'Spider-Man seeks help from Doctor Strange.',
-    genres: ['Action', 'Adventure', 'Sci-Fi'],
-    cast: ['Tom Holland', 'Zendaya', 'Benedict Cumberbatch'],
-    release_year: 2021,
-    duration: 14800,
-    thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=10',
-    stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    is_for_kids: true,
-    created_at: new Date('2024-01-19')
-}
-];
+import MovieInfoModal from '../../components/modals/MovieInfoModal';
+import InfoModal from '../../components/modals/InfoModal';
+import useFetch from '../../hooks/useFetch';
 
 const Movies = () => {
+    // Placeholder array in case movies don't charge
+    const placeholders = Array.from({ length: 6 });
+
+    // Navigation hook
+    const navigation = useNavigation();
+    
     // Various hooks
     const insets = useSafeAreaInsets();
+    const [ hasError, setHasError ] = useState(false);
+    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while retrieving the movies!');
+    const { request, error, loading } = useFetch();
+
+    // Movies hooks
+    const [ movies, setMovies ] = useState([]);
 
     // Movie info modal hooks
     const [ selectedMovie, setSelectedMovie ] = useState(null);
@@ -158,6 +35,33 @@ const Movies = () => {
         setSelectedMovie(item);
         setShowMovieInfoModal(true);
     }
+
+    // Load the movies from the backend
+    const fetchMovies = async () => {
+        try {
+            const response = await request(`/movie/`, 'GET');
+
+            console.log(response);
+            if (response && response.success) {
+                if (!response.data || response.data.length === 0) {
+                    setHasError(true);
+                    setErrorMessage('An error has ocurred while retrieving the movies!');
+                    return;
+                }
+                setMovies(response.data);
+            } else {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error has ocurred while retrieving the movies!');
+            }
+        } catch (error) {
+            setHasError(true);
+            setErrorMessage(error.message);
+        }   
+    }
+
+    useEffect(() => {
+        fetchMovies();
+    }, [])
 
     return(
         // General container with all the screen
@@ -170,24 +74,44 @@ const Movies = () => {
                 }
             ]}
         >
+        {/* Error modal */}
+        {hasError && 
+            <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => navigation.reset({ index: 0, routes: [{ name: 'Auth' }] })}/>
+        }
             {/* TODO: Implement functionality on all the modal buttons */}
             {showMovieInfoModal && 
                 <MovieInfoModal movie={selectedMovie} onClose={() => setShowMovieInfoModal(false)} />
             }
-            <Text style={[
-                styles.h1,
-                funnelDisplay.semibold
-                ]}>
-                Trending...
-            </Text>
             <ScrollView>
+                <Text style={[
+                    styles.h1,
+                    funnelDisplay.semibold
+                    ]}>
+                    Trending...
+                </Text>
                 <FlatList
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    data={movieList1}
-                    renderItem={({item}) => <Movie uriSource={item.thumbnail_url} onPress={() => {handleSelectMovie(item)}} />}
-                    keyExtractor={item => item._id}
-                />         
+                    data={movies.length ? movies : placeholders}
+                    renderItem={({ item, index }) => 
+                        movies.length ? (
+                            <Movie 
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url} 
+                                onPress={() => handleSelectMovie(item)} 
+                            />
+                        ) : (
+                            <View 
+                                style={[
+                                    styles.placeholder,
+                                    { 
+                                        opacity: 1 - index * 0.12 
+                                    }
+                                ]}
+                            />
+                        )
+                    }
+                    keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
+                />     
                 <Text style={[
                     styles.h1,
                     funnelDisplay.semibold
@@ -197,9 +121,25 @@ const Movies = () => {
                 <FlatList
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    data={movieList2}
-                    renderItem={({item}) => <Movie uriSource={item.thumbnail_url} onPress={() => {handleSelectMovie(item)}} />}
-                    keyExtractor={item => item._id}
+                    data={movies.length ? movies : placeholders}
+                    renderItem={({ item, index }) => 
+                        movies.length ? (
+                            <Movie 
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url} 
+                                onPress={() => handleSelectMovie(item)} 
+                            />
+                        ) : (
+                            <View 
+                                style={[
+                                    styles.placeholder,
+                                    { 
+                                        opacity: 1 - index * 0.12 
+                                    }
+                                ]}
+                            />
+                        )
+                    }
+                    keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
                 />    
             </ScrollView>
         </View>
@@ -207,6 +147,7 @@ const Movies = () => {
 }
 
 const styles = StyleSheet.create({
+    // General styles config
     background: {
         flex: 1,
         backgroundColor: colorScheme.darkGreen,
@@ -218,6 +159,15 @@ const styles = StyleSheet.create({
         color: 'white',
         margin: 10,
         fontSize: 24
+    },
+
+    // Placeholder style config
+    placeholder: {
+        width: 120,
+        height: 180,
+        backgroundColor: colorScheme.bgDarkGreen,
+        borderRadius: 10,
+        marginHorizontal: 6
     }
 });
 

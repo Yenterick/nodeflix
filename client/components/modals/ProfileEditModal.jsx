@@ -57,7 +57,7 @@ const ProfileEditModal = ({ profile, onClose }) => {
         console.log('Button pressed');
         try {
             const response = await request(
-                `/api/profile/${profile.profile_id}`,
+                `/profile/${profile.profile_id}`,
                 'DELETE',
             );
 

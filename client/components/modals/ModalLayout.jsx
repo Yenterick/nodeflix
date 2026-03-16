@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Modal } from 'react-native';
+import { Pressable, StyleSheet, Modal, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ModalLayout = ({ children, onClose }) => {
@@ -13,7 +13,7 @@ const ModalLayout = ({ children, onClose }) => {
             animationType="fade"
             onRequestClose={onClose}
         >
-            <Pressable
+            <View
                 style={[
                     styles.overlay,
                     {
@@ -21,15 +21,17 @@ const ModalLayout = ({ children, onClose }) => {
                         paddingBottom: insets.bottom
                     }
                 ]}
-                onPress={onClose}
             >
                 <Pressable
+                    style={StyleSheet.absoluteFillObject}
+                    onPress={onClose}
+                />
+                <View
                     style={styles.modalContainer}
-                    onPress={() => { }}
                 >
                     {children}
-                </Pressable>
-            </Pressable>
+                </View>
+            </View>
         </Modal>
     );
 };

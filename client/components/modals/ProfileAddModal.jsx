@@ -29,7 +29,7 @@ const ProfileAddModal = ({ onClose }) => {
         try {
             const userId = await AsyncStorage.getItem('userId');
             const response = await request(
-                '/api/profile',
+                '/profile',
                 'POST',
                 {
                     userId: userId,

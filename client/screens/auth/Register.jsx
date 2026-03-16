@@ -51,7 +51,7 @@ const Register = () => {
 
         try {
             const response = await request(
-                '/api/user/register',
+                '/user/register',
                 'POST',
                 {
                     email: email,

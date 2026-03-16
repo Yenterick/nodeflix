@@ -1,314 +1,31 @@
 import { View, Text, StyleSheet, FlatList, ScrollView, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 // Module and componets imports
 import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import Series from '../../components/Series';
 import SeriesInfoModal from '../../components/modals/SeriesInfoModal';
-
-// Debugging mock movies list
-// TODO: Implement API fetch
-const seriesList1 = [
-    {
-        _id: '1',
-        title: 'Stranger Things',
-        description: 'A group of kids uncover supernatural mysteries in their town.',
-        genres: ['Sci-Fi', 'Horror', 'Drama'],
-        cast: ['Millie Bobby Brown', 'Finn Wolfhard', 'David Harbour'],
-        release_year: 2016,
-        thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=1',
-        is_for_kids: false,
-        created_at: new Date('2024-02-01'),
-        seasons: [
-            {
-                season_number: 1,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'The Vanishing of Will Byers',
-                        description: 'A boy mysteriously disappears.',
-                        duration: 47,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=101',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    },
-                    {
-                        episode_number: 2,
-                        title: 'The Weirdo on Maple Street',
-                        description: 'The boys meet a mysterious girl.',
-                        duration: 50,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=102',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            },
-            {
-                season_number: 2,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'The Vanishing of Will Byer232',
-                        description: 'A boy mysteriously disappears.',
-                        duration: 47,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=101',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    },
-                    {
-                        episode_number: 2,
-                        title: 'The Weirdo on Maple Street2323',
-                        description: 'The boys meet a mysterious girl.',
-                        duration: 50,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=102',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            },
-
-        ]
-    },
-    {
-        _id: '2',
-        title: 'Breaking Bad',
-        description: 'A chemistry teacher turns to making meth.',
-        genres: ['Crime', 'Drama', 'Thriller'],
-        cast: ['Bryan Cranston', 'Aaron Paul'],
-        release_year: 2008,
-        thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=2',
-        is_for_kids: false,
-        created_at: new Date('2024-02-02'),
-        seasons: [
-            {
-                season_number: 1,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'Pilot',
-                        description: 'Walter White begins his journey.',
-                        duration: 58,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=103',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        _id: '3',
-        title: 'The Mandalorian',
-        description: 'A bounty hunter travels across the galaxy.',
-        genres: ['Sci-Fi', 'Adventure'],
-        cast: ['Pedro Pascal'],
-        release_year: 2019,
-        thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=3',
-        is_for_kids: true,
-        created_at: new Date('2024-02-03'),
-        seasons: [
-            {
-                season_number: 1,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'Chapter 1: The Mandalorian',
-                        description: 'The Mandalorian accepts a bounty.',
-                        duration: 39,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=104',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        _id: '4',
-        title: 'Game of Thrones',
-        description: 'Noble families fight for control of the Iron Throne.',
-        genres: ['Fantasy', 'Drama'],
-        cast: ['Emilia Clarke', 'Kit Harington', 'Peter Dinklage'],
-        release_year: 2011,
-        thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=4',
-        is_for_kids: false,
-        created_at: new Date('2024-02-04'),
-        seasons: [
-            {
-                season_number: 1,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'Winter Is Coming',
-                        description: 'The Stark family receives a royal visit.',
-                        duration: 62,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=105',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        _id: '5',
-        title: 'The Office',
-        description: 'Mockumentary about office workers.',
-        genres: ['Comedy'],
-        cast: ['Steve Carell', 'John Krasinski'],
-        release_year: 2005,
-        thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=5',
-        is_for_kids: true,
-        created_at: new Date('2024-02-05'),
-        seasons: [
-            {
-                season_number: 1,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'Pilot',
-                        description: 'A look inside Dunder Mifflin.',
-                        duration: 23,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=106',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            }
-        ]
-    }
-];
-
-const seriesList2 = [
-    {
-        _id: '6',
-        title: 'Loki',
-        description: 'The god of mischief alters timelines.',
-        genres: ['Sci-Fi', 'Fantasy'],
-        cast: ['Tom Hiddleston'],
-        release_year: 2021,
-        thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=6',
-        is_for_kids: true,
-        created_at: new Date('2024-02-06'),
-        seasons: [
-            {
-                season_number: 1,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'Glorious Purpose',
-                        description: 'Loki is captured by the TVA.',
-                        duration: 52,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=107',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        _id: '7',
-        title: 'The Witcher',
-        description: 'A monster hunter struggles to find his place.',
-        genres: ['Fantasy', 'Action'],
-        cast: ['Henry Cavill'],
-        release_year: 2019,
-        thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=7',
-        is_for_kids: false,
-        created_at: new Date('2024-02-07'),
-        seasons: [
-            {
-                season_number: 1,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'The End’s Beginning',
-                        description: 'Geralt hunts a monster.',
-                        duration: 61,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=108',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        _id: '8',
-        title: 'Dark',
-        description: 'A time-travel mystery in a German town.',
-        genres: ['Sci-Fi', 'Thriller'],
-        cast: ['Louis Hofmann'],
-        release_year: 2017,
-        thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=8',
-        is_for_kids: false,
-        created_at: new Date('2024-02-08'),
-        seasons: [
-            {
-                season_number: 1,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'Secrets',
-                        description: 'A child disappears.',
-                        duration: 52,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=109',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        _id: '9',
-        title: 'Wednesday',
-        description: 'Wednesday Addams solves mysteries at school.',
-        genres: ['Comedy', 'Mystery'],
-        cast: ['Jenna Ortega'],
-        release_year: 2022,
-        thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=9',
-        is_for_kids: true,
-        created_at: new Date('2024-02-09'),
-        seasons: [
-            {
-                season_number: 1,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'Wednesday’s Child',
-                        description: 'Wednesday joins Nevermore Academy.',
-                        duration: 50,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=110',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        _id: '10',
-        title: 'The Boys',
-        description: 'A group fights corrupt superheroes.',
-        genres: ['Action', 'Drama'],
-        cast: ['Karl Urban', 'Jack Quaid'],
-        release_year: 2019,
-        thumbnail_url: 'https://placeholdpicsum.dev/photo/150/250?random=10',
-        is_for_kids: false,
-        created_at: new Date('2024-02-10'),
-        seasons: [
-            {
-                season_number: 1,
-                episodes: [
-                    {
-                        episode_number: 1,
-                        title: 'The Name of the Game',
-                        description: 'Hughie joins The Boys.',
-                        duration: 60,
-                        thumbnail_url: 'https://placeholdpicsum.dev/photo/300/200?random=111',
-                        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    }
-                ]
-            }
-        ]
-    }
-];
+import InfoModal from '../../components/modals/InfoModal';
+import useFetch from '../../hooks/useFetch';
 
 const SeriesP = () => {
+    // Placeholder array in case series don't charge
+    const placeholders = Array.from({ length: 6 });
+
+    // Navigation hook
+    const navigation = useNavigation();
+    
     // Various hooks
     const insets = useSafeAreaInsets();
+    const [ hasError, setHasError ] = useState(false);
+    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while retrieving the series!');
+    const { request, error, loading } = useFetch();
+
+    // Series hooks
+    const [ series, setSeries ] = useState([]);
 
     // Series info modal hooks
     const [ selectedSeries, setSelectedSeries ] = useState(null);
@@ -318,6 +35,32 @@ const SeriesP = () => {
         setSelectedSeries(item);
         setShowSeriesInfoModal(true);
     }
+
+    // Load the series from the backend
+    const fetchSeries = async () => {
+        try {
+            const response = await request(`/series/`, 'GET');
+
+            if (response && response.success) {
+                if (!response.data || response.data.length === 0) {
+                    setHasError(true);
+                    setErrorMessage('An error has ocurred while retrieving the series!');
+                    return;
+                }
+                setSeries(response.data);
+            } else {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error has ocurred while retrieving the series!');
+            }
+        } catch (error) {
+            setHasError(true);
+            setErrorMessage(error.message);
+        }
+    }
+
+    useEffect(() => {
+        fetchSeries();
+    }, [])
 
     return(
         // General container with all the screen
@@ -330,24 +73,44 @@ const SeriesP = () => {
                 }
             ]}
         >
+        {/* Error modal */}
+        {hasError && 
+            <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => navigation.reset({ index: 0, routes: [{ name: 'Auth' }] })}/>
+        }
             {/* TODO: Implement functionality on all the modal buttons */}
             {showSeriesInfoModal && 
                 <SeriesInfoModal series={selectedSeries} onClose={() => setShowSeriesInfoModal(false)} />
             }
-            <Text style={[
-                styles.h1,
-                funnelDisplay.semibold
-                ]}>
-                Trending...
-            </Text>
             <ScrollView>
+                <Text style={[
+                    styles.h1,
+                    funnelDisplay.semibold
+                    ]}>
+                    Trending...
+                </Text>
                 <FlatList
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    data={seriesList1}
-                    renderItem={({item}) => <Series uriSource={item.thumbnail_url} onPress={() => handleSelectSeries(item)} />}
-                    keyExtractor={item => item._id}
-                />         
+                    data={series.length ? series : placeholders}
+                    renderItem={({ item, index }) => 
+                        series.length ? (
+                            <Series 
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url} 
+                                onPress={() => handleSelectSeries(item)} 
+                            />
+                        ) : (
+                            <View 
+                                style={[
+                                    styles.placeholder,
+                                    { 
+                                        opacity: 1 - index * 0.12 
+                                    }
+                                ]}
+                            />
+                        )
+                    }
+                    keyExtractor={(item, index) => series.length ? item._id : `placeholder-${index}`}
+                />     
                 <Text style={[
                     styles.h1,
                     funnelDisplay.semibold
@@ -357,9 +120,25 @@ const SeriesP = () => {
                 <FlatList
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    data={seriesList2}
-                    renderItem={({item}) => <Series uriSource={item.thumbnail_url} onPress={() => handleSelectSeries(item)} />}
-                    keyExtractor={item => item._id}
+                    data={series.length ? series : placeholders}
+                    renderItem={({ item, index }) => 
+                        series.length ? (
+                            <Series 
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url} 
+                                onPress={() => handleSelectSeries(item)} 
+                            />
+                        ) : (
+                            <View 
+                                style={[
+                                    styles.placeholder,
+                                    { 
+                                        opacity: 1 - index * 0.12 
+                                    }
+                                ]}
+                            />
+                        )
+                    }
+                    keyExtractor={(item, index) => series.length ? item._id : `placeholder-${index}`}
                 />    
             </ScrollView>
         </View>
@@ -367,6 +146,7 @@ const SeriesP = () => {
 }
 
 const styles = StyleSheet.create({
+    // General styles config
     background: {
         flex: 1,
         backgroundColor: colorScheme.darkGreen,
@@ -378,6 +158,15 @@ const styles = StyleSheet.create({
         color: 'white',
         margin: 10,
         fontSize: 24
+    },
+
+    // Placeholder style config
+    placeholder: {
+        width: 120,
+        height: 180,
+        backgroundColor: colorScheme.bgDarkGreen,
+        borderRadius: 10,
+        marginHorizontal: 6
     }
 });
 

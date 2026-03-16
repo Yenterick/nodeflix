@@ -40,7 +40,7 @@ const ProfileSelector = () => {
     const fetchProfiles = async () => {
         try {
             const userId = await AsyncStorage.getItem('userId');
-            const response = await request(`/api/user/profiles/${userId}`, 'GET');
+            const response = await request(`/user/profiles/${userId}`, 'GET');
 
             if (response && response.success) {
                 setProfiles(response.data);

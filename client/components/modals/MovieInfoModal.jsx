@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 
 // Modules and components imports
@@ -16,7 +15,7 @@ import Divider from '../Divider';
 const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, interaction }) => {
 
     // Video player hooks
-    const player = useVideoPlayer(movie.stream_url, player => {
+    const player = useVideoPlayer(process.env.EXPO_PUBLIC_CDN_URL + movie.stream_url, player => {
         player.loop = true;
         player.muted = true;
         player.play();
@@ -34,8 +33,9 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
     const formatSeconds = (duration) => {
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
-        if (hours > 0) return `${hours}h ${minutes}m`;
-        return `${minutes}m`;
+        if (hours === 0) return `${minutes}m`;
+        if (minutes === 0) return `${hours}h`;
+        return `${hours}h ${minutes}m`;
     }
 
     return (
@@ -50,7 +50,7 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
             ]}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    style={{ width: '100%' }}
+                    nestedScrollEnabled
                 >
                     <View style={styles.videoContainer}>
                         <VideoView 
@@ -173,7 +173,7 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
                                 }
                             ]}
                         >
-                            {`Genres:  ${movie.genres.join(", ")}`}
+                            {`Genres: ${movie.genres.join(", ").replace(/(^|\s)\S/g, match => match.toUpperCase())}`}
                         </Text>
                         <Text
                             style={[
@@ -186,7 +186,7 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
                                 }
                             ]}
                         >
-                            {`Cast:  ${movie.cast.join(", ")}`}
+                            {`Cast: ${movie.cast.join(", ")}`}
                         </Text>
                     </View>
                     <Divider
@@ -247,7 +247,7 @@ const MovieInfoModal = ({ movie, onClose, onPlay, onAddList, onLike, onDislike, 
                             style={[
                                 styles.extraButton,
                                 {
-                                    opacity: interaction == 'like' ? 1.0 : 0.5
+                                    opacity: interaction == 'dislike' ? 1.0 : 0.5
                                 }
                             ]}
                             onPress={onDislike}

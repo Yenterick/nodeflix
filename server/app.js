@@ -32,7 +32,7 @@ app.use('/api/movie', movieRouter);
 app.use('/api/series', seriesRouter);
 
 // Server health check
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
     try {
         res.status(200).json({ success: true, msg: 'Nodeflix server is up and healthy!'});
     } catch (error) {

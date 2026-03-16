@@ -10,10 +10,9 @@ const Series = ({ uriSource, onPress, style }) => {
             onPress={onPress}
             style={[
                 {
-                    width: 150,
-                    height: 250,
-                    marginLeft: 10,
-                    marginRight: 10
+                    width: 120,
+                    height: 180,
+                    marginHorizontal: 10
                 }
             , style]}
         >
