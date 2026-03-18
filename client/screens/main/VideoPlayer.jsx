@@ -1,14 +1,17 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // Module and components imports
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import colorScheme from '../../assets/color/colorScheme';
 import useFetch from '../../hooks/useFetch';
+import ModalLayout from '../../components/modals/ModalLayout';
 import InfoModal from '../../components/modals/InfoModal';
 
 const VideoPlayer = ({ route }) => {
@@ -29,8 +32,31 @@ const VideoPlayer = ({ route }) => {
     const [ currentEpisode, setCurrentEpisode ] = useState(episode || 1);
     const { request, loading, error } = useFetch();
 
+    // Show video controls hook
+    const [ showVideoControls, setShowVideoControls ] = useState(false);
+
+    // Video controls reference
+    const controlsTimeout = useRef(null);
+
+    // Function to handle screen touch
+    const handleScreenTouch = () => {
+        if (showVideoControls) {
+            setShowVideoControls(false);
+            if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
+            return;
+        }
+
+        setShowVideoControls(true);
+
+        if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
+
+        controlsTimeout.current = setTimeout(() => {
+            setShowVideoControls(false);
+        }, 4000);
+    };
+
     // Orientation state to prevent double change
-    const [orientationReady, setOrientationReady] = useState(false);
+    const [ orientationReady, setOrientationReady ] = useState(false);
 
     // Screen orientation config
     useEffect(() => {
@@ -45,8 +71,6 @@ const VideoPlayer = ({ route }) => {
         };
 
         lockOrientation();
-
-        
 
         // Content getter
         const getContent = async () => {
@@ -66,12 +90,11 @@ const VideoPlayer = ({ route }) => {
 
         getContent();
 
-        // Free screens orientation again
+        // Free screens orientation and clear timeouts
         return () => {
             ScreenOrientation.unlockAsync();
+            if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
         };
-
-        
 
     }, [contentId, contentType, currentEpisode, currentSeason]);
 
@@ -90,6 +113,9 @@ const VideoPlayer = ({ route }) => {
         player.loop = false;
         player.play();
     }); 
+
+    // Video playing event
+    const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player?.playing || false });
 
     if (!orientationReady) {
         return(
@@ -110,24 +136,118 @@ const VideoPlayer = ({ route }) => {
                 }
             ]}
         >
+
         {/* Error modal */}
         {hasError && 
-            <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => navigation.navigate('Index')}/>
-        }
-        {videoUrl && player &&
-            <VideoView 
-                style={styles.video}
-                player={player}
-                fullscreenOptions={{ allowFullscreen: false }}
-                nativeControls={false}
-                contentFit='contain'
+            <InfoModal 
+                text={errorMessage} 
+                icon='error-outline' 
+                color='#FF6B6B' 
+                onExit={() => navigation.goBack()}
             />
         }
+        {videoUrl && player &&
+            <Pressable
+                style={
+                    {
+                        flex: 1
+                    }
+                }
+                onPress={() => handleScreenTouch()}
+            >
+                <VideoView 
+                    style={styles.video}
+                    player={player}
+                    fullscreenOptions={{ allowFullscreen: false }}
+                    nativeControls={false}
+                    contentFit='contain'
+                />
+            </Pressable>
+        }
+        {/* Video controls */}
+        {showVideoControls &&
+            <View 
+                style={styles.controlsOverlay}
+            >
+                <Pressable
+                    style={styles.videoControls}
+                    onPress={() => handleScreenTouch()}
+                >
+                    {/* FIXME: It blinks when I go back to the movies screen (Maybe go nuclear again) :D */}
+                    <TouchableOpacity 
+                        style={styles.exitButton}
+                        onPress={() => navigation.goBack()}
+                    >
+                        <MaterialIcons
+                            name='arrow-back'
+                            size={24} 
+                            color='white'
+                        />
+                    </TouchableOpacity>  
+                    <TouchableOpacity
+                        style={styles.pauseButton}
+                        onPress={() => {
+                                    if (isPlaying) {
+                                        player.pause();
+                                    } else {
+                                        player.play();
+                                    }
+                                }
+                        }
+                    >
+                        <MaterialIcons 
+                            name={isPlaying ? 'pause' : 'play-arrow'} 
+                            size={128} 
+                            color='white' 
+                        />
+                    </TouchableOpacity>                    
+                </Pressable>
+            </View>
+        }
+
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    // Video controls style config
+    videoControls: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    controlsOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        zIndex: 10,
+        elevation: 10
+    },
+
+    exitButton: {
+        position: 'absolute',
+        left: 25,
+        top: 25,
+        padding: 5,
+        backgroundColor: colorScheme.darkGreen,
+        borderRadius: '50%',
+        opacity: 0.5,
+    },
+
+    pauseButton: {
+        position: 'absolute',
+        padding: 10,
+        backgroundColor: colorScheme.darkGreen,
+        borderRadius: '50%',
+        opacity: 0.5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
     // Background style config
     background: {
         flex: 1,

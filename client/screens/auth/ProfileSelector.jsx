@@ -100,7 +100,12 @@ const ProfileSelector = () => {
         >
         {/* Error modal */}
         {hasError && 
-            <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)}/>
+            <InfoModal 
+                text={errorMessage} 
+                icon='error-outline' 
+                color='#FF6B6B' 
+                onExit={() => setHasError(false)}
+            />
         }
             {/* Edit Modal */}
             {showProfileEditModal &&
