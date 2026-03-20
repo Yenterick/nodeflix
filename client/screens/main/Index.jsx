@@ -10,7 +10,7 @@ const Index = () => {
     // insets hook
     const insets = useSafeAreaInsets();
 
-    return(
+    return (
         <View
             style={[
                 styles.background,

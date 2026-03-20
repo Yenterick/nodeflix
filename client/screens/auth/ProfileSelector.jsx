@@ -24,17 +24,17 @@ const ProfileSelector = () => {
     const { request, loading, error } = useFetch();
     const insets = useSafeAreaInsets();
 
-    const [ hasError, setHasError ] = useState(false);
-    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while fetching profiles!');
-    const [ management, setManagement ] = useState(false);
-    const [ profiles, setProfiles ] = useState([]);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('An error has ocurred while fetching profiles!');
+    const [management, setManagement] = useState(false);
+    const [profiles, setProfiles] = useState([]);
 
     // Edit states
-    const [ selectedProfile, setSelectedProfile ] = useState(null);
-    const [ showProfileEditModal, setShowProfileEditModal ] = useState(false);
+    const [selectedProfile, setSelectedProfile] = useState(null);
+    const [showProfileEditModal, setShowProfileEditModal] = useState(false);
 
     // Add states
-    const [ showProfileAddModal, setshowProfileAddModal ] = useState(false);
+    const [showProfileAddModal, setshowProfileAddModal] = useState(false);
 
     // Function to load the user's profiles
     const fetchProfiles = async () => {
@@ -98,15 +98,15 @@ const ProfileSelector = () => {
                 }
             ]}
         >
-        {/* Error modal */}
-        {hasError && 
-            <InfoModal 
-                text={errorMessage} 
-                icon='error-outline' 
-                color='#FF6B6B' 
-                onExit={() => setHasError(false)}
-            />
-        }
+            {/* Error modal */}
+            {hasError &&
+                <InfoModal
+                    text={errorMessage}
+                    icon='error-outline'
+                    color='#FF6B6B'
+                    onExit={() => setHasError(false)}
+                />
+            }
             {/* Edit Modal */}
             {showProfileEditModal &&
                 <ProfileEditModal
@@ -116,7 +116,7 @@ const ProfileSelector = () => {
             }
             {/* Add Modal */}
             {showProfileAddModal && profiles.length < 4 &&
-                <ProfileAddModal  
+                <ProfileAddModal
                     onClose={() => setshowProfileAddModal(false)}
                 />
             }

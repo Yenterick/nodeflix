@@ -23,17 +23,17 @@ const Register = () => {
     // Various hooks
     const insets = useSafeAreaInsets();
     const { request, loading, error } = useFetch();
-    const [ hasError, setHasError ] = useState(false);
-    const [ secure, setSecure ] = useState(true);
-    const [ secureConfirm, setSecureConfirm ] = useState(true);
-    const [ errorMessage, setErrorMessage ] = useState('An error ocurred while registering!');
+    const [hasError, setHasError] = useState(false);
+    const [secure, setSecure] = useState(true);
+    const [secureConfirm, setSecureConfirm] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('An error ocurred while registering!');
 
     // Form hooks
-    const [ email, setEmail ] = useState('');
-    const [ password, setPassword ] = useState('');
-    const [ confirmPassword, setConfirmPassword ] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-    const [ showInfoModal, setShowInfoModal ] = useState(false);
+    const [showInfoModal, setShowInfoModal] = useState(false);
 
     // Function to handle the fetch after pressing the button
     const handleRegister = async () => {
@@ -82,16 +82,16 @@ const Register = () => {
             }
         ]}>
             {/* Succesfully register modal */}
-            {showInfoModal && 
+            {showInfoModal &&
                 <InfoModal text='Succesfully registered! Please log in...' icon='check' onExit={() => {
                     setShowInfoModal(false);
                     navigation.navigate('Login');
-                }}/>
+                }} />
             }
 
             {/* Error modal */}
-            {hasError && 
-                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)}/>
+            {hasError &&
+                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)} />
             }
 
             {/* Register panel container */}
@@ -188,14 +188,14 @@ const Register = () => {
                             />
                         </TouchableOpacity>
                     </View>
-                    <Button 
+                    <Button
                         onPress={() => { handleRegister() }}
                         style={styles.button}
                     >
                         {loading ?
-                            <ActivityIndicator 
-                                size="small" 
-                                color="white" 
+                            <ActivityIndicator
+                                size="small"
+                                color="white"
                             />
                             :
                             <View style={styles.buttonContent}>
@@ -208,7 +208,7 @@ const Register = () => {
                                     funnelDisplay.bold,
                                     styles.buttonText
                                 ]}>
-                                   Register
+                                    Register
                                 </Text>
                             </View>
                         }

@@ -19,19 +19,20 @@ const MovieInfoModal = ({ movie, onClose }) => {
     const navigation = useNavigation();
 
     // Interaction hook
-    const [ interaction, setInteraction ] = useState(undefined);
+    const [interaction, setInteraction] = useState(undefined);
 
     // Video player hooks
     const player = useVideoPlayer(process.env.EXPO_PUBLIC_CDN_URL + movie.stream_url, player => {
         player.loop = true;
         player.muted = true;
         player.play();
-    }); 
+    });
 
     // FIXME: FKN NUCLEAR SCREEN ALTERNATIVE
-    const [ nuke, setNuke ] = useState(false);
+    const [nuke, setNuke] = useState(false);
 
-    const [ mutedIcon, setMutedIcon ] = useState(true);
+    // FIXME: Link with mute status
+    const [mutedIcon, setMutedIcon] = useState(true);
 
     const toggleMute = () => {
         if (!player) return;
@@ -62,7 +63,7 @@ const MovieInfoModal = ({ movie, onClose }) => {
     }
 
     if (nuke) {
-        return(
+        return (
             <View
                 style={
                     {
@@ -95,19 +96,19 @@ const MovieInfoModal = ({ movie, onClose }) => {
                     nestedScrollEnabled
                 >
                     <View style={styles.videoContainer}>
-                        <VideoView 
+                        <VideoView
                             style={styles.video}
                             player={player}
                             fullscreenOptions={{ allowFullscreen: false }}
                             nativeControls={false}
                         />
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.muteButton}
                             onPress={() => toggleMute()}
                         >
-                            <MaterialIcons 
+                            <MaterialIcons
                                 name={mutedIcon ? 'volume-off' : 'volume-up'}
-                                size={18} 
+                                size={18}
                                 color='white'
                             />
                         </TouchableOpacity>
@@ -240,7 +241,7 @@ const MovieInfoModal = ({ movie, onClose }) => {
                     >
                         <TouchableOpacity
                             style={styles.extraButton}
-                            // TODO: Add On Press
+                        // TODO: Add On Press
                         >
                             <MaterialIcons
                                 name="add"
@@ -291,7 +292,7 @@ const MovieInfoModal = ({ movie, onClose }) => {
                                     opacity: interaction == 'dislike' ? 1.0 : 0.5
                                 }
                             ]}
-                            // TODO: Add onPress
+                        // TODO: Add onPress
                         >
                             <MaterialIcons
                                 name="thumb-down-off-alt"

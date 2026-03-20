@@ -15,22 +15,22 @@ import useFetch from '../../hooks/useFetch';
 // Profile edit modal
 const ProfileEditModal = ({ profile, onClose }) => {
     // Various hooks
-    const [ hasError, setHasError ] = useState(false);
-    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while editing the profile!');
-    const [ showConfirmation, setShowConfirmation ] = useState(false)
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('An error has ocurred while editing the profile!');
+    const [showConfirmation, setShowConfirmation] = useState(false)
 
     const { request, loading, error } = useFetch();
 
     // Profile hooks
-    const [ profileName, setProfileName ] = useState(profile.name);
-    const [ profilePic, setProfilePic ] = useState(profile.profile_pic);
-    const [ isKid, setIsKid ] = useState(profile.is_kid);
+    const [profileName, setProfileName] = useState(profile.name);
+    const [profilePic, setProfilePic] = useState(profile.profile_pic);
+    const [isKid, setIsKid] = useState(profile.is_kid);
 
     // Function to save the changes
     const handleProfileEdit = async () => {
         try {
             const response = await request(
-                `/api/profile/${profile.profile_id}`,
+                `/profile/${profile.profile_id}`,
                 'PUT',
                 {
                     name: profileName,
@@ -74,9 +74,9 @@ const ProfileEditModal = ({ profile, onClose }) => {
     }
 
     return (
-        <ModalLayout onClose={onClose}> 
-            {hasError && 
-                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)}/>
+        <ModalLayout onClose={onClose}>
+            {hasError &&
+                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)} />
             }
             {/* Delete confirmation modal */}
             {showConfirmation &&
@@ -147,8 +147,8 @@ const ProfileEditModal = ({ profile, onClose }) => {
                         >
                             Kid Profile
                         </Text>
-                        <TouchableOpacity 
-                            onPress={() => setIsKid(!isKid)} 
+                        <TouchableOpacity
+                            onPress={() => setIsKid(!isKid)}
                             activeOpacity={0.8}
                         >
                             <Switch

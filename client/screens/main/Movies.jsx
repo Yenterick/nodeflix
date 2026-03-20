@@ -17,19 +17,19 @@ const Movies = () => {
 
     // Navigation hook
     const navigation = useNavigation();
-    
+
     // Various hooks
     const insets = useSafeAreaInsets();
-    const [ hasError, setHasError ] = useState(false);
-    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while retrieving the movies!');
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('An error has ocurred while retrieving the movies!');
     const { request, error, loading } = useFetch();
 
     // Movies hooks
-    const [ movies, setMovies ] = useState([]);
+    const [movies, setMovies] = useState([]);
 
     // Movie info modal hooks
-    const [ selectedMovie, setSelectedMovie ] = useState(null);
-    const [ showMovieInfoModal, setShowMovieInfoModal ] = useState(false);
+    const [selectedMovie, setSelectedMovie] = useState(null);
+    const [showMovieInfoModal, setShowMovieInfoModal] = useState(false);
 
     const handleSelectMovie = (item) => {
         setSelectedMovie(item);
@@ -40,7 +40,7 @@ const Movies = () => {
     const fetchMovies = async () => {
         try {
             const response = await request(`/movie/`, 'GET');
-            
+
             if (response && response.success) {
                 if (!response.data || response.data.length === 0) {
                     setHasError(true);
@@ -55,14 +55,14 @@ const Movies = () => {
         } catch (error) {
             setHasError(true);
             setErrorMessage(error.message);
-        }   
+        }
     }
 
     useEffect(() => {
         fetchMovies();
     }, [])
 
-    return(
+    return (
         // General container with all the screen
         <View
             style={[
@@ -73,44 +73,44 @@ const Movies = () => {
                 }
             ]}
         >
-        {/* Error modal */}
-        {hasError && 
-            <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => navigation.reset({ index: 0, routes: [{ name: 'Auth' }] })}/>
-        }
+            {/* Error modal */}
+            {hasError &&
+                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => navigation.reset({ index: 0, routes: [{ name: 'Auth' }] })} />
+            }
             {/* TODO: Implement functionality on all the modal buttons */}
-            {showMovieInfoModal && 
+            {showMovieInfoModal &&
                 <MovieInfoModal movie={selectedMovie} onClose={() => setShowMovieInfoModal(false)} />
             }
             <ScrollView>
                 <Text style={[
                     styles.h1,
                     funnelDisplay.semibold
-                    ]}>
+                ]}>
                     Trending...
                 </Text>
                 <FlatList
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     data={movies.length ? movies : placeholders}
-                    renderItem={({ item, index }) => 
+                    renderItem={({ item, index }) =>
                         movies.length ? (
-                            <Movie 
-                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url} 
-                                onPress={() => handleSelectMovie(item)} 
+                            <Movie
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectMovie(item)}
                             />
                         ) : (
-                            <View 
+                            <View
                                 style={[
                                     styles.placeholder,
-                                    { 
-                                        opacity: 1 - index * 0.12 
+                                    {
+                                        opacity: 1 - index * 0.12
                                     }
                                 ]}
                             />
                         )
                     }
                     keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
-                />     
+                />
                 <Text style={[
                     styles.h1,
                     funnelDisplay.semibold
@@ -121,25 +121,25 @@ const Movies = () => {
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     data={movies.length ? movies : placeholders}
-                    renderItem={({ item, index }) => 
+                    renderItem={({ item, index }) =>
                         movies.length ? (
-                            <Movie 
-                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url} 
-                                onPress={() => handleSelectMovie(item)} 
+                            <Movie
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectMovie(item)}
                             />
                         ) : (
-                            <View 
+                            <View
                                 style={[
                                     styles.placeholder,
-                                    { 
-                                        opacity: 1 - index * 0.12 
+                                    {
+                                        opacity: 1 - index * 0.12
                                     }
                                 ]}
                             />
                         )
                     }
                     keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
-                />    
+                />
             </ScrollView>
         </View>
     )
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20
     },
-    
+
     h1: {
         color: 'white',
         margin: 10,

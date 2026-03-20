@@ -25,13 +25,13 @@ const Login = () => {
     const insets = useSafeAreaInsets();
 
     const { request, loading, error } = useFetch();
-    const [ hasError, setHasError ] = useState(false);
-    const [ secure, setSecure ] = useState(true);
-    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while logging in!');
+    const [hasError, setHasError] = useState(false);
+    const [secure, setSecure] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('An error has ocurred while logging in!');
 
     // Form hooks
-    const [ email, setEmail ] = useState('');
-    const [ password, setPassword ] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     // Function to handle the login when pressing the button
     const handleLogin = async () => {
@@ -76,10 +76,10 @@ const Login = () => {
             }
         ]}>
 
-        {/* Error modal */}
-        {hasError && 
-            <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)}/>
-        }
+            {/* Error modal */}
+            {hasError &&
+                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)} />
+            }
 
             {/* Login panel container */}
             <View style={styles.loginContainer}>
@@ -124,7 +124,7 @@ const Login = () => {
                         onChangeText={setEmail}
                         keyboardAppearance='dark'
                         style={[funnelDisplay.medium, styles.input]}
-                        
+
                     />
                     <Text style={[
                         funnelDisplay.semibold,
@@ -151,15 +151,15 @@ const Login = () => {
                             />
                         </TouchableOpacity>
                     </View>
-                    <Button 
+                    <Button
                         onPress={() => { handleLogin() }}
                         style={styles.button}
                         disabled={loading}
                     >
                         {loading ?
-                            <ActivityIndicator 
-                                size="small" 
-                                color="white" 
+                            <ActivityIndicator
+                                size="small"
+                                color="white"
                             />
                             :
                             <View style={styles.buttonContent}>

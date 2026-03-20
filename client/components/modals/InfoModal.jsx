@@ -10,7 +10,7 @@ import colorScheme from '../../assets/color/colorScheme';
 // TODO: Implement info modal in all screens
 
 // Info Modal
-const InfoModal = ({ text, icon, onExit, color = colorScheme.green}) => {
+const InfoModal = ({ text, icon, onExit, color = colorScheme.green }) => {
     return (
         <ModalLayout>
             <View style={[
@@ -18,11 +18,11 @@ const InfoModal = ({ text, icon, onExit, color = colorScheme.green}) => {
                 {
                     shadowColor: color
                 }
-                ]}>
-                <MaterialIcons 
-                    name= {icon || 'check'}
-                    size={64} 
-                    color= {color || colorScheme.green}
+            ]}>
+                <MaterialIcons
+                    name={icon || 'check'}
+                    size={64}
+                    color={color || colorScheme.green}
                 />
                 <Text
                     style={[
@@ -38,10 +38,10 @@ const InfoModal = ({ text, icon, onExit, color = colorScheme.green}) => {
                         style={styles.button}
                         onPress={() => onExit()}
                     >
-                        <MaterialIcons 
-                            name="check" 
-                            size={16} 
-                            color="white" 
+                        <MaterialIcons
+                            name="check"
+                            size={16}
+                            color="white"
                             style={
                                 {
                                     marginBottom: -1
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     buttonsContainer: {
         flexDirection: 'row'
     },
-    
+
     button: {
         width: 120
     },

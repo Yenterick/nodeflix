@@ -14,15 +14,15 @@ import useFetch from '../../hooks/useFetch';
 // Profile add modal
 const ProfileAddModal = ({ onClose }) => {
     // Various hooks
-    const [ hasError, setHasError ] = useState(false);
-    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while creating the profile!');
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('An error has ocurred while creating the profile!');
 
     const { request, loading, error } = useFetch();
 
     // Profile hooks
-    const [ profileName, setProfileName ] = useState('');
-    const [ profilePic, setProfilePic ] = useState('https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png');
-    const [ isKid, setIsKid ] = useState(false);
+    const [profileName, setProfileName] = useState('');
+    const [profilePic, setProfilePic] = useState('https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png');
+    const [isKid, setIsKid] = useState(false);
 
     // Function to handle the profile creation
     const handleProfileAdd = async () => {
@@ -55,8 +55,8 @@ const ProfileAddModal = ({ onClose }) => {
     return (
         <ModalLayout onClose={onClose}>
             {/* Error modal */}
-            {hasError && 
-                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)}/>
+            {hasError &&
+                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)} />
             }
 
             <View style={styles.modalContainer}>

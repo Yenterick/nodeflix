@@ -17,19 +17,19 @@ const SeriesP = () => {
 
     // Navigation hook
     const navigation = useNavigation();
-    
+
     // Various hooks
     const insets = useSafeAreaInsets();
-    const [ hasError, setHasError ] = useState(false);
-    const [ errorMessage, setErrorMessage ] = useState('An error has ocurred while retrieving the series!');
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('An error has ocurred while retrieving the series!');
     const { request, error, loading } = useFetch();
 
     // Series hooks
-    const [ series, setSeries ] = useState([]);
+    const [series, setSeries] = useState([]);
 
     // Series info modal hooks
-    const [ selectedSeries, setSelectedSeries ] = useState(null);
-    const [ showSeriesInfoModal, setShowSeriesInfoModal ] = useState(false);
+    const [selectedSeries, setSelectedSeries] = useState(null);
+    const [showSeriesInfoModal, setShowSeriesInfoModal] = useState(false);
 
     const handleSelectSeries = (item) => {
         setSelectedSeries(item);
@@ -62,7 +62,7 @@ const SeriesP = () => {
         fetchSeries();
     }, [])
 
-    return(
+    return (
         // General container with all the screen
         <View
             style={[
@@ -73,44 +73,44 @@ const SeriesP = () => {
                 }
             ]}
         >
-        {/* Error modal */}
-        {hasError && 
-            <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => navigation.reset({ index: 0, routes: [{ name: 'Auth' }] })}/>
-        }
+            {/* Error modal */}
+            {hasError &&
+                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => navigation.reset({ index: 0, routes: [{ name: 'Auth' }] })} />
+            }
             {/* TODO: Implement functionality on all the modal buttons */}
-            {showSeriesInfoModal && 
+            {showSeriesInfoModal &&
                 <SeriesInfoModal series={selectedSeries} onClose={() => setShowSeriesInfoModal(false)} />
             }
             <ScrollView>
                 <Text style={[
                     styles.h1,
                     funnelDisplay.semibold
-                    ]}>
+                ]}>
                     Trending...
                 </Text>
                 <FlatList
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     data={series.length ? series : placeholders}
-                    renderItem={({ item, index }) => 
+                    renderItem={({ item, index }) =>
                         series.length ? (
-                            <Series 
-                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url} 
-                                onPress={() => handleSelectSeries(item)} 
+                            <Series
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectSeries(item)}
                             />
                         ) : (
-                            <View 
+                            <View
                                 style={[
                                     styles.placeholder,
-                                    { 
-                                        opacity: 1 - index * 0.12 
+                                    {
+                                        opacity: 1 - index * 0.12
                                     }
                                 ]}
                             />
                         )
                     }
                     keyExtractor={(item, index) => series.length ? item._id : `placeholder-${index}`}
-                />     
+                />
                 <Text style={[
                     styles.h1,
                     funnelDisplay.semibold
@@ -121,25 +121,25 @@ const SeriesP = () => {
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     data={series.length ? series : placeholders}
-                    renderItem={({ item, index }) => 
+                    renderItem={({ item, index }) =>
                         series.length ? (
-                            <Series 
-                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url} 
-                                onPress={() => handleSelectSeries(item)} 
+                            <Series
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectSeries(item)}
                             />
                         ) : (
-                            <View 
+                            <View
                                 style={[
                                     styles.placeholder,
-                                    { 
-                                        opacity: 1 - index * 0.12 
+                                    {
+                                        opacity: 1 - index * 0.12
                                     }
                                 ]}
                             />
                         )
                     }
                     keyExtractor={(item, index) => series.length ? item._id : `placeholder-${index}`}
-                />    
+                />
             </ScrollView>
         </View>
     )
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20
     },
-    
+
     h1: {
         color: 'white',
         margin: 10,

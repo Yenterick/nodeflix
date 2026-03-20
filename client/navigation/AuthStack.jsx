@@ -14,7 +14,7 @@ const Stack = createNativeStackNavigator();
 const AuthStack = ({ Navigator }) => {
 
     // Hook for initial route
-    const [ initialRoute, setInitialRoute ] = useState();
+    const [initialRoute, setInitialRoute] = useState();
 
     // Checks if the user is already logged
     useEffect(() => {

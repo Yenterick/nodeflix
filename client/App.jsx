@@ -23,13 +23,13 @@ export default function App() {
     screens: {
       Auth: { screen: AuthStack },
       Main: { screen: MainStack },
-      VideoPlayer: { 
-        screen: VideoPlayer, 
+      VideoPlayer: {
+        screen: VideoPlayer,
         options: {
           headerShown: false,
           presentation: 'fullScreenModal',
           animation: 'fade'
-        } 
+        }
       }
     },
   });

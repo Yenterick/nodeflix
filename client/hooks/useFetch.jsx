@@ -18,36 +18,36 @@ function useFetch(baseUrl = process.env.EXPO_PUBLIC_API_URL) {
         try {
             const token = await AsyncStorage.getItem('token');
 
-        // Config the method, headers and body
+            // Config the method, headers and body
             const options = {
                 method: method.toUpperCase(),
                 headers: {
-                'Content-Type': 'application/json',
-                ...(token && { Authorization: `Bearer ${token}` }),
-            },
-        };
+                    'Content-Type': 'application/json',
+                    ...(token && { Authorization: `Bearer ${token}` }),
+                },
+            };
 
-        if (body) {
-            options.body = JSON.stringify(body);
-        }
-
-        const response = await fetch(baseUrl + endpoint, options);
-        const result = await response.json();
-
-        // Error handling
-        if (!response.ok) {
-            if (response.status === 401) {
-                AsyncStorage.removeItem('token');
+            if (body) {
+                options.body = JSON.stringify(body);
             }
-                throw new Error(result.msg || `HTTP ${response.status}`);
-        }
 
-        setData(result);
-        return result;
+            const response = await fetch(baseUrl + endpoint, options);
+            const result = await response.json();
+
+            // Error handling
+            if (!response.ok) {
+                if (response.status === 401) {
+                    AsyncStorage.removeItem('token');
+                }
+                throw new Error(result.msg || `HTTP ${response.status}`);
+            }
+
+            setData(result);
+            return result;
 
         } catch (error) {
-                setError(error.message);
-                return { success: false, msg: error.message };
+            setError(error.message);
+            return { success: false, msg: error.message };
         } finally {
             setLoading(false);
         }

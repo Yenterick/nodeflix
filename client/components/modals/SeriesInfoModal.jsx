@@ -19,25 +19,26 @@ const SeriesInfoModal = ({ series, onClose }) => {
     const navigation = useNavigation();
 
     // Interaction hook
-    const [ interaction, setInteraction ] = useState(undefined);
+    const [interaction, setInteraction] = useState(undefined);
 
     // FIXME: FKN NUCLEAR SCREEN ALTERNATIVE
-    const [ nuke, setNuke ] = useState(false);
+    const [nuke, setNuke] = useState(false);
 
-const videoUrl = series.seasons
-    ?.find(season => season.season_number === 1)
-    ?.episodes?.find(episode => episode.episode_number === 1)
-    ?.stream_url;
+    const videoUrl = series.seasons
+        ?.find(season => season.season_number === 1)
+        ?.episodes?.find(episode => episode.episode_number === 1)
+        ?.stream_url;
 
     // Video player hooks
     const player = useVideoPlayer(process.env.EXPO_PUBLIC_CDN_URL + videoUrl, player => {
         player.loop = true;
         player.muted = true;
         player.play();
-    }); 
+    });
 
-    const [ mutedIcon, setMutedIcon ] = useState(true);
+    const [mutedIcon, setMutedIcon] = useState(true);
 
+    // FIXME: Link with mute status
     const toggleMute = () => {
         if (!player) return;
         player.muted = !player.muted;
@@ -77,7 +78,7 @@ const videoUrl = series.seasons
     }
 
     if (nuke) {
-        return(
+        return (
             <View
                 style={
                     {
@@ -110,19 +111,19 @@ const videoUrl = series.seasons
                     nestedScrollEnabled
                 >
                     <View style={styles.videoContainer}>
-                        <VideoView 
+                        <VideoView
                             style={styles.video}
                             player={player}
                             fullscreenOptions={{ allowFullscreen: false }}
                             nativeControls={false}
                         />
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.muteButton}
                             onPress={() => toggleMute()}
                         >
-                            <MaterialIcons 
+                            <MaterialIcons
                                 name={mutedIcon ? 'volume-off' : 'volume-up'}
-                                size={18} 
+                                size={18}
                                 color='white'
                             />
                         </TouchableOpacity>
@@ -385,8 +386,8 @@ const videoUrl = series.seasons
                         {series.seasons
                             .find(season => season.season_number === selectedSeason)
                             ?.episodes.map((episode) => (
-                                <TouchableOpacity 
-                                    key={episode.episode_number} 
+                                <TouchableOpacity
+                                    key={episode.episode_number}
                                     style={styles.episodeCard}
                                     onPress={() => handlePlay(selectedSeason, episode.episode_number)}
                                 >
@@ -397,25 +398,25 @@ const videoUrl = series.seasons
                                         />
                                         <View style={styles.episodeMainInfo}>
                                             <Text style={[
-                                                funnelDisplay.bold, 
+                                                funnelDisplay.bold,
                                                 styles.episodeTitle
                                             ]}
-                                        >
+                                            >
                                                 {`${episode.episode_number}. ${episode.title}`}
                                             </Text>
                                             <Text style={[
-                                                funnelDisplay.regular, 
+                                                funnelDisplay.regular,
                                                 styles.episodeDuration
                                             ]}
-                                        >
+                                            >
                                                 {`${formatSeconds(episode.duration)}`}
                                             </Text>
                                         </View>
                                     </View>
                                     <Text style={[
-                                        funnelDisplay.regular, 
+                                        funnelDisplay.regular,
                                         styles.episodeDescription
-                                        ]}
+                                    ]}
                                     >
                                         {episode.description}
                                     </Text>

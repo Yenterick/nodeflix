@@ -14,7 +14,7 @@ const Series = ({ uriSource, onPress, style }) => {
                     height: 180,
                     marginHorizontal: 10
                 }
-            , style]}
+                , style]}
         >
             <Image
                 source={{ uri: uriSource }}

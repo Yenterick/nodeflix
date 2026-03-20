@@ -5,16 +5,16 @@ import { funnelDisplay } from '../assets/fonts/funnelDisplay';
 import colorScheme from '../assets/color/colorScheme';
 
 // Button component
-const Button  = ({
-        color = colorScheme.green,
-        borderRadius = 12,
-        onPress,
-        style,
-        children,
-        disabled
-    }) => {
+const Button = ({
+    color = colorScheme.green,
+    borderRadius = 12,
+    onPress,
+    style,
+    children,
+    disabled
+}) => {
 
-    return(
+    return (
         <Pressable
             style={[
                 {
@@ -34,7 +34,7 @@ const Button  = ({
                     elevation: 10,
                     minHeight: 46
                 }
-            , style]}
+                , style]}
             onPress={onPress}
             disabled={disabled}
         >
