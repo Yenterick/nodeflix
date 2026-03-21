@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-// Modules Import
+// Modules imports
 const {
     getAllMovies,
     getMovie
 } = require('../controllers/movie');
 const auth = require('../middlewares/auth.middleware');
 
-// Protected router configuration
+// Protected routes configuration
 router.get('/', auth, getAllMovies);
 router.get('/:movieId', auth, getMovie);
 

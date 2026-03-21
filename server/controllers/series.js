@@ -1,5 +1,6 @@
 const seriesModel = require('../models/seriesModel');
 
+// Selects all the series
 const getAllSeries = async (req, res) => {
     try {
         const series = await seriesModel.selectAllSeries();
@@ -10,6 +11,7 @@ const getAllSeries = async (req, res) => {
     }
 }
 
+// Selects a series
 const getSeries = async (req, res) => {
     try {
         const { seriesId } = req.params;

@@ -1,5 +1,6 @@
 const movieModel = require('../models/movieModel');
 
+// Selects all the movies
 const getAllMovies = async (req, res) => {
     try {
         const movies = await movieModel.selectAllMovies();
@@ -9,6 +10,7 @@ const getAllMovies = async (req, res) => {
     }
 }
 
+// Selects a movie
 const getMovie = async (req, res) => {
     try {
         const { movieId } = req.params

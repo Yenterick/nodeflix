@@ -46,7 +46,7 @@ const loginUser = async (req, res) => {
     }
 }
 
-// Delets an user
+// Deletes an user
 const deleteUser = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -58,7 +58,7 @@ const deleteUser = async (req, res) => {
     }
 }
 
-// Gets the user's profiles
+// Selects the user profiles
 const getUserProfiles = async (req, res) => {
     try {
         const { userId } = req.params;

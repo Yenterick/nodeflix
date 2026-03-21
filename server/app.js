@@ -11,6 +11,9 @@ require('./models/associations');
 // Routers imports
 const userRouter = require('./routes/user');
 const profileRouter = require('./routes/profile');
+const viewEventRouter = require('./routes/viewEvent');
+const listEventRouter = require('./routes/listEvent');
+const interactionEventRouter = require('./routes/interactionEvent');
 const movieRouter = require('./routes/movie');
 const seriesRouter = require('./routes/series');
 
@@ -28,6 +31,9 @@ app.use(express.urlencoded({ extended: true }));
 // Routers configuration
 app.use('/api/user', userRouter);
 app.use('/api/profile', profileRouter);
+app.use('/api/viewEvent', viewEventRouter);
+app.use('/api/listEvent', listEventRouter);
+app.use('/api/interactionEvent', interactionEventRouter);
 app.use('/api/movie', movieRouter);
 app.use('/api/series', seriesRouter);
 

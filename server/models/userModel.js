@@ -1,4 +1,4 @@
-const { DataTypes, Association } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 // Module imports
 const { pgSequelize } = require('../config/database');

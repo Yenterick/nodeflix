@@ -1,7 +1,7 @@
 // Module imports
 const { profileModel } = require('../models/profileModel');
 
-// Create a new profile
+// Creates a new profile
 const createProfile = async (req, res) => {
     try {
         const { name, profilePic, isKid, userId } = req.body;
@@ -13,7 +13,7 @@ const createProfile = async (req, res) => {
     }
 }
 
-// Delete a profile
+// Deletes a profile
 const deleteProfile = async (req, res) => {
     try {
         const { profileId } = req.params;
@@ -25,7 +25,7 @@ const deleteProfile = async (req, res) => {
     }
 }
 
-// Update a profile
+// Updates a profile
 const updateProfile = async (req, res) => {
     try{
         const { profileId } = req.params;
@@ -38,6 +38,7 @@ const updateProfile = async (req, res) => {
     }
 }
 
+// Gets all the profile view events
 const getProfileViewEvents = async (req, res) => {
     try {
         const { profileId } = req.params;

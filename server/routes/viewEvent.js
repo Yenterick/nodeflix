@@ -14,3 +14,5 @@ router.post('/', auth, createViewEvent);
 router.put('/:viewEventId', auth, updateViewEvent);
 router.delete('/:viewEventId', auth, deleteViewEvent);
 
+module.exports = router;
+

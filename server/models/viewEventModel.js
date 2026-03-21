@@ -11,7 +11,7 @@ const ViewEvent = pgSequelize.define('ViewEvent', {
         autoIncrement: true
     },
     content_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(32),
         allowNull: false
     },
     content_type: {
@@ -64,7 +64,7 @@ const viewEventModel = {
         await createdViewEvent.save();
     },
 
-    updateViewEvent: async (viewEventId, watchedSeconds, completed) => {
+    updateViewEventById: async (viewEventId, watchedSeconds, completed) => {
         await ViewEvent.update(
             {
                 watched_seconds: watchedSeconds,
@@ -78,7 +78,7 @@ const viewEventModel = {
         );
     },
 
-    deleteViewEvent: async (viewEventId) => {
+    deleteViewEventById: async (viewEventId) => {
         await ViewEvent.destroy(
             {
                 where: {
