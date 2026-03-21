@@ -1,6 +1,7 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
+import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useNavigation } from '@react-navigation/native';
 
@@ -35,6 +36,13 @@ const SeriesInfoModal = ({ series, onClose }) => {
         player.muted = true;
         player.play();
     });
+
+    // Video playing events
+    const { status } = useEvent(player, 'statusChange', { status: player.status });
+
+    // Loading checker
+    const isBufferLoading = status === 'idle' || status === 'loading';
+    const isLoading = isBufferLoading;
 
     const [mutedIcon, setMutedIcon] = useState(true);
 
@@ -111,6 +119,22 @@ const SeriesInfoModal = ({ series, onClose }) => {
                     nestedScrollEnabled
                 >
                     <View style={styles.videoContainer}>
+                        {isLoading && (
+                            <View 
+                                style={styles.loaderContainer}
+                                pointerEvents="none"
+                            >
+                                <ActivityIndicator
+                                    size="large" 
+                                    color="white"
+                                    style={
+                                        {
+                                            transform: [{ scale: 1.5 }]
+                                        }
+                                    } 
+                                />
+                            </View>
+                        )}
                         <VideoView
                             style={styles.video}
                             player={player}
@@ -120,6 +144,7 @@ const SeriesInfoModal = ({ series, onClose }) => {
                         <TouchableOpacity
                             style={styles.muteButton}
                             onPress={() => toggleMute()}
+                            disabled={isLoading}
                         >
                             <MaterialIcons
                                 name={mutedIcon ? 'volume-off' : 'volume-up'}
@@ -443,6 +468,19 @@ const styles = StyleSheet.create({
         shadowRadius: 12,
         elevation: 10,
         zIndex: 20
+    },
+
+    // Loading icon styles config
+    loaderContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999,
+        elevation: 999
     },
 
     //Video container styles config

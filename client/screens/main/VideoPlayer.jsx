@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Pressable, ScrollView, Image, ActivityIndicator } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEffect, useState, useRef } from 'react';
@@ -12,7 +12,7 @@ import Slider from '@react-native-community/slider';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import colorScheme from '../../assets/color/colorScheme';
 import useFetch from '../../hooks/useFetch';
-import ModalLayout from '../../components/modals/ModalLayout';
+import Button from '../../components/Button';
 import InfoModal from '../../components/modals/InfoModal';
 
 // FIXME: Loading and error screen without breaking the entire app peepo clown
@@ -32,6 +32,7 @@ const VideoPlayer = ({ route }) => {
     const [content, setContent] = useState(undefined);
     const [currentSeason, setCurrentSeason] = useState(season || 1);
     const [currentEpisode, setCurrentEpisode] = useState(episode || 1);
+    const [showDropdown, setShowDropdown] = useState(null); // 'seasons' | 'episodes' | null
     const { request, loading, error } = useFetch();
 
     // Seeking hook
@@ -42,6 +43,14 @@ const VideoPlayer = ({ route }) => {
 
     // Video controls reference
     const controlsTimeout = useRef(null);
+
+    // Function to handle episode selection
+    const handlePlay = (seasonNumber, episodeNumber) => {
+        setCurrentSeason(seasonNumber);
+        setCurrentEpisode(episodeNumber);
+        setShowDropdown(null);
+        setShowVideoControls(false);
+    };
 
     // Functions to handle screen touch
     const resetControlsTimer = () => {
@@ -56,6 +65,7 @@ const VideoPlayer = ({ route }) => {
         }, 4000);
     };
 
+    // Function to show the video controls when the screen is touched
     const handleScreenTouch = () => {
         if (showVideoControls) {
             setShowVideoControls(false);
@@ -74,7 +84,6 @@ const VideoPlayer = ({ route }) => {
 
     // Screen orientation config
     useEffect(() => {
-
         // Orientation Lock
         const lockOrientation = async () => {
             await ScreenOrientation.lockAsync(
@@ -123,16 +132,22 @@ const VideoPlayer = ({ route }) => {
                 ?.find(e => e.episode_number === currentEpisode)
                 ?.stream_url;
 
+    // Creating video player
     const player = useVideoPlayer(videoUrl ? `${process.env.EXPO_PUBLIC_CDN_URL}${videoUrl}` : null, player => {
         player.loop = false;
         player.play();
         player.timeUpdateEventInterval = 0.5;
     });
 
-    // Video playing event
+    // Video playing events
     const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
+    const { status } = useEvent(player, 'statusChange', { status: player.status });
     const { currentTime } = useEvent(player, 'timeUpdate', { currentTime: player.currentTime });
     const { duration } = useEvent(player, 'sourceLoad', { duration: player.duration });
+
+    // Loading checker
+    const isBufferLoading = status === 'idle' || status === 'loading';
+    const isLoading = loading || isBufferLoading;
 
     // Function to format the timestamps
     const formatSecondsVideo = (totalSeconds) => {
@@ -150,6 +165,16 @@ const VideoPlayer = ({ route }) => {
         return `${formattedMinutes}:${formattedSeconds}`;
     }
 
+    // Function to format raw seconds to hours and minutes
+    const formatSeconds = (duration) => {
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        if (hours === 0) return `${minutes}m`;
+        if (minutes === 0) return `${hours}h`;
+        return `${hours}h ${minutes}m`;
+    }
+
+    // Black bg till the orientation is applied
     if (!orientationReady) {
         return (
             <View
@@ -169,6 +194,22 @@ const VideoPlayer = ({ route }) => {
                 }
             ]}
         >
+            {isLoading && (
+                <View 
+                    style={styles.loaderContainer}
+                    pointerEvents="none"
+                >
+                    <ActivityIndicator
+                        size="large" 
+                        color="white"
+                        style={
+                            {
+                                transform: [{ scale: 3 }]
+                            }
+                        } 
+                    />
+                </View>
+            )}
             {/* Error modal */}
             {hasError &&
                 <InfoModal
@@ -178,6 +219,7 @@ const VideoPlayer = ({ route }) => {
                     onExit={() => navigation.goBack()}
                 />
             }
+            {/* Video player render */}
             {videoUrl && player &&
                 <Pressable
                     style={
@@ -211,12 +253,12 @@ const VideoPlayer = ({ route }) => {
                             onPress={() => navigation.goBack()}
                         >
                             <MaterialIcons
-                                name='arrow-back'
+                                name='arrow-back-ios-new'
                                 size={48}
                                 color='white'
                             />
                         </TouchableOpacity>
-                        {!isSeeking &&
+                        {!isSeeking && !isLoading &&
                             <TouchableOpacity
                                 style={styles.pauseButton}
                                 onPress={() => {
@@ -226,8 +268,7 @@ const VideoPlayer = ({ route }) => {
                                     } else {
                                         player.play();
                                     }
-                                }
-                                }
+                                }}
                             >
                                 <MaterialIcons
                                     name={isPlaying ? 'pause' : 'play-arrow'}
@@ -237,6 +278,7 @@ const VideoPlayer = ({ route }) => {
                             </TouchableOpacity>
                         }
                     </Pressable>
+                    {/* Slider and timestamps */}
                     <View style={styles.seekingSliderContainer}>
                         <View style={styles.timeStamps}>
                             <Text style={[
@@ -273,9 +315,151 @@ const VideoPlayer = ({ route }) => {
                             onSlidingComplete={() => setIsSeeking(false)}
                         />
                     </View>
+                    {/* Button to change episode and season */}
+                    {contentType !== 'movie' && !showDropdown && (
+                        <View style={styles.browseSeasons}>
+                            <Button
+                                style={styles.seasonsButton}
+                                onPress={() => {
+                                    resetControlsTimer();
+                                    setShowDropdown('seasons');
+                                }}
+                            >
+                                <MaterialIcons
+                                    name='more-horiz'
+                                    size={24}
+                                    color='white'
+                                />
+                            </Button>
+                        </View>
+                    )}
+                    {/* Season dropdown */}
+                    {showDropdown === 'seasons' && (
+                        <View style={styles.panelContainer}>
+                            <View style={styles.panelHeader}>
+                                <Text style={[
+                                    funnelDisplay.bold, 
+                                    styles.panelTitle
+                                ]}>
+                                Seasons
+                                </Text>
+                                <TouchableOpacity
+                                    onPress={() => setShowDropdown(null)}
+                                    style={styles.panelCloseButton}
+                                >
+                                    <MaterialIcons 
+                                        name='close' 
+                                        size={24} 
+                                        color='white' 
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <ScrollView
+                                scrollEventThrottle={16}
+                                onScroll={() => resetControlsTimer()}
+                                showsVerticalScrollIndicator={false}
+                            >
+                                {content.seasons.map((season) => (
+                                    <TouchableOpacity
+                                        key={season.season_number}
+                                        style={[
+                                            styles.seasonCard,
+                                            currentSeason === season.season_number && styles.seasonCardActive
+                                        ]}
+                                        onPress={() => {
+                                            setCurrentSeason(season.season_number);
+                                            setShowDropdown('episodes');
+                                        }}
+                                    >
+                                        <MaterialIcons
+                                            name='airplay'
+                                            size={20}
+                                            color={currentSeason === season.season_number ? colorScheme.lightGreen : 'white'}
+                                        />
+                                        <Text style={[
+                                            funnelDisplay.bold,
+                                            styles.seasonTitle,
+                                            currentSeason === season.season_number && { color: colorScheme.lightGreen }
+                                        ]}>
+                                            Season {season.season_number}
+                                        </Text>
+                                        <Text style={[
+                                            funnelDisplay.regular, 
+                                            styles.seasonEpCount
+                                            ]}>
+                                            {season.episodes?.length ?? 0} Ep.
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+                        </View>
+                    )}
+                    {/* Episodes dropdown */}
+                    {showDropdown === 'episodes' && (
+                        <View style={styles.panelContainer}>
+                            <View style={styles.panelHeader}>
+                                <TouchableOpacity
+                                    onPress={() => setShowDropdown('seasons')}
+                                    style={styles.panelBackButton}
+                                >
+                                    <MaterialIcons name='arrow-back-ios-new' size={18} color='white' />
+                                </TouchableOpacity>
+                                <Text style={[
+                                        funnelDisplay.bold, 
+                                        styles.panelTitle
+                                    ]}>
+                                    Season {currentSeason}
+                                </Text>
+                            </View>
+                            <ScrollView
+                                scrollEventThrottle={16}
+                                onScroll={() => resetControlsTimer()}
+                                showsVerticalScrollIndicator={false}
+                            >
+                                {content.seasons
+                                    .find(s => s.season_number === currentSeason)
+                                    ?.episodes.map((episode) => (
+                                        <TouchableOpacity
+                                            key={episode.episode_number}
+                                            style={[
+                                                styles.episodeCard,
+                                                currentEpisode === episode.episode_number && styles.episodeCardActive
+                                            ]}
+                                            onPress={() => handlePlay(currentSeason, episode.episode_number)}
+                                        >
+                                            <View style={styles.episodeHeader}>
+                                                <Image
+                                                    source={{ uri: process.env.EXPO_PUBLIC_CDN_URL + episode.thumbnail_url }}
+                                                    style={styles.episodeThumbnail}
+                                                />
+                                                <View style={styles.episodeMainInfo}>
+                                                    <Text style={[
+                                                        funnelDisplay.bold,
+                                                         styles.episodeTitle
+                                                    ]}>
+                                                        {`${episode.episode_number}. ${episode.title}`}
+                                                    </Text>
+                                                    <Text style={[
+                                                        funnelDisplay.regular, 
+                                                        styles.episodeDuration
+                                                    ]}>
+                                                        {formatSeconds(episode.duration)}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            <Text style={[
+                                                funnelDisplay.regular, 
+                                                styles.episodeDescription
+                                            ]}>
+                                                {episode.description}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ))}
+                            </ScrollView>
+                        </View>
+                    )}
                 </View>
             }
-
         </View>
     );
 }
@@ -314,6 +498,19 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
 
+    // Loading icon styles config
+    loaderContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999,
+        elevation: 999
+    },
+
     // Seeking slider container style config
     seekingSliderContainer: {
         position: 'absolute',
@@ -325,6 +522,134 @@ const styles = StyleSheet.create({
     timeStamps: {
         flexDirection: 'row',
         justifyContent: 'space-between'
+    },
+
+    // Episode select styles config
+    browseSeasons: {
+        position: 'absolute',
+        width: 256,
+        right: 25,
+        top: 25,
+        opacity: 0.5,
+        alignItems: 'flex-end'
+    },
+
+    seasonsButton: {
+        width: 64
+    },
+
+    panelContainer: {
+        zIndex: 999,
+        elevation: 999,
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        right: 0,
+        width: '40%',
+        backgroundColor: colorScheme.bgDarkGreen,
+        padding: 16,
+    },
+
+    panelHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingBottom: 12,
+        gap: 8,
+    },
+
+    panelTitle: {
+        color: 'white',
+        fontSize: 15,
+        flex: 1,
+    },
+
+    panelCloseButton: {
+        padding: 4,
+        opacity: 0.7,
+    },
+
+    panelBackButton: {
+        padding: 4,
+        opacity: 0.7,
+    },
+
+    seasonCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: colorScheme.darkGreen,
+        borderRadius: 12,
+        padding: 14,
+        gap: 10,
+        marginVertical: 4,
+        borderWidth: 1,
+        borderColor: 'transparent',
+    },
+
+    seasonCardActive: {
+        borderColor: colorScheme.green,
+    },
+
+    seasonTitle: {
+        color: 'white',
+        fontSize: 14,
+        flex: 1,
+    },
+
+    seasonEpCount: {
+        color: colorScheme.green,
+        fontSize: 12,
+        opacity: 0.8,
+    },
+
+    episodeCard: {
+        width: '100%',
+        backgroundColor: colorScheme.darkGreen,
+        borderRadius: 15,
+        padding: 16,
+        gap: 10,
+        marginVertical: 4
+    },
+
+    episodeCardActive: {
+        borderWidth: 1,
+        borderColor: colorScheme.green,
+    },
+
+    episodeHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12
+    },
+
+    episodeThumbnail: {
+        width: 100,
+        height: 56,
+        borderRadius: 8,
+    },
+
+    episodeMainInfo: {
+        flex: 1,
+        gap: 4
+    },
+
+    episodeTitle: {
+        color: 'white',
+        fontSize: 14,
+        flexShrink: 1
+    },
+
+    episodeDuration: {
+        color: colorScheme.lightGreen,
+        fontSize: 12,
+        opacity: 0.8
+    },
+
+    episodeDescription: {
+        color: 'white',
+        fontSize: 12,
+        opacity: 0.6,
+        lineHeight: 18,
+        flexShrink: 1
     },
 
     // Background style config
