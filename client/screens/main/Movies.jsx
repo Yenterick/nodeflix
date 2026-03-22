@@ -6,9 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 // Module and componets imports
 import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
-import Movie from '../../components/Movie';
-import MovieInfoModal from '../../components/modals/MovieInfoModal';
+import ContentCard from '../../components/ContentCard';
 import InfoModal from '../../components/modals/InfoModal';
+import ContentInfoModal from '../../components/modals/ContentInfoModal';
 import useFetch from '../../hooks/useFetch';
 
 const Movies = () => {
@@ -79,7 +79,7 @@ const Movies = () => {
             }
             {/* TODO: Implement functionality on all the modal buttons */}
             {showMovieInfoModal &&
-                <MovieInfoModal movie={selectedMovie} onClose={() => setShowMovieInfoModal(false)} />
+                <ContentInfoModal item={selectedMovie} contentType='movie' onClose={() => setShowMovieInfoModal(false)} />
             }
             <ScrollView>
                 <Text style={[
@@ -94,7 +94,7 @@ const Movies = () => {
                     data={movies.length ? movies : placeholders}
                     renderItem={({ item, index }) =>
                         movies.length ? (
-                            <Movie
+                            <ContentCard
                                 uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
                                 onPress={() => handleSelectMovie(item)}
                             />
@@ -123,7 +123,7 @@ const Movies = () => {
                     data={movies.length ? movies : placeholders}
                     renderItem={({ item, index }) =>
                         movies.length ? (
-                            <Movie
+                            <ContentCard
                                 uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
                                 onPress={() => handleSelectMovie(item)}
                             />

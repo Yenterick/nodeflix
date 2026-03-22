@@ -6,9 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 // Module and componets imports
 import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
-import Series from '../../components/Series';
-import SeriesInfoModal from '../../components/modals/SeriesInfoModal';
+import ContentCard from '../../components/ContentCard';
 import InfoModal from '../../components/modals/InfoModal';
+import ContentInfoModal from '../../components/modals/ContentInfoModal';
 import useFetch from '../../hooks/useFetch';
 
 const SeriesP = () => {
@@ -79,7 +79,7 @@ const SeriesP = () => {
             }
             {/* TODO: Implement functionality on all the modal buttons */}
             {showSeriesInfoModal &&
-                <SeriesInfoModal series={selectedSeries} onClose={() => setShowSeriesInfoModal(false)} />
+                <ContentInfoModal item={selectedSeries} contentType='series' onClose={() => setShowSeriesInfoModal(false)} />
             }
             <ScrollView>
                 <Text style={[
@@ -94,7 +94,7 @@ const SeriesP = () => {
                     data={series.length ? series : placeholders}
                     renderItem={({ item, index }) =>
                         series.length ? (
-                            <Series
+                            <ContentCard
                                 uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
                                 onPress={() => handleSelectSeries(item)}
                             />
@@ -123,7 +123,7 @@ const SeriesP = () => {
                     data={series.length ? series : placeholders}
                     renderItem={({ item, index }) =>
                         series.length ? (
-                            <Series
+                            <ContentCard
                                 uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
                                 onPress={() => handleSelectSeries(item)}
                             />

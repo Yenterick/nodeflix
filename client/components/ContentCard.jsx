@@ -4,7 +4,7 @@ import { View, Pressable, Image } from 'react-native';
 import colorScheme from '../assets/color/colorScheme';
 import { funnelDisplay } from '../assets/fonts/funnelDisplay';
 
-const Movie = ({ uriSource, onPress, style }) => {
+const ContentCard = ({ uriSource, onPress, style }) => {
     return (
         <Pressable
             onPress={onPress}
@@ -31,5 +31,4 @@ const Movie = ({ uriSource, onPress, style }) => {
     )
 }
 
-export default Movie;
-
+export default ContentCard;

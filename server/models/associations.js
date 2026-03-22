@@ -50,7 +50,7 @@ ListEvent.belongsTo(Profile, {
 });
 
 // Configuring the 1:N relationship between profile and interaction events
-Profile.hasMany(InteractionEventEvent, {
+Profile.hasMany(InteractionEvent, {
     foreignKey: {
         name: 'profile_id'
     },

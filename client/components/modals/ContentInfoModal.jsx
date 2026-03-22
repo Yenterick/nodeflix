@@ -13,8 +13,10 @@ import ModalLayout from './ModalLayout';
 import Divider from '../Divider';
 
 // TODO: Check if i'll handle the interactions in the modal or in the screen
-// Modal to show the series info
-const SeriesInfoModal = ({ series, onClose }) => {
+// Modal to show the content info
+const ContentInfoModal = ({ item, contentType, onClose }) => {
+
+    const isSeries = contentType === 'series';
 
     // Navigation hook
     const navigation = useNavigation();
@@ -25,16 +27,18 @@ const SeriesInfoModal = ({ series, onClose }) => {
     // FIXME: FKN NUCLEAR SCREEN ALTERNATIVE
     const [nuke, setNuke] = useState(false);
 
-    const videoUrl = series.seasons
-        ?.find(season => season.season_number === 1)
-        ?.episodes?.find(episode => episode.episode_number === 1)
-        ?.stream_url;
+    const videoUrl = isSeries
+        ? item.seasons
+            ?.find(season => season.season_number === 1)
+            ?.episodes?.find(episode => episode.episode_number === 1)
+            ?.stream_url
+        : item.stream_url;
 
     // Video player hooks
-    const player = useVideoPlayer(process.env.EXPO_PUBLIC_CDN_URL + videoUrl, player => {
+    const player = useVideoPlayer(videoUrl ? process.env.EXPO_PUBLIC_CDN_URL + videoUrl : null, player => {
         player.loop = true;
         player.muted = true;
-        player.play();
+        if (videoUrl) player.play();
     });
 
     // Video playing events
@@ -53,8 +57,7 @@ const SeriesInfoModal = ({ series, onClose }) => {
         setMutedIcon(player.muted);
     };
 
-
-    // Hooks for the season selection dropdown
+    // Hooks for the season selection dropdown (only used if isSeries is true)
     const [showDropdown, setShowDropdown] = useState(false);
     const [selectedSeason, setSelectedSeason] = useState(1);
 
@@ -67,7 +70,7 @@ const SeriesInfoModal = ({ series, onClose }) => {
         return `${hours}h ${minutes}m`;
     }
 
-    const seasonCount = series.seasons ? series.seasons.length : 0;
+    const seasonCount = isSeries ? (item.seasons ? item.seasons.length : 0) : 0;
     const seasonText = seasonCount === 1 ? '1 Season' : `${seasonCount} Seasons`;
 
     // Function to redirect to VideoPlayer
@@ -76,10 +79,12 @@ const SeriesInfoModal = ({ series, onClose }) => {
 
         setTimeout(() => {
             navigation.navigate('VideoPlayer', {
-                contentId: series._id,
-                contentType: 'series',
-                season: seasonNumber || 1,
-                episode: episodeNumber || 1
+                contentId: item._id,
+                contentType: isSeries ? 'series' : 'movie',
+                ...(isSeries && {
+                    season: seasonNumber || 1,
+                    episode: episodeNumber || 1
+                })
             });
             onClose();
         }, 50);
@@ -153,15 +158,15 @@ const SeriesInfoModal = ({ series, onClose }) => {
                             />
                         </TouchableOpacity>
                     </View>
-                    {/* Series header */}
-                    <View style={styles.seriesHeader}>
+                    {/* Content header */}
+                    <View style={styles.contentHeader}>
                         <Text
                             style={[
                                 funnelDisplay.bold,
                                 styles.h1
                             ]}
                         >
-                            {series.title}
+                            {item.title}
                         </Text>
                         {/* Subtitle with useful information */}
                         <View
@@ -176,7 +181,7 @@ const SeriesInfoModal = ({ series, onClose }) => {
                                     }
                                 ]}
                             >
-                                {series.release_year}
+                                {item.release_year}
                             </Text>
                             <Text
                                 style={[
@@ -187,7 +192,7 @@ const SeriesInfoModal = ({ series, onClose }) => {
                                     }
                                 ]}
                             >
-                                {seasonText}
+                                {isSeries ? seasonText : formatSeconds(item.duration)}
                             </Text>
                         </View>
                     </View>
@@ -235,7 +240,7 @@ const SeriesInfoModal = ({ series, onClose }) => {
                                 }
                             ]}
                         >
-                            {series.description}
+                            {item.description}
                         </Text>
                     </View>
                     <Divider
@@ -256,7 +261,7 @@ const SeriesInfoModal = ({ series, onClose }) => {
                                 }
                             ]}
                         >
-                            {`Genres: ${series.genres.join(", ").replace(/(^|\s)\S/g, match => match.toUpperCase())}`}
+                            {`Genres: ${item.genres?.join(", ").replace(/(^|\s)\S/g, match => match.toUpperCase()) || ''}`}
                         </Text>
                         <Text
                             style={[
@@ -269,7 +274,7 @@ const SeriesInfoModal = ({ series, onClose }) => {
                                 }
                             ]}
                         >
-                            {`Cast: ${series.cast.join(", ")}`}
+                            {`Cast: ${item.cast?.join(", ") || ''}`}
                         </Text>
                     </View>
                     <Divider
@@ -353,101 +358,106 @@ const SeriesInfoModal = ({ series, onClose }) => {
                             </Text>
                         </TouchableOpacity>
                     </View>
-                    <Divider
-                        color={colorScheme.green}
-                        size={2}
-                    />
-                    {/* Season dropdown button */}
-                    <TouchableOpacity
-                        style={styles.dropdownButton}
-                        onPress={() => setShowDropdown(!showDropdown)}
-                    >
-                        <Text
-                            style={[
-                                funnelDisplay.bold,
-                                { color: 'white' }
-                            ]}
-                        >
-                            {`Season ${selectedSeason}`}
-                        </Text>
-
-                        <MaterialIcons
-                            name={showDropdown ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-                            size={24}
-                            color="white"
-                        />
-                    </TouchableOpacity>
-                    {/* Dropdown for seasons */}
-                    {showDropdown && (
-                        <View style={styles.dropdown}>
-                            {series.seasons.map((season) => (
-                                <Button
-                                    key={season.season_number}
-                                    onPress={() => {
-                                        setSelectedSeason(season.season_number)
-                                        setShowDropdown(false);
-                                    }}
-                                    style={{
-                                        shadowOpacity: 0
-                                    }}
+                    
+                    {isSeries && (
+                        <>
+                            <Divider
+                                color={colorScheme.green}
+                                size={2}
+                            />
+                            {/* Season dropdown button */}
+                            <TouchableOpacity
+                                style={styles.dropdownButton}
+                                onPress={() => setShowDropdown(!showDropdown)}
+                            >
+                                <Text
+                                    style={[
+                                        funnelDisplay.bold,
+                                        { color: 'white' }
+                                    ]}
                                 >
-                                    <View style={styles.dropdownButtonOverride}>
-                                        <Text
-                                            style={[
-                                                funnelDisplay.semibold,
-                                                { color: 'white' }
-                                            ]}
+                                    {`Season ${selectedSeason}`}
+                                </Text>
+
+                                <MaterialIcons
+                                    name={showDropdown ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+                                    size={24}
+                                    color="white"
+                                />
+                            </TouchableOpacity>
+                            {/* Dropdown for seasons */}
+                            {showDropdown && (
+                                <View style={styles.dropdown}>
+                                    {item.seasons?.map((season) => (
+                                        <Button
+                                            key={season.season_number}
+                                            onPress={() => {
+                                                setSelectedSeason(season.season_number)
+                                                setShowDropdown(false);
+                                            }}
+                                            style={{
+                                                shadowOpacity: 0
+                                            }}
                                         >
-                                            Season {season.season_number}
-                                        </Text>
-                                    </View>
-                                </Button>
-                            ))}
-                        </View>
-                    )}
+                                            <View style={styles.dropdownButtonOverride}>
+                                                <Text
+                                                    style={[
+                                                        funnelDisplay.semibold,
+                                                        { color: 'white' }
+                                                    ]}
+                                                >
+                                                    Season {season.season_number}
+                                                </Text>
+                                            </View>
+                                        </Button>
+                                    ))}
+                                </View>
+                            )}
 
-                    {/* Episodes List */}
-                    <View style={styles.episodesContainer}>
-                        {series.seasons
-                            .find(season => season.season_number === selectedSeason)
-                            ?.episodes.map((episode) => (
-                                <TouchableOpacity
-                                    key={episode.episode_number}
-                                    style={styles.episodeCard}
-                                    onPress={() => handlePlay(selectedSeason, episode.episode_number)}
-                                >
-                                    <View style={styles.episodeHeader}>
-                                        <Image
-                                            source={{ uri: process.env.EXPO_PUBLIC_CDN_URL + episode.thumbnail_url }}
-                                            style={styles.episodeThumbnail}
-                                        />
-                                        <View style={styles.episodeMainInfo}>
-                                            <Text style={[
-                                                funnelDisplay.bold,
-                                                styles.episodeTitle
-                                            ]}
-                                            >
-                                                {`${episode.episode_number}. ${episode.title}`}
-                                            </Text>
+                            {/* Episodes List */}
+                            <View style={styles.episodesContainer}>
+                                {item.seasons
+                                    ?.find(season => season.season_number === selectedSeason)
+                                    ?.episodes?.map((episode) => (
+                                        <TouchableOpacity
+                                            key={episode.episode_number}
+                                            style={styles.episodeCard}
+                                            onPress={() => handlePlay(selectedSeason, episode.episode_number)}
+                                        >
+                                            <View style={styles.episodeHeader}>
+                                                <Image
+                                                    source={{ uri: process.env.EXPO_PUBLIC_CDN_URL + episode.thumbnail_url }}
+                                                    style={styles.episodeThumbnail}
+                                                />
+                                                <View style={styles.episodeMainInfo}>
+                                                    <Text style={[
+                                                        funnelDisplay.bold,
+                                                        styles.episodeTitle
+                                                    ]}
+                                                    >
+                                                        {`${episode.episode_number}. ${episode.title}`}
+                                                    </Text>
+                                                    <Text style={[
+                                                        funnelDisplay.regular,
+                                                        styles.episodeDuration
+                                                    ]}
+                                                    >
+                                                        {`${formatSeconds(episode.duration)}`}
+                                                    </Text>
+                                                </View>
+                                            </View>
                                             <Text style={[
                                                 funnelDisplay.regular,
-                                                styles.episodeDuration
+                                                styles.episodeDescription
                                             ]}
                                             >
-                                                {`${formatSeconds(episode.duration)}`}
+                                                {episode.description}
                                             </Text>
-                                        </View>
-                                    </View>
-                                    <Text style={[
-                                        funnelDisplay.regular,
-                                        styles.episodeDescription
-                                    ]}
-                                    >
-                                        {episode.description}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
-                    </View>
+                                        </TouchableOpacity>
+                                    ))}
+                            </View>
+                        </>
+                    )}
                 </ScrollView>
             </View>
         </ModalLayout>
@@ -513,8 +523,8 @@ const styles = StyleSheet.create({
         opacity: 0.8
     },
 
-    // Series header styles config
-    seriesHeader: {
+    // Content header styles config
+    contentHeader: {
         width: '100%',
         marginBottom: 10
     },
@@ -648,4 +658,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SeriesInfoModal;
+export default ContentInfoModal;
