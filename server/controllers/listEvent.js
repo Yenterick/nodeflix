@@ -1,5 +1,5 @@
 // Module imports
-const listEventModel = require('../models/listEventModel');
+const { listEventModel } = require('../models/listEventModel');
 
 // Creates a new list event
 const createListEvent = async (req, res) => {
@@ -16,9 +16,9 @@ const createListEvent = async (req, res) => {
 // Deletes a list event
 const deleteListEvent = async (req, res) => {
     try {
-        const { listEventId } = req.params;
+        const { contentId, contentType, profileId } = req.body;
 
-        await listEventModel.deleteListEventById(listEventId);
+        await listEventModel.deleteListEventByParams(contentId, contentType, profileId);
         res.status(200).json({ success: true, msg: 'List event successfully deleted.' });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });

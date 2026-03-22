@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 // Modules and components imports
 import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
+import useFetch from '../../hooks/useFetch';
+import InfoModal from './InfoModal';
 import Button from '../Button';
 import ModalLayout from './ModalLayout';
 import Divider from '../Divider';
@@ -21,8 +24,13 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
     // Navigation hook
     const navigation = useNavigation();
 
-    // Interaction hook
+    // Various hooks
+    const { error, loading, request } = useFetch();
     const [interaction, setInteraction] = useState(undefined);
+    const [myList, setMyList] = useState(undefined);
+    const [watchedProgress, setWatchedProgress] = useState(undefined);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('An error has ocurred while fetching profile context!');
 
     // FIXME: FKN NUCLEAR SCREEN ALTERNATIVE
     const [nuke, setNuke] = useState(false);
@@ -82,12 +90,138 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                 contentId: item._id,
                 contentType: isSeries ? 'series' : 'movie',
                 ...(isSeries && {
-                    season: seasonNumber || 1,
-                    episode: episodeNumber || 1
-                })
+                    season: seasonNumber || watchedProgress?.season || 1,
+                    episode: episodeNumber || watchedProgress?.episode || 1
+                }),
+                watchedProgress: watchedProgress
             });
             onClose();
         }, 50);
+    }
+
+    const fetchProfileContext = async () => {
+        try {
+            const profileId = await AsyncStorage.getItem('profileId');
+            const response = await request(
+                `/${contentType}/${item._id}/${profileId}`,
+                'GET'
+            );
+            if (response && response.success) {
+                setMyList(response?.data?.isInList);
+                setInteraction(response?.data?.interaction);
+                setWatchedProgress(response?.data?.watchedProgress);
+            } else {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error has ocurred while fetching profile context!');
+            }
+        } catch (error) {
+            setHasError(true);
+            setErrorMessage(error.message);
+        }
+    }
+
+    // Profile context fetch 
+    useEffect(() => {
+        fetchProfileContext();
+    }, []);
+
+    // Adding to my list handle
+    const handleAddToMyList = async () => {
+        try {
+            const profileId = await AsyncStorage.getItem('profileId');
+            const response = await request(
+                `/listEvent`,
+                'POST',
+                {
+                    contentId: item._id,
+                    contentType: contentType,
+                    profileId: profileId
+                }
+            );
+            if (!response || !response.success) {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error has ocurred while adding to my list!');
+            }
+        } catch (error) {
+            setHasError(true);
+            setErrorMessage(error.message);
+        }
+        fetchProfileContext();
+    }
+
+    // Remove from my list handle
+    const handleRemoveFromMyList = async () => {
+        try {
+            const profileId = await AsyncStorage.getItem('profileId');
+            const response = await request(
+                `/listEvent`,
+                'DELETE',
+                {
+                    contentId: item._id,
+                    contentType: contentType,
+                    profileId: profileId
+                }
+            );
+            if (!response || !response.success) {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error has ocurred while removing from my list!');
+            }
+        } catch (error) {
+            setHasError(true);
+            setErrorMessage(error.message);
+        }
+        fetchProfileContext();
+    }
+
+    // Handle interactions
+    const handleInteraction = async (targetInteraction) => {
+        try {
+            const profileId = await AsyncStorage.getItem('profileId');
+            const method = interaction === undefined ? 'POST' : 'PUT';
+
+            const response = await request(
+                `/interactionEvent`,
+                method,
+                {
+                    contentId: item._id,
+                    contentType: contentType,
+                    profileId: profileId,
+                    interactionType: targetInteraction
+                }
+            );
+
+            if (!response || !response.success) {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error has ocurred while interacting!');
+            }
+        } catch (error) {
+            setHasError(true);
+            setErrorMessage(error.message);
+        }
+        fetchProfileContext();
+    }
+
+    const handleRemoveInteraction = async () => {
+        try {
+            const profileId = await AsyncStorage.getItem('profileId');
+            const response = await request(
+                `/interactionEvent`,
+                'DELETE',
+                {
+                    contentId: item._id,
+                    contentType: contentType,
+                    profileId: profileId
+                }
+            );
+            if (!response || !response.success) {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error has ocurred while removing interaction!');
+            }
+        } catch (error) {
+            setHasError(true);
+            setErrorMessage(error.message);
+        }
+        fetchProfileContext();
     }
 
     if (nuke) {
@@ -119,6 +253,13 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                     maxHeight: '100%'
                 }
             ]}>
+                {/* Error modal */}
+                {hasError &&
+                    <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => {
+                        setHasError(false);
+                        onClose();
+                    }} />
+                }
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     nestedScrollEnabled
@@ -219,7 +360,7 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                                 styles.buttonText
                             ]}
                             >
-                                Play
+                                {watchedProgress && !watchedProgress.completed ? 'Continue Watching' : 'Play'}
                             </Text>
                         </Button>
                     </View>
@@ -286,10 +427,14 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                     >
                         <TouchableOpacity
                             style={styles.extraButton}
-                            onPress={() => console.log('Add to list')}
+                            onPress={() => {
+                                if (myList === true) handleRemoveFromMyList();
+                                else handleAddToMyList();
+                            }}
+                            disabled={loading}
                         >
                             <MaterialIcons
-                                name="add"
+                                name={myList === true ? 'check' : 'add'}
                                 size={36}
                                 color="white"
                             />
@@ -309,10 +454,14 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                             style={[
                                 styles.extraButton,
                                 {
-                                    opacity: interaction == 'like' ? 1.0 : 0.5
+                                    opacity: interaction === 'like' ? 1.0 : 0.5
                                 }
                             ]}
-                            onPress={() => setInteraction(interaction === 'like' ? undefined : 'like')}
+                            onPress={() => {
+                                if (interaction === 'like') handleRemoveInteraction();
+                                else handleInteraction('like');
+                            }}
+                            disabled={loading}
                         >
                             <MaterialIcons
                                 name="thumb-up-off-alt"
@@ -335,10 +484,14 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                             style={[
                                 styles.extraButton,
                                 {
-                                    opacity: interaction == 'dislike' ? 1.0 : 0.5
+                                    opacity: interaction === 'dislike' ? 1.0 : 0.5
                                 }
                             ]}
-                            onPress={() => setInteraction(interaction === 'dislike' ? undefined : 'dislike')}
+                            onPress={() => {
+                                if (interaction === 'dislike') handleRemoveInteraction();
+                                else handleInteraction('dislike');
+                            }}
+                            disabled={loading}
                         >
                             <MaterialIcons
                                 name="thumb-down-off-alt"

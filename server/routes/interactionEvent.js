@@ -11,7 +11,7 @@ const auth = require('../middlewares/auth.middleware');
 
 // Protected routes configuration
 router.post('/', auth, createInteractionEvent);
-router.put('/:interactionEventId', auth, updateInteractionEvent);
-router.delete('/:interactionEventId', auth, deleteInteractionEvent);
+router.put('/', auth, updateInteractionEvent);
+router.delete('/', auth, deleteInteractionEvent);
 
 module.exports = router;

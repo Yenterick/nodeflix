@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 
 // Module and components imports
@@ -18,7 +19,7 @@ import InfoModal from '../../components/modals/InfoModal';
 // FIXME: Loading and error screen without breaking the entire app peepo clown
 const VideoPlayer = ({ route }) => {
     // Getting the route params
-    const { contentId, contentType, episode, season } = route.params;
+    const { contentId, contentType, season, episode, watchedProgress } = route.params;
 
     // Navigation hook
     const navigation = useNavigation();
@@ -29,9 +30,10 @@ const VideoPlayer = ({ route }) => {
     // Various hooks
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('An error has ocurred while playing the content!');
+    const [method, setMethod] = useState(watchedProgress?.watchedSeconds ? 'PUT' : 'POST');
     const [content, setContent] = useState(undefined);
-    const [currentSeason, setCurrentSeason] = useState(season || 1);
-    const [currentEpisode, setCurrentEpisode] = useState(episode || 1);
+    const [currentSeason, setCurrentSeason] = useState(season || watchedProgress?.season || 1);
+    const [currentEpisode, setCurrentEpisode] = useState(episode || watchedProgress?.episode || 1);
     const [showDropdown, setShowDropdown] = useState(null); // 'seasons' | 'episodes' | null
     const { request, loading, error } = useFetch();
 
@@ -136,6 +138,7 @@ const VideoPlayer = ({ route }) => {
     const player = useVideoPlayer(videoUrl ? `${process.env.EXPO_PUBLIC_CDN_URL}${videoUrl}` : null, player => {
         player.loop = false;
         player.play();
+        player.currentTime = watchedProgress?.watchedSeconds || 0;
         player.timeUpdateEventInterval = 0.5;
     });
 
@@ -174,6 +177,62 @@ const VideoPlayer = ({ route }) => {
         return `${hours}h ${minutes}m`;
     }
 
+    // View event updater to save
+    const handleViewEvent = async () => {
+        try {
+            const profileId = await AsyncStorage.getItem('profileId');
+            if (!profileId || !player || !content) return;
+
+            let isCompleted = (player.currentTime / player.duration) > 0.95;
+
+            if (contentType === 'series' && content.seasons) {
+                const maxSeason = Math.max(...content.seasons.map(s => s.season_number));
+                const lastSeason = content.seasons.find(s => s.season_number === maxSeason);
+                const maxEpisode = Math.max(...lastSeason.episodes.map(e => e.episode_number));
+
+                isCompleted = isCompleted && currentSeason === maxSeason && currentEpisode === maxEpisode;
+            }
+
+            const updateData = {
+                contentId: contentId,
+                contentType: contentType,
+                profileId: profileId,
+                watchedSeconds: Math.floor(player.currentTime),
+                completed: isCompleted,
+                ...(contentType === 'series' && {
+                    season: currentSeason,
+                    episode: currentEpisode
+                })
+            };
+
+            const response = await request('/viewEvent', method, updateData);
+            if (response && response.success) {
+                if (method === 'POST') setMethod('PUT');
+            } else {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error has ocurred while updating view progress!');
+            }
+        } catch (error) {
+            setHasError(true);
+            setErrorMessage(error.message);
+        }
+    }
+
+    // Interval to update progress every 5 seconds
+    useEffect(() => {
+        let interval;
+
+        if (isPlaying) {
+            interval = setInterval(() => {
+                handleViewEvent();
+            }, 5000);
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [isPlaying, status, currentSeason, currentEpisode, method]);
+
     // Black bg till the orientation is applied
     if (!orientationReady) {
         return (
@@ -194,19 +253,19 @@ const VideoPlayer = ({ route }) => {
                 }
             ]}
         >
-            {isLoading && (
-                <View 
+            {isBufferLoading && (
+                <View
                     style={styles.loaderContainer}
                     pointerEvents="none"
                 >
                     <ActivityIndicator
-                        size="large" 
+                        size="large"
                         color="white"
                         style={
                             {
                                 transform: [{ scale: 3 }]
                             }
-                        } 
+                        }
                     />
                 </View>
             )}
@@ -258,7 +317,7 @@ const VideoPlayer = ({ route }) => {
                                 color='white'
                             />
                         </TouchableOpacity>
-                        {!isSeeking && !isLoading &&
+                        {!isSeeking && !isBufferLoading &&
                             <TouchableOpacity
                                 style={styles.pauseButton}
                                 onPress={() => {
@@ -338,19 +397,19 @@ const VideoPlayer = ({ route }) => {
                         <View style={styles.panelContainer}>
                             <View style={styles.panelHeader}>
                                 <Text style={[
-                                    funnelDisplay.bold, 
+                                    funnelDisplay.bold,
                                     styles.panelTitle
                                 ]}>
-                                Seasons
+                                    Seasons
                                 </Text>
                                 <TouchableOpacity
                                     onPress={() => setShowDropdown(null)}
                                     style={styles.panelCloseButton}
                                 >
-                                    <MaterialIcons 
-                                        name='close' 
-                                        size={24} 
-                                        color='white' 
+                                    <MaterialIcons
+                                        name='close'
+                                        size={24}
+                                        color='white'
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -384,9 +443,9 @@ const VideoPlayer = ({ route }) => {
                                             Season {season.season_number}
                                         </Text>
                                         <Text style={[
-                                            funnelDisplay.regular, 
+                                            funnelDisplay.regular,
                                             styles.seasonEpCount
-                                            ]}>
+                                        ]}>
                                             {season.episodes?.length ?? 0} Ep.
                                         </Text>
                                     </TouchableOpacity>
@@ -405,9 +464,9 @@ const VideoPlayer = ({ route }) => {
                                     <MaterialIcons name='arrow-back-ios-new' size={18} color='white' />
                                 </TouchableOpacity>
                                 <Text style={[
-                                        funnelDisplay.bold, 
-                                        styles.panelTitle
-                                    ]}>
+                                    funnelDisplay.bold,
+                                    styles.panelTitle
+                                ]}>
                                     Season {currentSeason}
                                 </Text>
                             </View>
@@ -435,12 +494,12 @@ const VideoPlayer = ({ route }) => {
                                                 <View style={styles.episodeMainInfo}>
                                                     <Text style={[
                                                         funnelDisplay.bold,
-                                                         styles.episodeTitle
+                                                        styles.episodeTitle
                                                     ]}>
                                                         {`${episode.episode_number}. ${episode.title}`}
                                                     </Text>
                                                     <Text style={[
-                                                        funnelDisplay.regular, 
+                                                        funnelDisplay.regular,
                                                         styles.episodeDuration
                                                     ]}>
                                                         {formatSeconds(episode.duration)}
@@ -448,7 +507,7 @@ const VideoPlayer = ({ route }) => {
                                                 </View>
                                             </View>
                                             <Text style={[
-                                                funnelDisplay.regular, 
+                                                funnelDisplay.regular,
                                                 styles.episodeDescription
                                             ]}>
                                                 {episode.description}

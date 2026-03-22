@@ -6,10 +6,12 @@ const {
     getAllMovies,
     getMovie
 } = require('../controllers/movie');
+const { getContentDetails } = require('../controllers/profileContext');
 const auth = require('../middlewares/auth.middleware');
 
 // Protected routes configuration
 router.get('/', auth, getAllMovies);
 router.get('/:movieId', auth, getMovie);
+router.get('/:contentId/:profileId', auth, getContentDetails);
 
 module.exports = router;

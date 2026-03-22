@@ -1,5 +1,5 @@
 // Module imports 
-const interactionEventModel = require('../models/interactionEventModel');
+const { interactionEventModel } = require('../models/interactionEventModel');
 
 // Creates a new interaction event
 const createInteractionEvent = async (req, res) => {
@@ -16,11 +16,10 @@ const createInteractionEvent = async (req, res) => {
 // Updates an interaction event 
 const updateInteractionEvent = async (req, res) => {
     try {
-       const { interactionEventId } = req.params;
-       const { interactionType } = req.body;
+        const { contentId, contentType, profileId, interactionType } = req.body;
 
-       await interactionEventModel.updateInteractionEventById(interactionEventId, interactionType);
-       res.status(200).json({ success: true, msg: 'Interaction event successfully updated.' });
+        await interactionEventModel.updateInteractionEventByParams(contentId, contentType, profileId, interactionType);
+        res.status(200).json({ success: true, msg: 'Interaction event successfully updated.' });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }
@@ -29,9 +28,9 @@ const updateInteractionEvent = async (req, res) => {
 // Deletes an interaction event
 const deleteInteractionEvent = async (req, res) => {
     try {
-        const { interactionEventId } = req.params;
+        const { contentId, contentType, profileId } = req.body;
 
-        await interactionEventModel.deleteInteractionEventById(interactionEventId);
+        await interactionEventModel.deleteInteractionEventByParams(contentId, contentType, profileId);
         res.status(200).json({ success: true, msg: 'Interaction event successfully deleted.' });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });

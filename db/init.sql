@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS profiles (
 );
 CREATE TABLE IF NOT EXISTS view_events (
     view_event_id SERIAL PRIMARY KEY,
-    content_id TEXT NOT NULL,
+    content_id VARCHAR(64) NOT NULL,
     content_type VARCHAR(12) NOT NULL,
     season INT,
     episode INT,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS view_events (
 );
 CREATE TABLE IF NOT EXISTS list_events (
     list_event_id SERIAL PRIMARY KEY,
-    content_id TEXT NOT NULL,
+    content_id VARCHAR(64) NOT NULL,
     content_type VARCHAR(12) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     profile_id INT REFERENCES profiles(profile_id) ON DELETE CASCADE NOT NULL
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS list_events (
 CREATE TABLE IF NOT EXISTS interaction_events (
     interaction_event_id SERIAL PRIMARY KEY,
     interaction_type VARCHAR(12) NOT NULL,
-    content_id TEXT NOT NULL,
+    content_id VARCHAR(64) NOT NULL,
     content_type VARCHAR(12) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     profile_id INT REFERENCES profiles(profile_id) ON DELETE CASCADE NOT NULL

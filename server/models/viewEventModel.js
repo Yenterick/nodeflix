@@ -11,7 +11,7 @@ const ViewEvent = pgSequelize.define('ViewEvent', {
         autoIncrement: true
     },
     content_id: {
-        type: DataTypes.STRING(32),
+        type: DataTypes.STRING(64),
         allowNull: false
     },
     content_type: {
@@ -42,7 +42,8 @@ const ViewEvent = pgSequelize.define('ViewEvent', {
     profile_id: {
         type: DataTypes.INTEGER,
         allowNull: false
-    }},
+    }
+},
     {
         tableName: 'view_events',
         timestamps: false
@@ -56,7 +57,7 @@ const viewEventModel = {
             content_id: contentId,
             content_type: contentType,
             season: season || null,
-            episode: episode || null, 
+            episode: episode || null,
             watched_seconds: watchedSeconds,
             completed: completed,
             profile_id: profileId
@@ -83,6 +84,59 @@ const viewEventModel = {
             {
                 where: {
                     view_event_id: viewEventId
+                }
+            }
+        );
+    },
+
+    selectViewEventByParams: async (contentId, contentType, profileId) => {
+        return await ViewEvent.findOne(
+            {
+                where: {
+                    content_id: contentId,
+                    content_type: contentType,
+                    profile_id: profileId
+                },
+                order: [
+                    ['season', 'DESC'],
+                    ['episode', 'DESC'],
+                    ['created_at', 'DESC']
+                ],
+                include: [
+                    {
+                        association: 'profile',
+                        required: true
+                    }
+                ]
+            }
+        );
+    },
+
+    deleteViewEventByParams: async (contentId, contentType, profileId) => {
+        await ViewEvent.destroy(
+            {
+                where: {
+                    content_id: contentId,
+                    content_type: contentType,
+                    profile_id: profileId
+                }
+            }
+        );
+    },
+
+    updateViewEventByParams: async (contentId, contentType, profileId, watchedSeconds, completed, season, episode) => {
+        await ViewEvent.update(
+            {
+                watched_seconds: watchedSeconds,
+                completed: completed,
+                season: season || null,
+                episode: episode || null
+            },
+            {
+                where: {
+                    content_id: contentId,
+                    content_type: contentType,
+                    profile_id: profileId
                 }
             }
         );

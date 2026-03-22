@@ -10,6 +10,6 @@ const auth = require('../middlewares/auth.middleware');
 
 // Protected routes configuration
 router.post('/', auth, createListEvent);
-router.delete('/:listEventId', auth, deleteListEvent);
+router.delete('/', auth, deleteListEvent);
 
 module.exports = router;

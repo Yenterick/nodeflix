@@ -1,5 +1,5 @@
 // Module imports
-const viewEventModel = require('../models/viewEventModel');
+const { viewEventModel } = require('../models/viewEventModel');
 
 // Create a new view event
 const createViewEvent = async (req, res) => {
@@ -15,10 +15,9 @@ const createViewEvent = async (req, res) => {
 
 const updateViewEvent = async (req, res) => {
     try {
-        const { viewEventId } = req.params;
-        const { watchedSeconds, completed } = req.body;
+        const { contentId, contentType, profileId, watchedSeconds, completed, season, episode } = req.body;
 
-        await viewEventModel.updateViewEventById(viewEventId, watchedSeconds, completed);
+        await viewEventModel.updateViewEventByParams(contentId, contentType, profileId, watchedSeconds, completed, season, episode);
         res.status(200).json({ success: true, msg: 'View event successfully updated.' });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
@@ -26,10 +25,10 @@ const updateViewEvent = async (req, res) => {
 }
 
 const deleteViewEvent = async (req, res) => {
-    try { 
-        const { viewEventId } = req.params;
-        
-        await viewEventModel.deleteViewEventById(viewEventId);
+    try {
+        const { contentId, contentType, profileId } = req.body;
+
+        await viewEventModel.deleteViewEventByParams(contentId, contentType, profileId);
         res.status(200).json({ success: true, msg: 'View event successfully deleted.' });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });

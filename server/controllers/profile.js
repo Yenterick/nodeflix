@@ -38,23 +38,9 @@ const updateProfile = async (req, res) => {
     }
 }
 
-// Gets all the profile view events
-const getProfileViewEvents = async (req, res) => {
-    try {
-        const { profileId } = req.params;
-        const viewEvents = await profileModel.selectProfileViewEvents(profileId);
-        
-        res.status(200).json({ success: true, msg: 'View events successfully retrieved.', data: viewEvents });
-
-    } catch (error) {
-        res.status(500).json({ success: false, msg: error.message });
-    }
-}
-
 module.exports = {
     createProfile,
     deleteProfile,
-    updateProfile,
-    getProfileViewEvents
+    updateProfile
 }
 

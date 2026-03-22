@@ -11,8 +11,8 @@ const auth = require('../middlewares/auth.middleware');
 
 // Protected routes configuration
 router.post('/', auth, createViewEvent);
-router.put('/:viewEventId', auth, updateViewEvent);
-router.delete('/:viewEventId', auth, deleteViewEvent);
+router.put('/', auth, updateViewEvent);
+router.delete('/', auth, deleteViewEvent);
 
 module.exports = router;
 

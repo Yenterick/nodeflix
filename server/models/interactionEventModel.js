@@ -8,14 +8,14 @@ const InteractionEvent = pgSequelize.define('InteractionEvent', {
     interaction_event_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: false
+        autoIncrement: true
     },
     interaction_type: {
         type: DataTypes.STRING(12),
         allowNull: false,
     },
     content_id: {
-        type: DataTypes.STRING(32),
+        type: DataTypes.STRING(64),
         allowNull: false,
     },
     content_type: {
@@ -26,10 +26,15 @@ const InteractionEvent = pgSequelize.define('InteractionEvent', {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW
-    }}, {
-    tableName: 'interactions_events',
-    timestamps: false
+    },
+    profile_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
+}, {
+    tableName: 'interaction_events',
+    timestamps: false
+}
 );
 
 const interactionEventModel = {
@@ -46,7 +51,7 @@ const interactionEventModel = {
     updateInteractionEventById: async (interactionEventId, interactionType) => {
         await InteractionEvent.update(
             {
-                interactionType: interactionType
+                interaction_type: interactionType
             },
             {
                 where: {
@@ -64,6 +69,51 @@ const interactionEventModel = {
                 }
             }
         )
+    },
+
+    selectInteractionEventByParams: async (contentId, contentType, profileId) => {
+        return await InteractionEvent.findOne(
+            {
+                where: {
+                    content_id: contentId,
+                    content_type: contentType,
+                    profile_id: profileId
+                },
+                include: [
+                    {
+                        association: 'profile',
+                        required: true
+                    }
+                ]
+            }
+        );
+    },
+
+    deleteInteractionEventByParams: async (contentId, contentType, profileId) => {
+        await InteractionEvent.destroy(
+            {
+                where: {
+                    content_id: contentId,
+                    content_type: contentType,
+                    profile_id: profileId
+                }
+            }
+        );
+    },
+
+    updateInteractionEventByParams: async (contentId, contentType, profileId, interactionType) => {
+        await InteractionEvent.update(
+            {
+                interaction_type: interactionType
+            },
+            {
+                where: {
+                    content_id: contentId,
+                    content_type: contentType,
+                    profile_id: profileId
+                }
+            }
+        );
     }
 }
 

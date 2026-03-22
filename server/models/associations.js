@@ -16,7 +16,8 @@ Profile.belongsTo(User, {
     foreignKey: {
         name: 'user_id',
         allowNull: false
-    }
+    },
+    as: 'user'
 });
 
 // Configuring the 1:N relationship between profile and view events
@@ -31,7 +32,8 @@ ViewEvent.belongsTo(Profile, {
     foreignKey: {
         name: 'profile_id',
         allowNull: false
-    }
+    },
+    as: 'profile'
 });
 
 // Configuring the 1:N relationship between profile and list events
@@ -46,7 +48,8 @@ ListEvent.belongsTo(Profile, {
     foreignKey: {
         name: 'profile_id',
         allowNull: false
-    }
+    },
+    as: 'profile'
 });
 
 // Configuring the 1:N relationship between profile and interaction events
@@ -61,7 +64,8 @@ InteractionEvent.belongsTo(Profile, {
     foreignKey: {
         name: 'profile_id',
         allowNull: false
-    }
+    },
+    as: 'profile'
 });
 
 module.exports = { User, Profile };
