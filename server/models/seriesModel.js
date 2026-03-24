@@ -44,10 +44,19 @@ const seriesModel = {
         ); 
     },
 
-    selectSeriesByGenre : async (genres) => { 
+    selectSeriesByGenresPrecise : async (genres) => { 
         return (
             await Series.find({ 
                 genres: {$all: genres} 
+            })
+        );
+    },
+
+    selectSeriesByGenres : async (genres, excludeIds) => { 
+        return (
+            await Series.find({ 
+                genres: { $in: genres },
+                _id: { $nin: excludeIds }
             })
         );
     },

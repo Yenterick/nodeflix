@@ -24,5 +24,6 @@ const getMovie = async (req, res) => {
 
 module.exports = {
     getAllMovies,
-    getMovie
+    getMovie,
+    getUserStartedMovies
 }

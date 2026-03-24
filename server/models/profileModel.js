@@ -92,9 +92,57 @@ const profileModel = {
                     }
                 ]
             }
-        )
+        );
 
         return profile?.view_events || [];
+    },
+
+    selectProfileCompletedViewEvents: async (profileId) => {
+        const profile = await Profile.findByPk(profileId,
+            {
+                include: [
+                    {
+                        association: 'view_events',
+                        where: {
+                            completed: true
+                        },
+                        required: true
+                    }
+                ]
+            }
+        );
+
+        return profile?.view_events || [];
+    },
+
+    selectProfileListEvents: async (profileId) => {
+        const profile = await Profile.findByPk(profileId,
+            {
+                include: [
+                    {
+                        association: 'list_events',
+                        required: true
+                    }
+                ]
+            }
+        );
+
+        return profile?.list_events || [];
+    },
+
+    selectProfileInteractionEvents: async (profileId) => {
+        const profile = await Profile.findByPk(profileId,
+            {
+                include: [
+                    {
+                        association: 'interaction_events',
+                        required: true
+                    }
+                ]
+            }
+        );
+
+        return profile?.interaction_events || [];
     }
 }
 

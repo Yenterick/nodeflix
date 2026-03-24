@@ -31,12 +31,21 @@ const movieModel = {
         ); 
     },
 
-    selectMoviesByGenre : async (genres) => { 
+    selectMoviesByGenresPrecise : async (genres) => { 
         return (
             await Movie.find({ 
                 genres: {
                     $all: genres
                 } 
+            })
+        );
+    },
+
+    selectMoviesByGenres : async (genres, excludeIds) => { 
+        return (
+            await Movie.find({ 
+                genres: { $in: genres },
+                _id: { $nin: excludeIds }
             })
         );
     },
