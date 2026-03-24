@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -134,14 +134,22 @@ const ProfileAddModal = ({ onClose }) => {
                     <Button
                         color={colorScheme.green}
                         onPress={() => { handleProfileAdd() }}
+                        disabled={loading}
                     >
-                        <Text style={[
-                            funnelDisplay.bold,
-                            styles.buttonText
-                        ]}
-                        >
-                            Add
-                        </Text>
+                        {loading ?
+                            <ActivityIndicator
+                                size="small"
+                                color="white"
+                            />
+                            :
+                            <Text style={[
+                                funnelDisplay.bold,
+                                styles.buttonText
+                            ]}
+                            >
+                                Add
+                            </Text>
+                        }
                     </Button>
                     <Button
                         color={colorScheme.bgDarkGreen}

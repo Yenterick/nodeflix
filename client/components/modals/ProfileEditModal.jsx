@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -40,7 +40,7 @@ const ProfileEditModal = ({ profile, onClose }) => {
             );
 
             if (response && response.success) {
-                // Pass
+                onClose();
             } else {
                 setHasError(true);
                 setErrorMessage(error || response?.msg || 'An error ocurred while editing the profile!');
@@ -48,8 +48,6 @@ const ProfileEditModal = ({ profile, onClose }) => {
         } catch (error) {
             setHasError(true);
             setErrorMessage(error.message);
-        } finally {
-            onClose();
         }
     }
 
@@ -84,6 +82,7 @@ const ProfileEditModal = ({ profile, onClose }) => {
                     text={'Are you sure you want to delete this user?'}
                     onConfirm={() => handleProfileDelete()}
                     onCancel={() => setShowConfirmation(false)}
+                    loading={loading}
                 />
             }
             {/* General container */}
@@ -166,18 +165,27 @@ const ProfileEditModal = ({ profile, onClose }) => {
                     <Button
                         color={colorScheme.green}
                         onPress={() => { handleProfileEdit() }}
+                        disabled={loading}
                     >
-                        <Text style={[
-                            funnelDisplay.bold,
-                            styles.buttonText
-                        ]}
-                        >
-                            Save
-                        </Text>
+                        {loading ?
+                            <ActivityIndicator
+                                size="small"
+                                color="white"
+                            />
+                            :
+                            <Text style={[
+                                funnelDisplay.bold,
+                                styles.buttonText
+                            ]}
+                            >
+                                Save
+                            </Text>
+                        }
                     </Button>
                     <Button
                         color={colorScheme.green}
                         onPress={() => onClose()}
+                        disabled={loading}
                         style={styles.cancelButton}
                     >
                         <Text style={[
@@ -199,6 +207,7 @@ const ProfileEditModal = ({ profile, onClose }) => {
                     <Button
                         color='#FF6B6B'
                         onPress={() => { setShowConfirmation(true) }}
+                        disabled={loading}
                     >
                         <MaterialIcons
                             name="delete-forever"

@@ -152,13 +152,20 @@ const ProfileSelector = () => {
             </Text>
             {/* Profiles container */}
             <Animated.View 
-                style={styles.profiles}
+                style={[
+                    styles.profiles,
+                    loading && { flexWrap: 'nowrap' }
+                ]}
                 entering={FadeInDown.duration(600)}
             >
                 {loading ?
-                    <ActivityIndicator
-                        color='white'
-                    />
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator
+                            color='white'
+                            size='large'
+                            style={{ transform: [{ scale: 3 }] }}
+                        />
+                    </View>
                     :
                     <>
                         {profiles.map((profile) => (

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 // Module and componets imports
@@ -8,7 +8,7 @@ import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import colorScheme from '../../assets/color/colorScheme';
 
 // Confirmation Modal
-const ConfirmationModal = ({ text, onConfirm, onCancel }) => {
+const ConfirmationModal = ({ text, onConfirm, onCancel, loading }) => {
     return (
         <ModalLayout>
             <View style={styles.modalContainer}>
@@ -25,28 +25,39 @@ const ConfirmationModal = ({ text, onConfirm, onCancel }) => {
                         color={colorScheme.green}
                         style={styles.button}
                         onPress={() => onConfirm()}
+                        disabled={loading}
                     >
-                        <MaterialIcons 
-                            name="check" 
-                            size={16} 
-                            color="white" 
-                            style={
-                                {
-                                    marginBottom: -1
-                                }
-                            }
-                        />
-                        <Text style={[
-                            funnelDisplay.bold,
-                            styles.buttonText
-                        ]}>
-                            Confirm
-                        </Text>
+                        {loading ?
+                            <ActivityIndicator
+                                size="small"
+                                color="white"
+                            />
+                            :
+                            <>
+                                <MaterialIcons
+                                    name="check"
+                                    size={16}
+                                    color="white"
+                                    style={
+                                        {
+                                            marginBottom: -1
+                                        }
+                                    }
+                                />
+                                <Text style={[
+                                    funnelDisplay.bold,
+                                    styles.buttonText
+                                ]}>
+                                    Confirm
+                                </Text>
+                            </>
+                        }
                     </Button>
                     <Button
                         color='#FF6B6B'
                         style={styles.button}
                         onPress={() => onCancel()}
+                        disabled={loading}
                     >
                         <MaterialIcons 
                             name="cancel"
