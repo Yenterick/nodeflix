@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState, useEffect } from 'react';
+import Animated, { FadeInDown } from 'react-native-reanimated'
 
 // Module imports
 import useFetch from '../../hooks/useFetch';
@@ -104,7 +105,10 @@ const ProfileSelector = () => {
                     text={errorMessage}
                     icon='error-outline'
                     color='#FF6B6B'
-                    onExit={() => setHasError(false)}
+                    onExit={() => {
+                        setHasError(false)
+                        navigation.navigate('login');
+                    }}
                 />
             }
             {/* Edit Modal */}
@@ -147,73 +151,80 @@ const ProfileSelector = () => {
                 Who's watching?
             </Text>
             {/* Profiles container */}
-            <View style={styles.profiles}>
-                {
-                    // Profiles map
-                    profiles.map((profile) => (
-                        <Pressable
-                            key={String(profile.profile_id)}
-                            style={styles.profile}
-                            onPress={() => {
-                                if (management) {
-                                    handleEdit(profile);
-                                } else {
-                                    handleProfileSelect(String(profile.profile_id), profile.profile_pic, profile.name);
-                                }
-                            }}
-                        >
-                            <View style={styles.profilePicContainer}>
-                                <Image
-                                    source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png' || profile.profile_pic }}
-                                    style={[
-                                        styles.profilePic,
-                                        management && styles.profilePicEdit
-                                    ]}
+            <Animated.View 
+                style={styles.profiles}
+                entering={FadeInDown.duration(600)}
+            >
+                {loading ?
+                    <ActivityIndicator
+                        color='white'
+                    />
+                    :
+                    <>
+                        {profiles.map((profile) => (
+                            <Pressable
+                                key={String(profile.profile_id)}
+                                style={styles.profile}
+                                onPress={() => {
+                                    if (management) {
+                                        handleEdit(profile);
+                                    } else {
+                                        handleProfileSelect(String(profile.profile_id), profile.profile_pic, profile.name);
+                                    }
+                                }}
+                            >
+                                <View style={styles.profilePicContainer}>
+                                    <Image
+                                        source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png' || profile.profile_pic }}
+                                        style={[
+                                            styles.profilePic,
+                                            management && styles.profilePicEdit
+                                        ]}
+                                    />
+                                    {management &&
+                                        <View style={styles.editOverlay}>
+                                            <MaterialIcons
+                                                name="edit"
+                                                size={64}
+                                                color="white"
+                                            />
+                                        </View>
+                                    }
+                                </View>
+                                <Text style={[
+                                    funnelDisplay.medium,
+                                    styles.profileName
+                                ]}>
+                                    {profile.name}
+                                </Text>
+                            </Pressable>
+                        ))}
+                        {profiles.length < 4 &&
+                            <Pressable
+                                style={[
+                                    styles.profile,
+                                    styles.addProfile
+                                ]}
+                                onPress={() => setshowProfileAddModal(true)}
+                            >
+                                <MaterialIcons
+                                    style={styles.profilePic}
+                                    name="add"
+                                    size={120}
+                                    color={colorScheme.green}
                                 />
-                                {management &&
-                                    <View style={styles.editOverlay}>
-                                        <MaterialIcons
-                                            name="edit"
-                                            size={64}
-                                            color="white"
-                                        />
-                                    </View>
-                                }
-                            </View>
-                            <Text style={[
-                                funnelDisplay.medium,
-                                styles.profileName
-                            ]}>
-                                {profile.name}
-                            </Text>
-                        </Pressable>
-                    ))
+                                <Text style={[
+                                    funnelDisplay.medium,
+                                    styles.profileName
+                                ]}>
+                                    New Profile
+                                </Text>
+                            </Pressable>
+                        }
+                    </>
                 }
-                {profiles.length < 4 &&
-                    <Pressable
-                        style={[
-                            styles.profile,
-                            styles.addProfile
-                        ]}
-                        onPress={() => setshowProfileAddModal(true)}
-                    >
-                        <MaterialIcons
-                            style={styles.profilePic}
-                            name="add"
-                            size={120}
-                            color={colorScheme.green}
-                        />
-                        <Text style={[
-                            funnelDisplay.medium,
-                            styles.profileName
-                        ]}>
-                            New Profile
-                        </Text>
-                    </Pressable>
-                }
-            </View>
+            </Animated.View>
             {/* Manage Profiles Button */}
-            {/* TODO: Implement functionality */}
             <Button
                 style={styles.profileButton}
                 onPress={() => { setManagement(!management) }}

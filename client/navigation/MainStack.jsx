@@ -18,9 +18,18 @@ const MainStack = () => {
             }}
             tabBar={(props) => <Footer {...props} />}
         >
-            <Tab.Screen name="Index" component={Index} />
-            <Tab.Screen name="Movies" component={Movies} />
-            <Tab.Screen name="Series" component={SeriesP} />
+            <Tab.Screen 
+                name="Index" 
+                component={Index} 
+            />
+            <Tab.Screen 
+                name="Movies" 
+                component={Movies} 
+            />
+            <Tab.Screen 
+                name="Series" 
+                component={SeriesP} 
+            />
         </Tab.Navigator>
     );
 }

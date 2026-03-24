@@ -1,57 +1,58 @@
 import { Pressable, StyleSheet, Modal, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BlurView } from 'expo-blur';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 const ModalLayout = ({ children, onClose }) => {
     const insets = useSafeAreaInsets();
 
     return (
         <Modal
-            transparent={true}
+            transparent
             visible={true}
-            statusBarTranslucent={true}
-            navigationBarTranslucent={true}
+            statusBarTranslucent
+            navigationBarTranslucent
             animationType="fade"
             onRequestClose={onClose}
         >
-            <View
-                style={[
-                    styles.overlay,
-                    {
-                        paddingTop: insets.top,
-                        paddingBottom: insets.bottom
-                    }
-                ]}
+            <Animated.View 
+                style={{ flex: 1 }} 
+                entering={FadeIn.duration(300)}
             >
-                <Pressable
-                    style={StyleSheet.absoluteFillObject}
-                    onPress={onClose}
-                />
-                <View
-                    style={styles.modalContainer}
+                <BlurView
+                    intensity={80}
+                    tint="dark"
+                    style={styles.overlay}
                 >
-                    {children}
-                </View>
-            </View>
+                    <Pressable
+                        style={StyleSheet.absoluteFillObject}
+                        onPress={onClose}
+                    />
+                    <Animated.View 
+                        style={styles.contentContainer}
+                        entering={FadeInDown
+                            .delay(100)
+                            .duration(400)}
+                    >
+                        {children}
+                    </Animated.View>
+                </BlurView>
+            </Animated.View>
         </Modal>
     );
 };
 
 const styles = StyleSheet.create({
     overlay: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.6)',
+        ...StyleSheet.absoluteFillObject,
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 10,
     },
 
-    // Prevents the window from closing the tab
-    modalContainer: {
-
+    contentContainer: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 });
 

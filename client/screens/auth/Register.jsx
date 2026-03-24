@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import Animated, { FadeInRight, FadeInUp } from 'react-native-reanimated';
 import { useState } from 'react'
 
 // Component imports
@@ -95,23 +96,40 @@ const Register = () => {
             }
 
             {/* Register panel container */}
-            <View style={styles.loginContainer}>
+            <Animated.View 
+                style={styles.loginContainer}
+                entering={FadeInRight
+                    .springify()
+                    .duration(2000)
+                    .delay(250)
+                }    
+            >
                 {/* Register header container */}
                 <View style={styles.loginHeader}>
                     {/* Logos container */}
                     <View style={styles.loginLogos}>
-                        <Image
+                        <Animated.Image
                             source={require('../../assets/icon.png')}
-                            style={styles.image}
+                            style={styles.image}   
+                            entering={FadeInUp
+                                .springify()
+                                .duration(2000)
+                                .delay(300)
+                            }         
                         />
                         <Divider
                             orientation='vertical'
                             size={2}
                             color={colorScheme.green}
                         />
-                        <Image
+                        <Animated.Image
                             source={require('../../assets/universidadLibre.png')}
                             style={styles.image}
+                            entering={FadeInUp
+                                .springify()
+                                .duration(2000)
+                                .delay(300)
+                            }   
                         />
                     </View>
                     <Text style={[
@@ -237,7 +255,7 @@ const Register = () => {
                         {' '}to continue!
                     </Text>
                 </View>
-            </View>
+            </Animated.View>
         </View>
     );
 }

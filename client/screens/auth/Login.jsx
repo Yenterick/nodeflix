@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { useState } from 'react';
+import Animated, { FadeInLeft, FadeInUp } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Component imports
@@ -82,23 +83,40 @@ const Login = () => {
             }
 
             {/* Login panel container */}
-            <View style={styles.loginContainer}>
+            <Animated.View 
+                style={styles.loginContainer}
+                entering={FadeInLeft
+                    .springify()
+                    .duration(2000)
+                    .delay(250)
+                }    
+            >
                 {/* Login header container */}
                 <View style={styles.loginHeader}>
                     {/* Logos container */}
                     <View style={styles.loginLogos}>
-                        <Image
+                        <Animated.Image
                             source={require('../../assets/icon.png')}
                             style={styles.image}
+                                entering={FadeInUp
+                                .springify()
+                                .duration(2000)
+                                .delay(300)
+                            }  
                         />
                         <Divider
                             orientation='vertical'
                             size={2}
                             color={colorScheme.green}
                         />
-                        <Image
+                        <Animated.Image
                             source={require('../../assets/universidadLibre.png')}
                             style={styles.image}
+                            entering={FadeInUp
+                                .springify()
+                                .duration(2000)
+                                .delay(300)
+                            }  
                         />
                     </View>
                     <Text style={[
@@ -201,7 +219,7 @@ const Login = () => {
                         {' '}to create one!
                     </Text>
                 </View>
-            </View>
+            </Animated.View>
         </View>
     );
 }

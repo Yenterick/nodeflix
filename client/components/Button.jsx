@@ -1,8 +1,11 @@
-import { View, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
+import Animated, { useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
 
 // Module imports
-import { funnelDisplay } from '../assets/fonts/funnelDisplay';
 import colorScheme from '../assets/color/colorScheme';
+
+// Create animated component
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 // Button component
 const Button = ({
@@ -14,8 +17,37 @@ const Button = ({
     disabled
 }) => {
 
+    // Animation value
+    const scale = useSharedValue(1);
+
+    // Animated style
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
+    }));
+
+    // Handlers
+    const onPressIn = () => {
+        scale.value = withSpring(0.9, {
+            mass: 1,
+            damping: 10,
+            stiffness: 150,
+        });
+    };
+
+    const onPressOut = () => {
+        scale.value = withSpring(1, {
+            mass: 1,
+            damping: 10,
+            stiffness: 150,
+        });
+    };
+
     return (
-        <Pressable
+        <AnimatedPressable
+            onPressIn={onPressIn}
+            onPressOut={onPressOut}
+            onPress={onPress}
+            disabled={disabled}
             style={[
                 {
                     width: '100%',
@@ -32,16 +64,16 @@ const Button = ({
                     shadowOpacity: 0.4,
                     shadowRadius: 12,
                     elevation: 10,
-                    minHeight: 46
-                }
-                , style]}
-            onPress={onPress}
-            disabled={disabled}
+                    minHeight: 46,
+                    opacity: disabled ? 0.6 : 1
+                },
+                style,
+                animatedStyle
+            ]}
         >
             {children}
-        </Pressable>
+        </AnimatedPressable>
     );
-}
+};
 
 export default Button;
-

@@ -44,9 +44,21 @@ const AuthStack = ({ Navigator }) => {
                 gestureEnabled: false
             }}
         >
-            <Stack.Screen name='Login' component={Login} />
-            <Stack.Screen name='ProfileSelector' component={ProfileSelector} />
-            <Stack.Screen name='Register' component={Register} />
+            <Stack.Screen 
+                name='Login' 
+                component={Login} 
+                options={{ animation: 'none' }}
+            />
+            <Stack.Screen 
+                name='ProfileSelector' 
+                component={ProfileSelector} 
+                options={{ animation: 'none' }}
+            />
+            <Stack.Screen 
+                name='Register' 
+                component={Register} 
+                options={{ animation: 'none' }}
+            />
         </Stack.Navigator>
     );
 }

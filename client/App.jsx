@@ -21,8 +21,15 @@ export default function App() {
       gestureEnabled: false,
     },
     screens: {
-      Auth: { screen: AuthStack },
-      Main: { screen: MainStack },
+      Auth: { 
+        screen: AuthStack,
+        options: {
+          animation: 'fade'
+        }
+      },
+      Main: { 
+        screen: MainStack
+      },
       VideoPlayer: {
         screen: VideoPlayer,
         options: {
