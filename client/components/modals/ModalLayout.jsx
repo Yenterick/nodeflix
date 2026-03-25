@@ -50,9 +50,8 @@ const styles = StyleSheet.create({
     },
 
     contentContainer: {
-        width: '100%',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center'
     }
 });
 

@@ -250,7 +250,7 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
             <View style={[
                 styles.modalContainer,
                 {
-                    maxHeight: '100%'
+                    maxHeight: isSeries ? '86%' : '94%'
                 }
             ]}>
                 {/* Error modal */}
