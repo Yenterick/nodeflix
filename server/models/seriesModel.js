@@ -67,6 +67,12 @@ const seriesModel = {
                  $regex: `^${search}`, $options: 'i' 
                 })
         );
+    },
+
+    selectSeriesNames : async () => {
+        return (
+            await Series.find({}, 'title _id')
+        );
     }
 }
 

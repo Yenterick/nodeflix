@@ -28,6 +28,11 @@ const ProfileEditModal = ({ profile, onClose }) => {
 
     // Function to save the changes
     const handleProfileEdit = async () => {
+        if (!profileName.trim()) {
+            setHasError(true);
+            setErrorMessage('Profile name cannot be empty.');
+            return;
+        }
         try {
             const response = await request(
                 `/profile/${profile.profile_id}`,

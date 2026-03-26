@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Module and components imports
 import InfoModal from './InfoModal';
 import colorScheme from '../../assets/color/colorScheme';
+import PreferencesSelectionModal from './PreferencesSelectionModal';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import ModalLayout from './ModalLayout';
 import Button from '../Button';
@@ -23,9 +24,15 @@ const ProfileAddModal = ({ onClose }) => {
     const [profileName, setProfileName] = useState('');
     const [profilePic, setProfilePic] = useState('https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png');
     const [isKid, setIsKid] = useState(false);
+    const [showPreferencesModal, setShowPreferencesModal] = useState(true);
 
     // Function to handle the profile creation
     const handleProfileAdd = async () => {
+        if (!profileName.trim()) {
+            setHasError(true);
+            setErrorMessage('Profile name cannot be empty.');
+            return;
+        }
         try {
             const userId = await AsyncStorage.getItem('userId');
             const response = await request(
@@ -57,6 +64,11 @@ const ProfileAddModal = ({ onClose }) => {
             {/* Error modal */}
             {hasError &&
                 <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)} />
+            }
+
+            {/* Preferences Modal */}
+            {showPreferencesModal &&
+                <PreferencesSelectionModal onClose={() => setShowPreferencesModal(false)} />
             }
 
             <View style={styles.modalContainer}>

@@ -5,6 +5,7 @@ const { profileModel } = require('../models/profileModel');
 const createProfile = async (req, res) => {
     try {
         const { name, profilePic, isKid, userId } = req.body;
+        if (!name || !name.trim()) return res.status(400).json({ success: false, msg: 'Data missing.' });
         await profileModel.insertProfile(name, profilePic, isKid, userId);
 
         res.status(201).json({ success: true, msg: 'Profile successfully created.' });
@@ -30,6 +31,7 @@ const updateProfile = async (req, res) => {
     try{
         const { profileId } = req.params;
         const { name, profilePic, isKid } = req.body;
+        if (!name || !name.trim()) return res.status(400).json({ success: false, msg: 'Data missing.' });
         await profileModel.updateProfileById(profileId, name, profilePic, isKid);
 
         res.status(200).json({ success: true, msg: 'Profile successfully updated.' });

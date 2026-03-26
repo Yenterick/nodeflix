@@ -50,7 +50,7 @@ const Button = ({
             disabled={disabled}
             style={[
                 {
-                    width: '100%',
+                    alignSelf: 'auto',
                     backgroundColor: color,
                     borderRadius: borderRadius,
                     flexDirection: 'row',

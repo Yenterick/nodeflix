@@ -59,6 +59,12 @@ const movieModel = {
                 } 
             })
         );
+    },
+
+    selectMovieNames : async () => {
+        return (
+            await Movie.find({}, 'title _id')
+        );
     }
 }
 

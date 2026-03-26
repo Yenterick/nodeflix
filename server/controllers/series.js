@@ -23,7 +23,17 @@ const getSeries = async (req, res) => {
     }
 }
 
+const getSeriesNames = async (req, res) => {
+    try {
+        const series = await seriesModel.selectSeriesNames();
+        res.status(200).json({ success: true, msg: 'Series names and IDs successfully retrieved.', data: series });
+    } catch (error) {
+        res.status(500).json({ success: false, msg: error.message });
+    }
+}
+
 module.exports = {
     getAllSeries,
-    getSeries
+    getSeries,
+    getSeriesNames
 }
