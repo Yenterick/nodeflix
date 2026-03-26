@@ -21,10 +21,15 @@ const ProfileAddModal = ({ onClose }) => {
     const { request, loading, error } = useFetch();
 
     // Profile hooks
+    const [createdProfileId, setCreatedProfileId] = useState(null);
     const [profileName, setProfileName] = useState('');
     const [profilePic, setProfilePic] = useState('https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png');
     const [isKid, setIsKid] = useState(false);
-    const [showPreferencesModal, setShowPreferencesModal] = useState(true);
+    const [showPreferencesModal, setShowPreferencesModal] = useState(false);
+
+    // Prefereces hooks
+    const [selectedMovies, setSelectedMovies] = useState([]);
+    const [selectedSeries, setSelectedSeries] = useState([]);
 
     // Function to handle the profile creation
     const handleProfileAdd = async () => {
@@ -48,7 +53,9 @@ const ProfileAddModal = ({ onClose }) => {
             );
 
             if (response && response.success) {
-                onClose();
+                const profileId = response?.data?.profile_id;
+                setCreatedProfileId(profileId);
+                setShowPreferencesModal(true); 
             } else {
                 setHasError(true);
                 setErrorMessage(error || response?.msg || 'An error ocurred while creating the profile!');
@@ -59,6 +66,47 @@ const ProfileAddModal = ({ onClose }) => {
         }
     }
 
+    // Handle preference save
+    const handleCreateNewPreferences = async (profileId, data) => {
+        try {
+            const requests = [
+                ...data.series.map((id) =>
+                    request('/viewEvent', 'POST', {
+                        contentId: id,
+                        contentType: 'series',
+                        season: 1,
+                        episode: 1,
+                        watchedSeconds: 0,
+                        completed: true,
+                        profileId
+                    })
+                ),
+                ...data.movies.map((id) =>
+                    request('/viewEvent', 'POST', {
+                        contentId: id,
+                        contentType: 'movie',
+                        watchedSeconds: 0,
+                        completed: true,
+                        profileId
+                    })
+                )
+            ];
+
+            const responses = await Promise.all(requests);
+
+            for (const response of responses) {
+                if (!response || !response.success) {
+                    throw new Error(response?.msg || 'Error saving preferences');
+                }
+            }
+
+            onClose();
+        } catch (error) {
+            setHasError(true);
+            setErrorMessage(error.message);
+        }
+    };
+
     return (
         <ModalLayout onClose={onClose}>
             {/* Error modal */}
@@ -68,7 +116,7 @@ const ProfileAddModal = ({ onClose }) => {
 
             {/* Preferences Modal */}
             {showPreferencesModal &&
-                <PreferencesSelectionModal onClose={() => setShowPreferencesModal(false)} />
+                <PreferencesSelectionModal onClose={() => setShowPreferencesModal(false)} onSave={(data) => handleCreateNewPreferences(createdProfileId, data)}/>
             }
 
             <View style={styles.modalContainer}>

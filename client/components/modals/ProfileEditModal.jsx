@@ -57,7 +57,6 @@ const ProfileEditModal = ({ profile, onClose }) => {
     }
 
     const handleProfileDelete = async () => {
-        console.log('Button pressed');
         try {
             const response = await request(
                 `/profile/${profile.profile_id}`,

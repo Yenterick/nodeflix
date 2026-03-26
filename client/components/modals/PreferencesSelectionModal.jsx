@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 
 // Module and component imports
@@ -10,7 +10,7 @@ import Button from '../Button';
 import useFetch from '../../hooks/useFetch';
 
 // Modal to let the user select the content thas has already watched
-const PreferencesSelectionModal = ({ onClose }) => {
+const PreferencesSelectionModal = ({ onClose, onSave }) => {
 
     // Various hooks
     const [hasError, setHasError] = useState(false);
@@ -19,6 +19,9 @@ const PreferencesSelectionModal = ({ onClose }) => {
     // Content hooks
     const [movies, setMovies] = useState([]);
     const [series, setSeries] = useState([]);
+
+    const [selectedMovies, setSelectedMovies] = useState(new Set());
+    const [selectedSeries, setSelectedSeries] = useState(new Set());
 
     const { error, loading, request } = useFetch();
 
@@ -64,6 +67,42 @@ const PreferencesSelectionModal = ({ onClose }) => {
         }
     }
 
+    const handlePreferenceTouch = (contentType, itemId) => {
+        if (contentType === 'movie') {
+            setSelectedMovies(prev => {
+                const newSet = new Set(prev);
+                if (newSet.has(itemId)) {
+                    newSet.delete(itemId);
+                } else {
+                    newSet.add(itemId);
+                }
+                return newSet;
+            });
+        } else {
+            setSelectedSeries(prev => {
+                const newSet = new Set(prev);
+                if (newSet.has(itemId)) {
+                    newSet.delete(itemId);
+                } else {
+                    newSet.add(itemId);
+                }
+                return newSet;
+            });
+        }
+    }
+
+    const handleSave = () => {
+        const moviesArray = Array.from(selectedMovies);
+        const seriesArray = Array.from(selectedSeries);
+
+        onSave({
+            movies: moviesArray,
+            series: seriesArray
+        });
+
+        onClose();
+    }
+
     // Load movies and series
     useEffect(() => {
         fetchMovies();
@@ -105,7 +144,10 @@ const PreferencesSelectionModal = ({ onClose }) => {
                                     data={movies}
                                     contentContainerStyle={styles.moviesList}
                                     renderItem={({ item, index }) => (
-                                        <View style={styles.movies}>
+                                        <TouchableOpacity
+                                            style={selectedMovies.has(item._id) ? styles.selectedMovie : styles.movie}
+                                            onPress={() => handlePreferenceTouch('movie', item._id)}
+                                        >
                                             <Text
                                                 style={[
                                                     funnelDisplay.medium,
@@ -114,7 +156,7 @@ const PreferencesSelectionModal = ({ onClose }) => {
                                             >
                                                 {item.title}
                                             </Text>
-                                        </View>
+                                        </TouchableOpacity>
                                     )}
                                     keyExtractor={(item, index) => item._id}
                                 />
@@ -136,7 +178,10 @@ const PreferencesSelectionModal = ({ onClose }) => {
                                     data={series}
                                     contentContainerStyle={styles.seriesList}
                                     renderItem={({ item, index }) => (
-                                        <View style={styles.series}>
+                                        <TouchableOpacity 
+                                            style={selectedSeries.has(item._id) ? styles.selectedSeries : styles.series}
+                                            onPress={() => handlePreferenceTouch('series', item._id)}
+                                        >
                                             <Text
                                                 style={[
                                                     funnelDisplay.medium,
@@ -145,7 +190,7 @@ const PreferencesSelectionModal = ({ onClose }) => {
                                             >
                                                 {item.title}
                                             </Text>
-                                        </View>
+                                        </TouchableOpacity>
                                     )}
                                     keyExtractor={(item, index) => item._id}
                                 >
@@ -183,6 +228,7 @@ const PreferencesSelectionModal = ({ onClose }) => {
                                 }
                             </Button>
                             <Button
+                                onPress={handleSave}
                                 style={
                                     {
                                         flex: 1
@@ -217,7 +263,6 @@ const styles = StyleSheet.create({
     // General styles configuration
     preferencesContainer: {
         width: 340,
-        height: 410,
         backgroundColor: colorScheme.bgDarkGreen,
         borderRadius: 30,
         padding: 24,
@@ -244,7 +289,7 @@ const styles = StyleSheet.create({
 
     // Movies section styles config
     moviesSection: {
-        marginBottom: 36,
+        
     },
 
     moviesList: {
@@ -253,17 +298,26 @@ const styles = StyleSheet.create({
     },
 
     moviesContainer: {
-        height: 60,
-        borderColor: 'yellow',
+        height: 60
     },
 
     movie: {
-        
+        borderWidth: 2,
+        borderColor: colorScheme.green,
+        padding: 4,
+        borderRadius: 10
+    },
+
+    selectedMovie: {
+        borderWidth: 2,
+        borderColor: colorScheme.green,
+        padding: 4,
+        borderRadius: 10,
+        backgroundColor: colorScheme.green
     },
 
     // Series section styles config
     seriesSection: {
-        marginBottom: 36
     },
 
     seriesContainer: {
@@ -276,7 +330,18 @@ const styles = StyleSheet.create({
     },
 
     series: {
-
+        borderWidth: 2,
+        borderColor: colorScheme.green,
+        padding: 4,
+        borderRadius: 10
+    },  
+    
+    selectedSeries: {
+        borderWidth: 2,
+        borderColor: colorScheme.green,
+        padding: 4,
+        borderRadius: 10,
+        backgroundColor: colorScheme.green
     },
 
     // Button styles config

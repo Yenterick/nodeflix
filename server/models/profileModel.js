@@ -49,6 +49,7 @@ const profileModel = {
         });
 
         await createdProfile.save();
+        return createdProfile;
     },
 
     selectProfileById: async (profileId) => {

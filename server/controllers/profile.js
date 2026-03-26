@@ -6,9 +6,9 @@ const createProfile = async (req, res) => {
     try {
         const { name, profilePic, isKid, userId } = req.body;
         if (!name || !name.trim()) return res.status(400).json({ success: false, msg: 'Data missing.' });
-        await profileModel.insertProfile(name, profilePic, isKid, userId);
+        const createdProfile = await profileModel.insertProfile(name, profilePic, isKid, userId);
 
-        res.status(201).json({ success: true, msg: 'Profile successfully created.' });
+        res.status(201).json({ success: true, msg: 'Profile successfully created.', data: createdProfile});
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }
