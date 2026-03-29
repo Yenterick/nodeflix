@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Module and componets imports
 import colorScheme from '../../assets/color/colorScheme';
@@ -40,10 +41,13 @@ const Movies = () => {
     // Load the movies from the backend
     const fetchMovies = async () => {
         try {
-            const response = await request(`/movie/`, 'GET');
+            const response = await request(
+                `/movie/${await AsyncStorage.getItem('isKid') === 'true' ? 'kid' : 'all'}`,
+                'GET'
+            );
 
             if (response && response.success) {
-                if (!response.data || response.data.length === 0) {
+                if (!response.data) {
                     setHasError(true);
                     setErrorMessage('An error has ocurred while retrieving the movies!');
                     return;

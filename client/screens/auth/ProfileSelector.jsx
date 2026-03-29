@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useState, useEffect } from 'react';
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
@@ -66,12 +67,13 @@ const ProfileSelector = () => {
     }
 
     // Function to save in cache all the needed data and redirect to index
-    const handleProfileSelect = async (profileId, profilePic, profileName) => {
+    const handleProfileSelect = async (profileId, profilePic, profileName, isKid) => {
         try {
             await AsyncStorage.multiSet([
                 ['profileId', profileId],
                 ['profilePic', profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png'],
-                ['profileName', profileName]
+                ['profileName', profileName],
+                ['isKid', isKid]
             ]);
             navigation.reset({
                 index: 0,
@@ -107,7 +109,7 @@ const ProfileSelector = () => {
                     color='#FF6B6B'
                     onExit={() => {
                         setHasError(false)
-                        navigation.navigate('login');
+                        navigation.navigate('Login');
                     }}
                 />
             }
@@ -176,11 +178,19 @@ const ProfileSelector = () => {
                                     if (management) {
                                         handleEdit(profile);
                                     } else {
-                                        handleProfileSelect(String(profile.profile_id), profile.profile_pic, profile.name);
+                                        handleProfileSelect(String(profile.profile_id), profile.profile_pic, profile.name, String(profile.is_kid));
                                     }
                                 }}
                             >
                                 <View style={styles.profilePicContainer}>
+                                    {profile.is_kid && 
+                                        <MaterialCommunityIcons 
+                                            name='balloon' 
+                                            size={36} 
+                                            color={colorScheme.darkGreen}
+                                            style={styles.kidBadge}
+                                        />
+                                    }
                                     <Image
                                         source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png' || profile.profile_pic }}
                                         style={[
@@ -306,6 +316,14 @@ const styles = StyleSheet.create({
         margin: 10,
     },
 
+    kidBadge: {
+        position: 'absolute',
+        left: 5,
+        bottom: 5,
+        elevation: 10,
+        zIndex: 10
+    },
+
     addProfile: {
         opacity: 0.5,
     },
@@ -323,6 +341,8 @@ const styles = StyleSheet.create({
         width: 120,
         height: 120,
         borderRadius: 15,
+        elevation: 20,
+        zIndex: 20,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0,0,0,0.4)'

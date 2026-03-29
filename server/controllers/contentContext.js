@@ -5,8 +5,10 @@ const { viewEventModel } = require('../models/viewEventModel');
 // FIXME: Optimize the tendencies charge bc it is N + 1 rn
 
 // Checks for the most watched content
+// Uses req.isKid (injected by kidFilter middleware) to filter kids-only content
 const getAllTendencies = async (req, res) => {
     try {
+        const isKid = req.isKid ?? false;
         const entries = await viewEventModel.selectAllViewEvents();
 
         const tendenciesHashMap = new Map();
@@ -20,6 +22,8 @@ const getAllTendencies = async (req, res) => {
             }
 
             if (content) {
+                // If kid profile, skip content that is not for kids
+                if (isKid && !content.is_for_kids) continue;
                 tendenciesHashMap.set(content._id, (tendenciesHashMap.get(content._id) || 0) + 1);
             }
         }
@@ -40,6 +44,7 @@ const getAllTendencies = async (req, res) => {
 // Checks for the most watched content (only movies)
 const getMovieTendencies = async (req, res) => {
     try {
+        const isKid = req.isKid ?? false;
         const entries = await viewEventModel.selectAllViewEvents();
 
         const tendenciesHashMap = new Map();
@@ -53,6 +58,7 @@ const getMovieTendencies = async (req, res) => {
             }
 
             if (content) {
+                if (isKid && !content.is_for_kids) continue;
                 tendenciesHashMap.set(content._id, (tendenciesHashMap.get(content._id) || 0) + 1);
             }
         }
@@ -73,6 +79,7 @@ const getMovieTendencies = async (req, res) => {
 // Checks for the most watched content (only series)
 const getSeriesTendencies = async (req, res) => {
     try {
+        const isKid = req.isKid ?? false;
         const entries = await viewEventModel.selectAllViewEvents();
 
         const tendenciesHashMap = new Map();
@@ -86,6 +93,7 @@ const getSeriesTendencies = async (req, res) => {
             }
 
             if (content) {
+                if (isKid && !content.is_for_kids) continue;
                 tendenciesHashMap.set(content._id, (tendenciesHashMap.get(content._id) || 0) + 1);
             }
         }

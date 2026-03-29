@@ -32,9 +32,10 @@ const Series = mongoose.model('Series', seriesSchema);
 
 // Series model with all the required functions
 const seriesModel = {
-    selectAllSeries : async () => {
+    selectAllSeries : async (isKid = false) => {
+        const filter = isKid ? { is_for_kids: true } : {};
         return (
-            await Series.find()
+            await Series.find(filter)
         );
     },
 
@@ -44,28 +45,27 @@ const seriesModel = {
         ); 
     },
 
-    selectSeriesByGenresPrecise : async (genres) => { 
+    selectSeriesByGenresPrecise : async (genres, isKid = false) => { 
+        const filter = { genres: { $all: genres } };
+        if (isKid) filter.is_for_kids = true;
         return (
-            await Series.find({ 
-                genres: {$all: genres} 
-            })
+            await Series.find(filter)
         );
     },
 
-    selectSeriesByGenres : async (genres, excludeIds) => { 
+    selectSeriesByGenres : async (genres, excludeIds, isKid = false) => { 
+        const filter = { genres: { $in: genres }, _id: { $nin: excludeIds } };
+        if (isKid) filter.is_for_kids = true;
         return (
-            await Series.find({ 
-                genres: { $in: genres },
-                _id: { $nin: excludeIds }
-            })
+            await Series.find(filter)
         );
     },
 
-    selectSeriesBySearch : async (search) => {
+    selectSeriesBySearch : async (search, isKid = false) => {
+        const filter = { title: { $regex: `^${search}`, $options: 'i' } };
+        if (isKid) filter.is_for_kids = true;
         return (
-            await Series.find({
-                 $regex: `^${search}`, $options: 'i' 
-                })
+            await Series.find(filter)
         );
     },
 

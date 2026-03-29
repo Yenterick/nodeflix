@@ -1,9 +1,11 @@
 const seriesModel = require('../models/seriesModel');
 
 // Selects all the series
+// Accepts optional `kidCheck` boolean in the request params
 const getAllSeries = async (req, res) => {
     try {
-        const series = await seriesModel.selectAllSeries();
+        const isKid = req.params.kidCheck === 'kid';
+        const series = await seriesModel.selectAllSeries(isKid);
 
         res.status(200).json({ success: true, msg: 'Series successfully retrieved.', data: series });
     } catch (error) {

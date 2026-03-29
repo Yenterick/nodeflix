@@ -39,16 +39,24 @@ const getContentDetails = async (req, res) => {
 }
 
 // Checks for all the profile started content
+// Uses req.isKid (injected by kidFilter middleware) to filter kids-only content
 const getProfileStartedContent = async (req, res) => {
     try {
+        const isKid = req.isKid ?? false;
         const { profileId } = req.params;
         const entries = await profileModel.selectProfileViewEvents(profileId);
 
         const data = [];
 
         for (const entry of entries) {
-            if (entry.content_type === 'movie') data.push(await movieModel.selectMovieById(entry.content_id));
-            else data.push(await seriesModel.selectSeriesById(entry.content_id));
+            let content;
+            if (entry.content_type === 'movie') content = await movieModel.selectMovieById(entry.content_id);
+            else content = await seriesModel.selectSeriesById(entry.content_id);
+
+            if (content) {
+                if (isKid && !content.is_for_kids) continue;
+                data.push(content);
+            }
         }
 
         res.status(200).json({ success: true, msg: 'Content details successfully retrieved.', data: data })
@@ -58,16 +66,24 @@ const getProfileStartedContent = async (req, res) => {
 }
 
 // Checks for all the profile list content
+// Uses req.isKid (injected by kidFilter middleware) to filter kids-only content
 const getProfileListContent = async (req, res) => {
     try {
+        const isKid = req.isKid ?? false;
         const { profileId } = req.params;
         const entries = await profileModel.selectProfileListEvents(profileId);
 
         const data = [];
 
         for (const entry of entries) {
-            if (entry.content_type === 'movie') data.push(await movieModel.selectMovieById(entry.content_id));
-            else data.push(await seriesModel.selectSeriesById(entry.content_id));
+            let content;
+            if (entry.content_type === 'movie') content = await movieModel.selectMovieById(entry.content_id);
+            else content = await seriesModel.selectSeriesById(entry.content_id);
+
+            if (content) {
+                if (isKid && !content.is_for_kids) continue;
+                data.push(content);
+            }
         }
 
         res.status(200).json({ success: true, msg: 'Content details successfully retrieved.', data: data })
@@ -83,8 +99,10 @@ const getProfileListContent = async (req, res) => {
     entire movie/series. The points system will be stored in a hashmap
     using the genre as the key and the points as the value.
  */
+// Uses req.isKid (injected by kidFilter middleware) to filter recommendations
 const getProfileRecommendedContent = async (req, res) => {
     try {
+        const isKid = req.isKid ?? false;
         const { profileId } = req.params;
 
         const viewEvents = await profileModel.selectProfileViewEvents(profileId);
@@ -103,6 +121,7 @@ const getProfileRecommendedContent = async (req, res) => {
             }
 
             if (content) {
+                if (isKid && !content.is_for_kids) continue;
                 for (const genre of content.genres) {
                     preferencesHashMap.set(genre, (preferencesHashMap.get(genre) || 0) + 1);
                 }
@@ -120,6 +139,7 @@ const getProfileRecommendedContent = async (req, res) => {
             }
 
             if (content && content.genres) {
+                if (isKid && !content.is_for_kids) continue;
                 const points = entry.interaction_type === 'like' ? 2 : -2;
                 for (const genre of content.genres) {
                     preferencesHashMap.set(genre, (preferencesHashMap.get(genre) || 0) + points);
@@ -137,8 +157,8 @@ const getProfileRecommendedContent = async (req, res) => {
         }
 
         const [candidateMovies, candidateSeries] = await Promise.all([
-            movieModel.selectMoviesByGenres(preferredGenres, Array.from(seenIds)),
-            seriesModel.selectSeriesByGenres(preferredGenres, Array.from(seenIds))
+            movieModel.selectMoviesByGenres(preferredGenres, Array.from(seenIds), isKid),
+            seriesModel.selectSeriesByGenres(preferredGenres, Array.from(seenIds), isKid)
         ]);
 
         const candidates = [...candidateMovies, ...candidateSeries];

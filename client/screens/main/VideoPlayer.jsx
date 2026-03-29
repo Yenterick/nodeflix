@@ -100,7 +100,7 @@ const VideoPlayer = ({ route }) => {
         // Content getter
         const getContent = async () => {
             try {
-                const response = await request(contentType == 'movie' ? `/movie/${contentId}` : `/series/${contentId}`);
+                const response = await request(contentType == 'movie' ? `/movie/details/${contentId}` : `/series/details/${contentId}`);
                 if (response && response.success) {
                     setContent(response.data);
                 } else {

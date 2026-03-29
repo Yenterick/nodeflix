@@ -19,9 +19,10 @@ const Movie = mongoose.model('Movie', movieSchema);
 
 // Movie model with all the required functions
 const movieModel = {
-    selectAllMovies : async () => {
+    selectAllMovies : async (isKid = false) => {
+        const filter = isKid ? { is_for_kids: true } : {};
         return (
-            await Movie.find()
+            await Movie.find(filter)
         );
     },
     
@@ -31,33 +32,27 @@ const movieModel = {
         ); 
     },
 
-    selectMoviesByGenresPrecise : async (genres) => { 
+    selectMoviesByGenresPrecise : async (genres, isKid = false) => { 
+        const filter = { genres: { $all: genres } };
+        if (isKid) filter.is_for_kids = true;
         return (
-            await Movie.find({ 
-                genres: {
-                    $all: genres
-                } 
-            })
+            await Movie.find(filter)
         );
     },
 
-    selectMoviesByGenres : async (genres, excludeIds) => { 
+    selectMoviesByGenres : async (genres, excludeIds, isKid = false) => { 
+        const filter = { genres: { $in: genres }, _id: { $nin: excludeIds } };
+        if (isKid) filter.is_for_kids = true;
         return (
-            await Movie.find({ 
-                genres: { $in: genres },
-                _id: { $nin: excludeIds }
-            })
+            await Movie.find(filter)
         );
     },
 
-    selectMovieBySearch : async (search) => {
+    selectMovieBySearch : async (search, isKid = false) => {
+        const filter = { title: { $regex: `^${search}`, $options: 'i' } };
+        if (isKid) filter.is_for_kids = true;
         return (
-            await Movie.find({
-                title: {
-                    $regex: `^${search}`,
-                    $options: 'i'
-                } 
-            })
+            await Movie.find(filter)
         );
     },
 
