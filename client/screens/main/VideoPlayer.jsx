@@ -123,7 +123,6 @@ const VideoPlayer = ({ route }) => {
 
     }, [contentId, contentType, currentEpisode, currentSeason]);
 
-    // TODO: Maybe change the episode finder later :D
     // Video player creation
     const videoUrl =
         contentType === 'movie'

@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // Module and component imports
 import ModalLayout from './ModalLayout';
@@ -9,12 +10,14 @@ import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import Button from '../Button';
 import useFetch from '../../hooks/useFetch';
 
-// Modal to let the user select the content thas has already watched
+// Preferences selection modal
 const PreferencesSelectionModal = ({ onClose, onSave }) => {
 
     // Various hooks
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('An error has ocurred while fetching the content!');
+
+    const { error, loading, request } = useFetch();
 
     // Content hooks
     const [movies, setMovies] = useState([]);
@@ -23,11 +26,10 @@ const PreferencesSelectionModal = ({ onClose, onSave }) => {
     const [selectedMovies, setSelectedMovies] = useState(new Set());
     const [selectedSeries, setSelectedSeries] = useState(new Set());
 
-    const { error, loading, request } = useFetch();
-
+    // Function to fetch the movies
     const fetchMovies = async () => {
         try {
-            const response = await request(`/movie/names`, 'GET');
+            const response = await request('/movie/names', 'GET');
 
             if (response && response.success) {
                 if (!response.data || response.data.length === 0) {
@@ -46,9 +48,10 @@ const PreferencesSelectionModal = ({ onClose, onSave }) => {
         }
     }
 
+    // Function to fetch the series
     const fetchSeries = async () => {
         try {
-            const response = await request(`/series/names`, 'GET');
+            const response = await request('/series/names', 'GET');
 
             if (response && response.success) {
                 if (!response.data || response.data.length === 0) {
@@ -67,6 +70,7 @@ const PreferencesSelectionModal = ({ onClose, onSave }) => {
         }
     }
 
+    // Function to handle the preference selection
     const handlePreferenceTouch = (contentType, itemId) => {
         if (contentType === 'movie') {
             setSelectedMovies(prev => {
@@ -91,6 +95,7 @@ const PreferencesSelectionModal = ({ onClose, onSave }) => {
         }
     }
 
+    // Function to save the preferences
     const handleSave = () => {
         const moviesArray = Array.from(selectedMovies);
         const seriesArray = Array.from(selectedSeries);
@@ -109,256 +114,342 @@ const PreferencesSelectionModal = ({ onClose, onSave }) => {
         fetchSeries();
     }, [])
 
+    const totalSelected = selectedMovies.size + selectedSeries.size;
+
+    // Function to render a chip
+    const renderChip = (item, isSelected, contentType) => (
+        <TouchableOpacity
+            style={[
+                styles.chip,
+                isSelected && styles.chipSelected
+            ]}
+            onPress={() => handlePreferenceTouch(contentType, item._id)}
+            activeOpacity={0.75}
+        >
+            {isSelected && (
+                <MaterialIcons
+                    name="check"
+                    size={13}
+                    color="white"
+                    style={styles.chipCheck}
+                />
+            )}
+            <Text
+                style={[
+                    funnelDisplay.medium,
+                    styles.chipText,
+                    isSelected && styles.chipTextSelected
+                ]}
+            >
+                {item.title}
+            </Text>
+        </TouchableOpacity>
+    );
+
     return (
         <ModalLayout onClose={onClose}>
             {/* Error modal */}
             {hasError &&
-                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => setHasError(false)} />
+                <InfoModal
+                    text={errorMessage}
+                    icon='error-outline'
+                    color='#FF6B6B'
+                    onExit={() => setHasError(false)}
+                />
             }
 
-            {/* General container with the modal */}
+            {/* Preferences selection container */}
             <View style={styles.preferencesContainer}>
-                {loading ? 
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <ActivityIndicator
-                            color='white'
-                            size='large'
-                            style={{ transform: [{ scale: 3 }] }}
-                        />
-                    </View>
-                :
-                    <>
-                        <View style={styles.moviesSection}>
-                            <Text
-                                style={[
-                                    funnelDisplay.bold,
-                                    styles.label
-                                ]}
-                            >
-                                Have you seen any of these movies?
-                            </Text>
-                            <View style={styles.moviesContainer}>
-                                <FlatList
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    data={movies}
-                                    contentContainerStyle={styles.moviesList}
-                                    renderItem={({ item, index }) => (
-                                        <TouchableOpacity
-                                            style={selectedMovies.has(item._id) ? styles.selectedMovie : styles.movie}
-                                            onPress={() => handlePreferenceTouch('movie', item._id)}
-                                        >
-                                            <Text
-                                                style={[
-                                                    funnelDisplay.medium,
-                                                    styles.contentTitle
-                                                ]}
-                                            >
-                                                {item.title}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    )}
-                                    keyExtractor={(item, index) => item._id}
-                                />
-                            </View>
-                        </View>
-                        <View style={styles.seriesSection}>
-                            <Text
-                                style={[
-                                    funnelDisplay.bold,
-                                    styles.label
-                                ]}
-                            >
-                                What about these series?
-                            </Text>
-                            <View style={styles.seriesContainer}>
-                                <FlatList
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    data={series}
-                                    contentContainerStyle={styles.seriesList}
-                                    renderItem={({ item, index }) => (
-                                        <TouchableOpacity 
-                                            style={selectedSeries.has(item._id) ? styles.selectedSeries : styles.series}
-                                            onPress={() => handlePreferenceTouch('series', item._id)}
-                                        >
-                                            <Text
-                                                style={[
-                                                    funnelDisplay.medium,
-                                                    styles.contentTitle
-                                                ]}
-                                            >
-                                                {item.title}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    )}
-                                    keyExtractor={(item, index) => item._id}
-                                >
 
-                                </FlatList>
+                {/* Header section */}
+                <View style={styles.header}>
+                    <Text
+                        style={[
+                            funnelDisplay.bold,
+                            styles.headerTitle
+                        ]}
+                    >
+                        What have you seen?
+                    </Text>
+                    <Text
+                        style={[
+                            funnelDisplay.medium,
+                            styles.headerSubtitle
+                        ]}
+                    >
+                        Help us personalise your experience
+                    </Text>
+                </View>
+
+                {/* Divider section */}
+                <View style={styles.divider} />
+
+                {loading ?
+                    <View style={styles.loaderWrapper}>
+                        <ActivityIndicator
+                            color={colorScheme.lightGreen}
+                            size='large'
+                        />
+                        <Text
+                            style={[
+                                funnelDisplay.medium,
+                                styles.loadingText
+                            ]}
+                        >
+                            Loading content…
+                        </Text>
+                    </View>
+                    :
+                    <>
+                        {/* Movies section */}
+                        <View style={styles.section}>
+                            <View style={styles.sectionHeader}>
+                                <MaterialIcons
+                                    name="movie"
+                                    size={16}
+                                    color={colorScheme.lightGreen}
+                                />
+                                <Text
+                                    style={[
+                                        funnelDisplay.bold,
+                                        styles.sectionLabel
+                                    ]}
+                                >
+                                    Movies
+                                </Text>
+                                {selectedMovies.size > 0 && (
+                                    <View style={styles.badge}>
+                                        <Text style={styles.badgeText}>
+                                            {selectedMovies.size}
+                                        </Text>
+                                    </View>
+                                )}
                             </View>
+                            <FlatList
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                data={movies}
+                                contentContainerStyle={styles.chipList}
+                                renderItem={({ item }) => renderChip(item, selectedMovies.has(item._id), 'movie')}
+                                keyExtractor={(item) => item._id}
+                            />
                         </View>
+
+                        {/* Series section */}
+                        <View style={styles.section}>
+                            <View style={styles.sectionHeader}>
+                                <MaterialIcons
+                                    name="tv"
+                                    size={16}
+                                    color={colorScheme.lightGreen}
+                                />
+                                <Text
+                                    style={[
+                                        funnelDisplay.bold,
+                                        styles.sectionLabel
+                                    ]}
+                                >
+                                    Series
+                                </Text>
+                                {selectedSeries.size > 0 && (
+                                    <View style={styles.badge}>
+                                        <Text style={styles.badgeText}>
+                                            {selectedSeries.size}
+                                        </Text>
+                                    </View>
+                                )}
+                            </View>
+                            <FlatList
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                data={series}
+                                contentContainerStyle={styles.chipList}
+                                renderItem={({ item }) => renderChip(item, selectedSeries.has(item._id), 'series')}
+                                keyExtractor={(item) => item._id}
+                            />
+                        </View>
+
+                        {/* Buttons section */}
                         <View style={styles.buttonContainer}>
                             <Button
                                 onPress={onClose}
                                 color={colorScheme.bgDarkGreen}
                                 style={[
                                     styles.cancelButton,
-                                    {
-                                        flex: 1
-                                    }
+                                    { flex: 1 }
                                 ]}
                             >
-                                {loading ?
-                                    <ActivityIndicator
-                                        size="small"
-                                        color="white"
-                                    />
-                                    :
-                                    <Text style={[
+                                <Text
+                                    style={[
                                         funnelDisplay.bold,
                                         styles.buttonText,
-                                        {
-                                            color: colorScheme.green
-                                        }
+                                        { color: colorScheme.lightGreen }
                                     ]}
-                                    >
-                                        Skip
-                                    </Text>
-                                }
+                                >
+                                    Skip
+                                </Text>
                             </Button>
                             <Button
                                 onPress={handleSave}
-                                style={
-                                    {
-                                        flex: 1
-                                    }
-                                }
+                                style={{ flex: 1 }}
                             >
-                                {loading ?
-                                    <ActivityIndicator
-                                        size="small"
-                                        color="white"
-                                    />
-                                    :
-                                    <Text style={[
+                                <Text
+                                    style={[
                                         funnelDisplay.bold,
                                         styles.buttonText
                                     ]}
-                                    >
-                                        Save
-                                    </Text>
-                                }
+                                >
+                                    {totalSelected > 0 ? `Save (${totalSelected})` : 'Save'}
+                                </Text>
                             </Button>
                         </View>
                     </>
                 }
             </View>
-            
         </ModalLayout>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
-    // General styles configuration
+    // Preferences container styles config
     preferencesContainer: {
         width: 340,
         backgroundColor: colorScheme.bgDarkGreen,
-        borderRadius: 30,
+        borderRadius: 28,
         padding: 24,
         alignItems: 'center',
         shadowColor: colorScheme.green,
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.4,
-        shadowRadius: 12,
-        elevation: 10,
-        zIndex: 20
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.5,
+        shadowRadius: 20,
+        elevation: 12,
+        zIndex: 20,
+        gap: 16
     },
 
-    // Titles styles config
-    label: {
-        fontSize: 24,
-        textAlign: 'left',
+    // Header styles config
+    header: {
+        alignItems: 'center',
+        gap: 6,
+        width: '100%'
+    },
+
+    headerTitle: {
+        fontSize: 20,
+        color: 'white',
+        textAlign: 'center'
+    },
+
+    headerSubtitle: {
+        fontSize: 13,
+        color: colorScheme.lightGreen,
+        textAlign: 'center',
+        opacity: 0.9
+    },
+
+    divider: {
+        width: '100%',
+        height: 1,
+        backgroundColor: colorScheme.darkGreen
+    },
+
+    loaderWrapper: {
+        paddingVertical: 32,
+        alignItems: 'center',
+        gap: 12
+    },
+
+    loadingText: {
+        color: colorScheme.lightGreen,
+        fontSize: 14,
+        opacity: 0.8
+    },
+
+    // Section styles config
+    section: {
+        width: '100%',
+        gap: 10
+    },
+
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6
+    },
+
+    sectionLabel: {
+        fontSize: 15,
         color: 'white'
     },
 
-    contentTitle: {
+    badge: {
+        backgroundColor: colorScheme.green,
+        borderRadius: 10,
+        minWidth: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 5
+    },
+
+    badgeText: {
         color: 'white',
-        fontSize: 12
+        fontSize: 11,
+        fontWeight: 'bold'
     },
 
-    // Movies section styles config
-    moviesSection: {
-        
+    // Chips styles config
+    chipList: {
+        paddingVertical: 4,
+        gap: 8,
+        paddingHorizontal: 2
     },
 
-    moviesList: {
+    chip: {
+        flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 4
-    },
-
-    moviesContainer: {
-        height: 60
-    },
-
-    movie: {
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: colorScheme.green,
-        padding: 4,
-        borderRadius: 10
+        paddingVertical: 7,
+        paddingHorizontal: 14,
+        borderRadius: 20,
+        gap: 4
     },
 
-    selectedMovie: {
-        borderWidth: 2,
-        borderColor: colorScheme.green,
-        padding: 4,
-        borderRadius: 10,
-        backgroundColor: colorScheme.green
+    chipSelected: {
+        backgroundColor: colorScheme.green,
+        borderColor: colorScheme.green
     },
 
-    // Series section styles config
-    seriesSection: {
+    chipCheck: {
+        marginRight: 1
     },
 
-    seriesContainer: {
-        height: 60
+    chipText: {
+        color: colorScheme.lightGreen,
+        fontSize: 13
     },
 
-    seriesList: {
-        alignItems: 'center',
-        paddingHorizontal: 4
+    chipTextSelected: {
+        color: 'white'
     },
 
-    series: {
-        borderWidth: 2,
-        borderColor: colorScheme.green,
-        padding: 4,
-        borderRadius: 10
-    },  
-    
-    selectedSeries: {
-        borderWidth: 2,
-        borderColor: colorScheme.green,
-        padding: 4,
-        borderRadius: 10,
-        backgroundColor: colorScheme.green
-    },
-
-    // Button styles config
+    // Action buttons styles config
     buttonContainer: {
         flexDirection: 'row',
         width: '100%',
-        gap: 12
+        gap: 12,
+        marginTop: 4
     },
 
     cancelButton: {
         borderColor: colorScheme.green,
-        borderWidth: 2
+        borderWidth: 1.5
     },
 
     buttonText: {
         color: 'white',
-        fontSize: 16
+        fontSize: 15
     }
 });
 

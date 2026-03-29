@@ -15,7 +15,6 @@ import Button from '../Button';
 import ModalLayout from './ModalLayout';
 import Divider from '../Divider';
 
-// TODO: Check if i'll handle the interactions in the modal or in the screen
 // Modal to show the content info
 const ContentInfoModal = ({ item, contentType, onClose }) => {
 
@@ -58,7 +57,6 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
 
     const [mutedIcon, setMutedIcon] = useState(true);
 
-    // FIXME: Link with mute status
     const toggleMute = () => {
         if (!player) return;
         player.muted = !player.muted;
@@ -360,7 +358,17 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                                 styles.buttonText
                             ]}
                             >
-                                {watchedProgress && !watchedProgress.completed ? 'Continue Watching' : 'Play'}
+                                {loading ?
+                                    <ActivityIndicator
+                                        color='white'
+                                        size='small'
+                                    />
+                                    :
+                                    <>
+                                        {watchedProgress && !watchedProgress.completed ? 'Continue Watching' : 'Play'}
+                                    </>
+                                }
+                                
                             </Text>
                         </Button>
                     </View>

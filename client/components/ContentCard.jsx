@@ -1,10 +1,16 @@
-import { View, Pressable, Image } from 'react-native';
+import { useState } from 'react';
+import { Pressable, Image } from 'react-native';
 
 // Module and components imports
-import colorScheme from '../assets/color/colorScheme';
-import { funnelDisplay } from '../assets/fonts/funnelDisplay';
+import SkeletonCard from './SkeletonCard';
 
 const ContentCard = ({ uriSource, onPress, style }) => {
+    const [imageError, setImageError] = useState(false);
+
+    if (imageError) {
+        return <SkeletonCard style={[{ marginHorizontal: 10 }, style]} />;
+    }
+
     return (
         <Pressable
             onPress={onPress}
@@ -25,10 +31,10 @@ const ContentCard = ({ uriSource, onPress, style }) => {
                         borderRadius: 10
                     }
                 }
-            >
-            </Image>
+                onError={() => setImageError(true)}
+            />
         </Pressable>
-    )
-}
+    );
+};
 
 export default ContentCard;

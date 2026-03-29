@@ -7,8 +7,6 @@ import ModalLayout from './ModalLayout';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import colorScheme from '../../assets/color/colorScheme';
 
-// TODO: Implement info modal in all screens
-
 // Info Modal
 const InfoModal = ({ text, icon, onExit, color = colorScheme.green }) => {
     return (

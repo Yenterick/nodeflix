@@ -36,7 +36,6 @@ const AuthStack = ({ Navigator }) => {
     }
 
     return (
-        // TODO: Invert ProfileSelector and Login after debugging 
         <Stack.Navigator
             initialRouteName={initialRoute}
             screenOptions={{

@@ -55,7 +55,7 @@ const ProfileAddModal = ({ onClose }) => {
             if (response && response.success) {
                 const profileId = response?.data?.profile_id;
                 setCreatedProfileId(profileId);
-                setShowPreferencesModal(true); 
+                setShowPreferencesModal(true);
             } else {
                 setHasError(true);
                 setErrorMessage(error || response?.msg || 'An error ocurred while creating the profile!');
@@ -107,6 +107,12 @@ const ProfileAddModal = ({ onClose }) => {
         }
     };
 
+    // Hanlde skip
+    const handleSkip = () => {
+        setShowPreferencesModal(false);
+        onClose();
+    };
+
     return (
         <ModalLayout onClose={onClose}>
             {/* Error modal */}
@@ -116,7 +122,7 @@ const ProfileAddModal = ({ onClose }) => {
 
             {/* Preferences Modal */}
             {showPreferencesModal &&
-                <PreferencesSelectionModal onClose={() => setShowPreferencesModal(false)} onSave={(data) => handleCreateNewPreferences(createdProfileId, data)}/>
+                <PreferencesSelectionModal onClose={handleSkip} onSave={(data) => handleCreateNewPreferences(createdProfileId, data)} />
             }
 
             <View style={styles.modalContainer}>

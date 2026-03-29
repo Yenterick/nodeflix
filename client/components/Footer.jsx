@@ -1,26 +1,54 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
-// Module and components imports 
+// Module imports 
 import colorScheme from '../assets/color/colorScheme';
 import { funnelDisplay } from '../assets/fonts/funnelDisplay';
 
+// Constants needed to get the button width
+const { width } = Dimensions.get('window');
+const BUTTON_COUNT = 4;
+const BUTTON_WIDTH = width / BUTTON_COUNT;
+
 const Footer = ({ state, navigation }) => {
     const insets = useSafeAreaInsets();
+
+    // Shared value hook to animate
+    const translateX = useSharedValue(0);
+
+    useEffect(() => {
+        translateX.value = withTiming(state.index * BUTTON_WIDTH, {
+            duration: 250
+        });
+    }, [state.index]);
+
+    // Translating the X position to slide
+    const animatedIndicatorStyle = useAnimatedStyle(() => ({
+        transform: [
+            { translateX: translateX.value }
+        ]
+    }));
 
     return (
         <View
             style={[
                 styles.footer,
-                {
-                    paddingBottom: insets.bottom
-                }
+                { paddingBottom: insets.bottom }
             ]}
         >
-            {/* Home Button */}
+            {/* Indicator */}
+            <Animated.View
+                style={[
+                    styles.indicator,
+                    { width: BUTTON_WIDTH },
+                    animatedIndicatorStyle
+                ]}
+            />
+
+            {/* Home */}
             <TouchableOpacity
                 style={styles.footerButton}
                 onPress={() => navigation.navigate('Index')}
@@ -28,20 +56,18 @@ const Footer = ({ state, navigation }) => {
                 <MaterialIcons
                     name="home"
                     size={36}
-                    color={state.index === 0 ? 'white' : 'gray'}
+                    color={state.index === 0 ? colorScheme.green : 'white'}
                 />
-                <Text
-                    style={[
-                        funnelDisplay.semibold,
-                        styles.footerButtonText,
-                        { color: state.index === 0 ? 'white' : 'gray' }
-                    ]}
-                >
+                <Text style={[
+                    funnelDisplay.semibold,
+                    styles.footerButtonText,
+                    { color: state.index === 0 ? colorScheme.green : 'white' }
+                ]}>
                     Home
                 </Text>
             </TouchableOpacity>
 
-            {/* Movies Button */}
+            {/* Movies */}
             <TouchableOpacity
                 style={styles.footerButton}
                 onPress={() => navigation.navigate('Movies')}
@@ -49,20 +75,18 @@ const Footer = ({ state, navigation }) => {
                 <MaterialIcons
                     name="local-movies"
                     size={36}
-                    color={state.index === 1 ? 'white' : 'gray'}
+                    color={state.index === 1 ? colorScheme.green : 'white'}
                 />
-                <Text
-                    style={[
-                        funnelDisplay.semibold,
-                        styles.footerButtonText,
-                        { color: state.index === 1 ? 'white' : 'gray' }
-                    ]}
-                >
+                <Text style={[
+                    funnelDisplay.semibold,
+                    styles.footerButtonText,
+                    { color: state.index === 1 ? colorScheme.green : 'white' }
+                ]}>
                     Movies
                 </Text>
             </TouchableOpacity>
 
-            {/* Series Button */}
+            {/* Series */}
             <TouchableOpacity
                 style={styles.footerButton}
                 onPress={() => navigation.navigate('Series')}
@@ -70,20 +94,18 @@ const Footer = ({ state, navigation }) => {
                 <MaterialIcons
                     name="smart-display"
                     size={36}
-                    color={state.index === 2 ? 'white' : 'gray'}
+                    color={state.index === 2 ? colorScheme.green : 'white'}
                 />
-                <Text
-                    style={[
-                        funnelDisplay.semibold,
-                        styles.footerButtonText,
-                        { color: state.index === 2 ? 'white' : 'gray' }
-                    ]}
-                >
+                <Text style={[
+                    funnelDisplay.semibold,
+                    styles.footerButtonText,
+                    { color: state.index === 2 ? colorScheme.green : 'white' }
+                ]}>
                     Series
                 </Text>
             </TouchableOpacity>
 
-            {/* Exit Button */}
+            {/* Exit */}
             <TouchableOpacity
                 style={styles.footerButton}
                 onPress={() => {
@@ -96,46 +118,47 @@ const Footer = ({ state, navigation }) => {
                 <MaterialIcons
                     name="logout"
                     size={36}
-                    color='#FF6B6B'
+                    color="#FF6B6B"
                 />
-                <Text
-                    style={[
-                        funnelDisplay.semibold,
-                        styles.footerButtonText
-                    ]}
-                >
+                <Text style={[
+                    funnelDisplay.semibold,
+                    styles.footerButtonText,
+                    { color: '#FF6B6B' }
+                ]}>
                     Exit
                 </Text>
             </TouchableOpacity>
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
-
-    // Footer styles config
+    // General styles config
     footer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
         alignItems: 'center',
-        paddingTop: 10,
         width: '100%',
-        height: 'auto',
         backgroundColor: colorScheme.bgDarkGreen,
+        position: 'relative'
+    },
+
+    indicator: {
+        position: 'absolute',
+        top: 0,
+        height: 2,
+        backgroundColor: colorScheme.green,
     },
 
     footerButton: {
-        flexDirection: 'column',
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        paddingVertical: 10,
     },
 
     footerButtonText: {
         textAlign: 'center',
-        color: 'white',
-        color: '#FF6B6B'
     }
 });
 
 export default Footer;
-

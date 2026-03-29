@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import ContentCard from '../../components/ContentCard';
+import SkeletonCard from '../../components/SkeletonCard';
 import InfoModal from '../../components/modals/InfoModal';
 import ContentInfoModal from '../../components/modals/ContentInfoModal';
 import useFetch from '../../hooks/useFetch';
@@ -77,7 +78,6 @@ const Movies = () => {
             {hasError &&
                 <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => navigation.reset({ index: 0, routes: [{ name: 'Auth' }] })} />
             }
-            {/* TODO: Implement functionality on all the modal buttons */}
             {showMovieInfoModal &&
                 <ContentInfoModal item={selectedMovie} contentType='movie' onClose={() => setShowMovieInfoModal(false)} />
             }
@@ -99,14 +99,7 @@ const Movies = () => {
                                 onPress={() => handleSelectMovie(item)}
                             />
                         ) : (
-                            <View
-                                style={[
-                                    styles.placeholder,
-                                    {
-                                        opacity: 1 - index * 0.12
-                                    }
-                                ]}
-                            />
+                            <SkeletonCard style={{ opacity: 1 - index * 0.12 }} />
                         )
                     }
                     keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
@@ -128,14 +121,7 @@ const Movies = () => {
                                 onPress={() => handleSelectMovie(item)}
                             />
                         ) : (
-                            <View
-                                style={[
-                                    styles.placeholder,
-                                    {
-                                        opacity: 1 - index * 0.12
-                                    }
-                                ]}
-                            />
+                            <SkeletonCard style={{ opacity: 1 - index * 0.12 }} />
                         )
                     }
                     keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
@@ -160,14 +146,7 @@ const styles = StyleSheet.create({
         fontSize: 24
     },
 
-    // Placeholder style config
-    placeholder: {
-        width: 120,
-        height: 180,
-        backgroundColor: colorScheme.bgDarkGreen,
-        borderRadius: 10,
-        marginHorizontal: 6
-    }
+    // Placeholder style config removed - handled by SkeletonCard
 });
 
 export default Movies;
