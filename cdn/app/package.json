@@ -1,0 +1,25 @@
+{
+  "name": "nodeflix-cdn-app",
+  "version": "1.0.0",
+  "description": "Content distribution network app for Nodeflix.",
+  "keywords": [
+    "cdn",
+    "hls",
+    "nodeflix",
+    "desktop"
+  ],
+  "license": "ISC",
+  "author": "Yenterick",
+  "type": "commonjs",
+  "main": "./src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "nodemon --watch . --exec 'electron .'"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "electron": "^41.1.0"
+  }
+}
