@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodeflix Media Processor - Content</title>
+    <link rel="shortcut icon" href="../../public/assets/icon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap" rel="stylesheet">
+</head>
+<body class="processor-page">
+    <!-- Header with app name and important logos -->
+    <div class="header">
+        <p class="title">
+            Nodeflix
+        </p>
+        <button 
+            type="button" 
+            id="backBtn"
+            class="back-link"
+        >
+            Back
+        </button>
+        <div class="logos">
+            <img 
+                class="logo" 
+                src="../../public/assets/icon.png" 
+                alt="nodeflix-logo"
+            >
+            <hr class="divider">
+            <img 
+                class="logo" 
+                src="../../public/assets/universidadLibre.png" 
+                alt="universidadLibre-logo"
+            >
+        </div>
+    </div>
+
+    <div class="processor-wrapper">
+        <div class="type-selector">
+            <button 
+                type="button" 
+                id="movieTab" 
+                class="tab-btn active"
+            >
+                Movie
+            </button>
+            <button 
+                type="button" 
+                id="seriesTab" 
+                class="tab-btn"
+            >
+                Series
+            </button>
+        </div>
+
+        <form id="mediaForm" class="environment-form">
+            <div id="commonFields">
+                <div class="form-section">
+                    <p class="form-title">
+                        General Information
+                    </p>
+                    <div class="form-line">
+                        <div class="form-group">
+                            <label for="title">
+                                Title
+                            </label>
+                            <input 
+                                type="text" 
+                                id="title" 
+                                placeholder="Media title..." 
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="year">
+                                Release Year
+                            </label>
+                            <input 
+                                type="number" 
+                                id="year" 
+                                placeholder="2024" 
+                                required
+                            >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">
+                            Description
+                        </label>
+                        <textarea 
+                            id="description" 
+                            rows="3" 
+                            placeholder="Media description..." 
+                            required
+                        ></textarea>
+                    </div>
+                    <div class="form-line">
+                        <div class="form-group">
+                            <label>
+                                Genres
+                            </label>
+                            <div 
+                                id="genresContainer" 
+                                class="genres-grid"
+                            >
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Action">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Action
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Comedy">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Comedy
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Drama">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Drama
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Horror">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Horror
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Sci-Fi">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Sci-Fi
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Thriller">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Thriller
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Romance">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Romance
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Documentary">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Documentary
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Animation">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Animation
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Family">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Family
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Fantasy">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Fantasy
+                                </label>
+                                <label class="genre-chip">
+                                    <input 
+                                        type="checkbox" 
+                                        value="Crime">
+                                    <svg 
+                                        class="check-icon" 
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                    </svg>
+                                    Crime
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cast">
+                                Cast (comma separated)
+                            </label>
+                            <input 
+                                type="text" 
+                                id="cast" 
+                                placeholder="Will Smith, Jovanny..." 
+                                required
+                            >
+                        </div>
+                    </div>
+                    <div class="form-line">
+                        <div class="form-group">
+                            <label for="mainThumbnail">
+                                Main Thumbnail
+                            </label>
+                            <div class="file-input-group">
+                                <input 
+                                    type="text" 
+                                    id="mainThumbnail" 
+                                    placeholder="Thumbnail path..." 
+                                    required 
+                                    readonly
+                                >
+                                <button 
+                                    type="button" 
+                                    class="browse-btn" 
+                                    data-input="mainThumbnail"
+                                >
+                                    Browse
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <div class="checkbox-group">
+                                <input 
+                                    type="checkbox" 
+                                    id="isForKids"
+                                >
+                                <label for="isForKids">
+                                    Is for kids?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="movieSection">
+                <div class="form-section">
+                    <p class="form-title">
+                        Movie Files
+                    </p>
+                    <div class="form-line">
+                        <div class="form-group">
+                            <label for="movieVideo">
+                                Video file
+                            </label>
+                            <div class="file-input-group">
+                                <input 
+                                    type="text" 
+                                    id="movieVideo" 
+                                    placeholder="Video path..." 
+                                    required 
+                                    readonly
+                                >
+                                <button 
+                                    type="button" 
+                                    class="browse-btn" 
+                                    data-input="movieVideo"
+                                >
+                                    Browse
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">
+                                Duration (seconds)
+                            </label>
+                            <input 
+                                type="number" 
+                                id="duration" 
+                                placeholder="e.g. 7200"
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div 
+                id="seriesSection" 
+                style="display: none;"
+            >
+                <div class="form-section">
+                    <p class="form-title">
+                        Seasons & Episodes
+                    </p>
+                    <div id="seasonsContainer"></div>
+                    <button 
+                        type="button" 
+                        id="addSeason" 
+                        class="action-btn"
+                    >
+                        + Add Season
+                    </button>
+                </div>
+            </div>
+
+            <div
+                id="processStatus" 
+                class="status-message"
+            ></div>
+            <button 
+                type="submit" 
+                id="processBtn"
+            >
+                Process & Upload
+            </button>
+        </form>
+    </div>
+
+    <div 
+        id="errorModal" 
+        class="modal-overlay"
+    >
+        <div class="error-modal-card">
+            <h2 class="error-modal-title">
+                Error
+            </h2>
+            <p 
+                id="errorModalMessage" 
+                class="error-modal-message"
+            ></p>
+            <button 
+                id="closeModalBtn" 
+                class="close-modal-btn"
+            >
+                Accept
+            </button>
+        </div>
+    </div>
+
+    <script src="processorScript.js"></script>
+</body>
+</html>
