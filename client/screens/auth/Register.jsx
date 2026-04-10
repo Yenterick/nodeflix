@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import Animated, { FadeInRight, FadeInUp } from 'react-native-reanimated';
+import Animated, { FadeInRight, FadeInUp, useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useState } from 'react'
 
 // Component imports
@@ -33,6 +33,24 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    // Scale shared values
+    const emailScale = useSharedValue(1);
+    const passwordScale = useSharedValue(1);
+    const confirmPasswordScale = useSharedValue(1);
+
+    // Animated styles
+    const emailAnimatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: withSpring(emailScale.value) }]
+    }));
+
+    const passwordAnimatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: withSpring(passwordScale.value) }]
+    }));
+
+    const confirmPasswordAnimatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: withSpring(confirmPasswordScale.value) }]
+    }));
 
     const [showInfoModal, setShowInfoModal] = useState(false);
 
@@ -147,22 +165,26 @@ const Register = () => {
                     ]}>
                         Email
                     </Text>
-                    <TextInput
-                        placeholder='Insert your email...'
-                        placeholderTextColor={'gray'}
-                        value={email}
-                        maxLength={64}
-                        onChangeText={setEmail}
-                        keyboardAppearance='dark'
-                        style={[funnelDisplay.medium, styles.input]}
-                    />
+                    <Animated.View style={emailAnimatedStyle}>
+                        <TextInput
+                            placeholder='Insert your email...'
+                            placeholderTextColor={'gray'}
+                            value={email}
+                            maxLength={64}
+                            onChangeText={setEmail}
+                            keyboardAppearance='dark'
+                            style={[funnelDisplay.medium, styles.input]}
+                            onFocus={() => { emailScale.value = 1.03 }}
+                            onBlur={() => { emailScale.value = 1 }}
+                        />
+                    </Animated.View>
                     <Text style={[
                         funnelDisplay.semibold,
                         styles.label
                     ]}>
                         Password
                     </Text>
-                    <View style={styles.passwordContainer}>
+                    <Animated.View style={[styles.passwordContainer, passwordAnimatedStyle]}>
                         <TextInput
                             placeholder='Insert your password...'
                             placeholderTextColor={'gray'}
@@ -172,6 +194,8 @@ const Register = () => {
                             secureTextEntry={secure}
                             keyboardAppearance='dark'
                             style={[funnelDisplay.medium, styles.passwordInput]}
+                            onFocus={() => { passwordScale.value = 1.03 }}
+                            onBlur={() => { passwordScale.value = 1 }}
                         />
                         <TouchableOpacity onPress={() => setSecure(!secure)}>
                             <Ionicons
@@ -180,14 +204,14 @@ const Register = () => {
                                 color='gray'
                             />
                         </TouchableOpacity>
-                    </View>
+                    </Animated.View>
                     <Text style={[
                         funnelDisplay.semibold,
                         styles.label
                     ]}>
                         Confirm Password
                     </Text>
-                    <View style={styles.passwordContainer}>
+                    <Animated.View style={[styles.passwordContainer, confirmPasswordAnimatedStyle]}>
                         <TextInput
                             placeholder='Insert your password again...'
                             placeholderTextColor={'gray'}
@@ -197,6 +221,8 @@ const Register = () => {
                             secureTextEntry={secureConfirm}
                             keyboardAppearance='dark'
                             style={[funnelDisplay.medium, styles.passwordInput]}
+                            onFocus={() => { confirmPasswordScale.value = 1.03 }}
+                            onBlur={() => { confirmPasswordScale.value = 1 }}
                         />
                         <TouchableOpacity onPress={() => setSecureConfirm(!secureConfirm)}>
                             <Ionicons
@@ -205,7 +231,7 @@ const Register = () => {
                                 color='gray'
                             />
                         </TouchableOpacity>
-                    </View>
+                    </Animated.View>
                     <Button
                         onPress={() => { handleRegister() }}
                         style={styles.button}

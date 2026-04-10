@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, ActivityIndicator } from 'react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -23,6 +24,15 @@ const ProfileEditModal = ({ profile, onClose }) => {
 
     // Profile hooks
     const [profileName, setProfileName] = useState(profile.name);
+    
+    // Scale shared value
+    const nameScale = useSharedValue(1);
+
+    // Animated style
+    const nameAnimatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: withSpring(nameScale.value) }]
+    }));
+
     const [profilePic, setProfilePic] = useState(profile.profile_pic);
     const [isKid, setIsKid] = useState(profile.is_kid);
 
@@ -130,15 +140,19 @@ const ProfileEditModal = ({ profile, onClose }) => {
                     >
                         Profile Name
                     </Text>
-                    <TextInput
-                        placeholder='Enter profile name...'
-                        placeholderTextColor={'gray'}
-                        value={profileName}
-                        maxLength={12}
-                        onChangeText={setProfileName}
-                        keyboardAppearance='dark'
-                        style={[funnelDisplay.medium, styles.input]}
-                    />
+                    <Animated.View style={nameAnimatedStyle}>
+                        <TextInput
+                            placeholder='Enter profile name...'
+                            placeholderTextColor={'gray'}
+                            value={profileName}
+                            maxLength={12}
+                            onChangeText={setProfileName}
+                            keyboardAppearance='dark'
+                            style={[funnelDisplay.medium, styles.input]}
+                            onFocus={() => { nameScale.value = 1.03 }}
+                            onBlur={() => { nameScale.value = 1 }}
+                        />
+                    </Animated.View>
 
                     {/* Kid profile container */}
                     <View style={styles.isKidContainer}>

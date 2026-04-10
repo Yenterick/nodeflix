@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { useState } from 'react';
-import Animated, { FadeInLeft, FadeInUp } from 'react-native-reanimated';
+import Animated, { FadeInLeft, FadeInUp, useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Component imports
@@ -33,6 +33,19 @@ const Login = () => {
     // Form hooks
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
+    // Scale shared values
+    const emailScale = useSharedValue(1);
+    const passwordScale = useSharedValue(1);
+
+    // Animated styles
+    const emailAnimatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: withSpring(emailScale.value) }]
+    }));
+
+    const passwordAnimatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: withSpring(passwordScale.value) }]
+    }));
 
     // Function to handle the login when pressing the button
     const handleLogin = async () => {
@@ -134,23 +147,26 @@ const Login = () => {
                     ]}>
                         Email
                     </Text>
-                    <TextInput
-                        placeholder='Insert your email...'
-                        placeholderTextColor={'gray'}
-                        value={email}
-                        maxLength={64}
-                        onChangeText={setEmail}
-                        keyboardAppearance='dark'
-                        style={[funnelDisplay.medium, styles.input]}
-
-                    />
+                    <Animated.View style={emailAnimatedStyle}>
+                        <TextInput
+                            placeholder='Insert your email...'
+                            placeholderTextColor={'gray'}
+                            value={email}
+                            maxLength={64}
+                            onChangeText={setEmail}
+                            keyboardAppearance='dark'
+                            style={[funnelDisplay.medium, styles.input]}
+                            onFocus={() => { emailScale.value = 1.03 }}
+                            onBlur={() => { emailScale.value = 1 }}
+                        />
+                    </Animated.View>
                     <Text style={[
                         funnelDisplay.semibold,
                         styles.label
                     ]}>
                         Password
                     </Text>
-                    <View style={styles.passwordContainer}>
+                    <Animated.View style={[styles.passwordContainer, passwordAnimatedStyle]}>
                         <TextInput
                             placeholder='Insert your password...'
                             placeholderTextColor={'gray'}
@@ -160,6 +176,8 @@ const Login = () => {
                             secureTextEntry={secure}
                             keyboardAppearance='dark'
                             style={[funnelDisplay.medium, styles.passwordInput]}
+                            onFocus={() => { passwordScale.value = 1.03 }}
+                            onBlur={() => { passwordScale.value = 1 }}
                         />
                         <TouchableOpacity onPress={() => setSecure(!secure)}>
                             <Ionicons
@@ -168,7 +186,7 @@ const Login = () => {
                                 color='gray'
                             />
                         </TouchableOpacity>
-                    </View>
+                    </Animated.View>
                     <Button
                         onPress={() => { handleLogin() }}
                         style={styles.button}

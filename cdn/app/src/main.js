@@ -33,6 +33,9 @@ const createWindow = () => {
 
     // Loading the content of the page
     mainWindow.loadFile(path.join(__dirname, './web/index.html'));
+
+    // Disabling the menu bar
+    mainWindow.setMenuBarVisibility(false);
 };
 
 // Check to create the window when it's ready

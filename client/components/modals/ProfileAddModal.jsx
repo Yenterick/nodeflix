@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Switch, ActivityIndicator } from 'react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,6 +25,15 @@ const ProfileAddModal = ({ onClose }) => {
     const [createdProfileId, setCreatedProfileId] = useState(null);
     const [profileName, setProfileName] = useState('');
     const [profilePic, setProfilePic] = useState('https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png');
+    
+    // Scale shared value
+    const nameScale = useSharedValue(1);
+
+    // Animated style
+    const nameAnimatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: withSpring(nameScale.value) }]
+    }));
+
     const [isKid, setIsKid] = useState(false);
     const [showPreferencesModal, setShowPreferencesModal] = useState(false);
 
@@ -164,15 +174,19 @@ const ProfileAddModal = ({ onClose }) => {
                     >
                         Profile Name
                     </Text>
-                    <TextInput
-                        placeholder='Enter profile name...'
-                        placeholderTextColor={'gray'}
-                        value={profileName}
-                        maxLength={12}
-                        onChangeText={setProfileName}
-                        keyboardAppearance='dark'
-                        style={[funnelDisplay.medium, styles.input]}
-                    />
+                    <Animated.View style={nameAnimatedStyle}>
+                        <TextInput
+                            placeholder='Enter profile name...'
+                            placeholderTextColor={'gray'}
+                            value={profileName}
+                            maxLength={12}
+                            onChangeText={setProfileName}
+                            keyboardAppearance='dark'
+                            style={[funnelDisplay.medium, styles.input]}
+                            onFocus={() => { nameScale.value = 1.03 }}
+                            onBlur={() => { nameScale.value = 1 }}
+                        />
+                    </Animated.View>
 
                     {/* Kid profile container */}
                     <View style={styles.isKidContainer}>
