@@ -10,6 +10,7 @@
   ],
   "license": "ISC",
   "author": "Yenterick",
+  
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",

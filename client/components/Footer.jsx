@@ -10,11 +10,33 @@ import { funnelDisplay } from '../assets/fonts/funnelDisplay';
 
 // Constants needed to get the button width
 const { width } = Dimensions.get('window');
-const BUTTON_COUNT = 4;
-const BUTTON_WIDTH = width / BUTTON_COUNT;
 
-const Footer = ({ state, navigation }) => {
+const getIconName = (routeName) => {
+    switch (routeName) {
+        case 'index': return 'home';
+        case 'movies': return 'local-movies';
+        case 'series': return 'smart-display';
+        case 'search': return 'search';
+        case 'logout': return 'logout';
+        default: return 'circle';
+    }
+}
+
+const getLabelName = (routeName) => {
+    switch (routeName) {
+        case 'index': return 'Home';
+        case 'movies': return 'Movies';
+        case 'series': return 'Series';
+        case 'search': return 'Search';
+        case 'logout': return 'Exit';
+        default: return routeName;
+    }
+}
+
+const Footer = ({ state, descriptors, navigation }) => {
     const insets = useSafeAreaInsets();
+    const BUTTON_COUNT = state.routes.length;
+    const BUTTON_WIDTH = width / BUTTON_COUNT;
 
     // Shared value hook to animate
     const translateX = useSharedValue(0);
@@ -23,7 +45,7 @@ const Footer = ({ state, navigation }) => {
         translateX.value = withTiming(state.index * BUTTON_WIDTH, {
             duration: 250
         });
-    }, [state.index]);
+    }, [state.index, BUTTON_WIDTH]);
 
     // Translating the X position to slide
     const animatedIndicatorStyle = useAnimatedStyle(() => ({
@@ -48,86 +70,42 @@ const Footer = ({ state, navigation }) => {
                 ]}
             />
 
-            {/* Home */}
-            <TouchableOpacity
-                style={styles.footerButton}
-                onPress={() => navigation.navigate('Index')}
-            >
-                <MaterialIcons
-                    name="home"
-                    size={36}
-                    color={state.index === 0 ? colorScheme.green : 'white'}
-                />
-                <Text style={[
-                    funnelDisplay.semibold,
-                    styles.footerButtonText,
-                    { color: state.index === 0 ? colorScheme.green : 'white' }
-                ]}>
-                    Home
-                </Text>
-            </TouchableOpacity>
+            {state.routes.map((route, index) => {
+                const isFocused = state.index === index;
 
-            {/* Movies */}
-            <TouchableOpacity
-                style={styles.footerButton}
-                onPress={() => navigation.navigate('Movies')}
-            >
-                <MaterialIcons
-                    name="local-movies"
-                    size={36}
-                    color={state.index === 1 ? colorScheme.green : 'white'}
-                />
-                <Text style={[
-                    funnelDisplay.semibold,
-                    styles.footerButtonText,
-                    { color: state.index === 1 ? colorScheme.green : 'white' }
-                ]}>
-                    Movies
-                </Text>
-            </TouchableOpacity>
-
-            {/* Series */}
-            <TouchableOpacity
-                style={styles.footerButton}
-                onPress={() => navigation.navigate('Series')}
-            >
-                <MaterialIcons
-                    name="smart-display"
-                    size={36}
-                    color={state.index === 2 ? colorScheme.green : 'white'}
-                />
-                <Text style={[
-                    funnelDisplay.semibold,
-                    styles.footerButtonText,
-                    { color: state.index === 2 ? colorScheme.green : 'white' }
-                ]}>
-                    Series
-                </Text>
-            </TouchableOpacity>
-
-            {/* Exit */}
-            <TouchableOpacity
-                style={styles.footerButton}
-                onPress={() => {
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Auth' }],
+                const onPress = () => {
+                    const event = navigation.emit({
+                        type: 'tabPress',
+                        target: route.key,
+                        canPreventDefault: true,
                     });
-                }}
-            >
-                <MaterialIcons
-                    name="logout"
-                    size={36}
-                    color="#FF6B6B"
-                />
-                <Text style={[
-                    funnelDisplay.semibold,
-                    styles.footerButtonText,
-                    { color: '#FF6B6B' }
-                ]}>
-                    Exit
-                </Text>
-            </TouchableOpacity>
+
+                    if (!isFocused && !event.defaultPrevented) {
+                        navigation.navigate(route.name, route.params);
+                    }
+                };
+
+                return (
+                    <TouchableOpacity
+                        key={route.key}
+                        style={styles.footerButton}
+                        onPress={onPress}
+                    >
+                        <MaterialIcons
+                            name={getIconName(route.name)}
+                            size={24}
+                            color={isFocused ? colorScheme.green : 'white'}
+                        />
+                        <Text style={[
+                            funnelDisplay.semibold,
+                            styles.footerButtonText,
+                            { color: isFocused ? colorScheme.green : 'white' }
+                        ]}>
+                            {getLabelName(route.name)}
+                        </Text>
+                    </TouchableOpacity>
+                );
+            })}
         </View>
     );
 };
@@ -158,6 +136,7 @@ const styles = StyleSheet.create({
 
     footerButtonText: {
         textAlign: 'center',
+        fontSize: 12
     }
 });
 

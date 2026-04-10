@@ -68,16 +68,7 @@ const SeriesP = () => {
     }, [])
 
     return (
-        // General container with all the screen
-        <View
-            style={[
-                styles.background,
-                {
-                    paddingTop: insets.top,
-                    paddingBottom: insets.bottom
-                }
-            ]}
-        >
+        <>
             {/* Error modal */}
             {hasError &&
                 <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => router.replace('/(auth)/login')} />
@@ -85,7 +76,10 @@ const SeriesP = () => {
             {showSeriesInfoModal &&
                 <ContentInfoModal item={selectedSeries} contentType='series' onClose={() => setShowSeriesInfoModal(false)} />
             }
-            <ScrollView>
+            <ScrollView 
+                style={styles.background}
+                contentInsetAdjustmentBehavior="automatic"
+            >
                 <Text style={[
                     styles.h1,
                     funnelDisplay.semibold
@@ -131,7 +125,7 @@ const SeriesP = () => {
                     keyExtractor={(item, index) => series.length ? item._id : `placeholder-${index}`}
                 />
             </ScrollView>
-        </View>
+        </>
     )
 }
 

@@ -26,7 +26,7 @@ const Index = () => {
                     funnelDisplay.bold,
                     {
                         color: 'white',
-                        fontSize: '36',
+                        fontSize: 36,
                         textAlign: 'center'
                     }
                 ]}

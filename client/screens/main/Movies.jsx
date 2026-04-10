@@ -68,16 +68,7 @@ const Movies = () => {
     }, [])
 
     return (
-        // General container with all the screen
-        <View
-            style={[
-                styles.background,
-                {
-                    paddingTop: insets.top,
-                    paddingBottom: insets.bottom
-                }
-            ]}
-        >
+        <>
             {/* Error modal */}
             {hasError &&
                 <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => router.replace('/(auth)/login')} />
@@ -85,8 +76,140 @@ const Movies = () => {
             {showMovieInfoModal &&
                 <ContentInfoModal item={selectedMovie} contentType='movie' onClose={() => setShowMovieInfoModal(false)} />
             }
-            <ScrollView>
+            <ScrollView
+                style={styles.background}
+                contentInsetAdjustmentBehavior="automatic"
+            >
                 <Text style={[
+                    styles.h1,
+                    funnelDisplay.semibold
+                ]}>
+                    Trending...
+                </Text>
+                <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={movies.length ? movies : placeholders}
+                    renderItem={({ item, index }) =>
+                        movies.length ? (
+                            <ContentCard
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectMovie(item)}
+                            />
+                        ) : (
+                            <SkeletonCard style={{ opacity: 1 - index * 0.12 }} />
+                        )
+                    }
+                    keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
+                />
+                <Text style={[
+                    styles.h1,
+                    funnelDisplay.semibold
+                ]}>
+                    What's new?
+                </Text>
+                <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={movies.length ? movies : placeholders}
+                    renderItem={({ item, index }) =>
+                        movies.length ? (
+                            <ContentCard
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectMovie(item)}
+                            />
+                        ) : (
+                            <SkeletonCard style={{ opacity: 1 - index * 0.12 }} />
+                        )
+                    }
+                    keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
+                /><Text style={[
+                    styles.h1,
+                    funnelDisplay.semibold
+                ]}>
+                    Trending...
+                </Text>
+                <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={movies.length ? movies : placeholders}
+                    renderItem={({ item, index }) =>
+                        movies.length ? (
+                            <ContentCard
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectMovie(item)}
+                            />
+                        ) : (
+                            <SkeletonCard style={{ opacity: 1 - index * 0.12 }} />
+                        )
+                    }
+                    keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
+                />
+                <Text style={[
+                    styles.h1,
+                    funnelDisplay.semibold
+                ]}>
+                    What's new?
+                </Text>
+                <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={movies.length ? movies : placeholders}
+                    renderItem={({ item, index }) =>
+                        movies.length ? (
+                            <ContentCard
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectMovie(item)}
+                            />
+                        ) : (
+                            <SkeletonCard style={{ opacity: 1 - index * 0.12 }} />
+                        )
+                    }
+                    keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
+                /><Text style={[
+                    styles.h1,
+                    funnelDisplay.semibold
+                ]}>
+                    Trending...
+                </Text>
+                <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={movies.length ? movies : placeholders}
+                    renderItem={({ item, index }) =>
+                        movies.length ? (
+                            <ContentCard
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectMovie(item)}
+                            />
+                        ) : (
+                            <SkeletonCard style={{ opacity: 1 - index * 0.12 }} />
+                        )
+                    }
+                    keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
+                />
+                <Text style={[
+                    styles.h1,
+                    funnelDisplay.semibold
+                ]}>
+                    What's new?
+                </Text>
+                <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={movies.length ? movies : placeholders}
+                    renderItem={({ item, index }) =>
+                        movies.length ? (
+                            <ContentCard
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectMovie(item)}
+                            />
+                        ) : (
+                            <SkeletonCard style={{ opacity: 1 - index * 0.12 }} />
+                        )
+                    }
+                    keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
+                /><Text style={[
                     styles.h1,
                     funnelDisplay.semibold
                 ]}>
@@ -131,7 +254,7 @@ const Movies = () => {
                     keyExtractor={(item, index) => movies.length ? item._id : `placeholder-${index}`}
                 />
             </ScrollView>
-        </View>
+        </>
     )
 }
 

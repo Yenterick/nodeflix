@@ -179,7 +179,7 @@ const ProfileAddModal = ({ onClose }) => {
                             placeholder='Enter profile name...'
                             placeholderTextColor={'gray'}
                             value={profileName}
-                            maxLength={12}
+                            maxLength={10}
                             onChangeText={setProfileName}
                             keyboardAppearance='dark'
                             style={[funnelDisplay.medium, styles.input]}
