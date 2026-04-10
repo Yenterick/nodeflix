@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Module and componets imports
@@ -18,7 +18,7 @@ const SeriesP = () => {
     const placeholders = Array.from({ length: 6 });
 
     // Navigation hook
-    const navigation = useNavigation();
+    const router = useRouter();
 
     // Various hooks
     const insets = useSafeAreaInsets();
@@ -80,7 +80,7 @@ const SeriesP = () => {
         >
             {/* Error modal */}
             {hasError &&
-                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => navigation.reset({ index: 0, routes: [{ name: 'Auth' }] })} />
+                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => router.replace('/(auth)/login')} />
             }
             {showSeriesInfoModal &&
                 <ContentInfoModal item={selectedSeries} contentType='series' onClose={() => setShowSeriesInfoModal(false)} />

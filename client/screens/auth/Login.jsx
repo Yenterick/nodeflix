@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { useState } from 'react';
@@ -20,7 +20,7 @@ import colorScheme from '../../assets/color/colorScheme';
 // Login screen
 const Login = () => {
     // Navigation hook
-    const navigation = useNavigation();
+    const router = useRouter();
 
     // Various hooks
     const insets = useSafeAreaInsets();
@@ -69,7 +69,7 @@ const Login = () => {
                     ['userId', String(response.id)],
                     ['screens', String(response.screens)]
                 ]);
-                navigation.navigate('ProfileSelector');
+                router.push('/(auth)/profile-selector');
             } else {
                 setHasError(true);
                 setErrorMessage(error || response?.msg || 'An error ocurred while logging in!');
@@ -230,7 +230,7 @@ const Login = () => {
                                 color: colorScheme.lightGreen,
                                 textDecorationLine: 'underline'
                             }}
-                            onPress={() => { navigation.navigate('Register') }}
+                            onPress={() => { router.push('/(auth)/register') }}
                         >
                             Register
                         </Text>

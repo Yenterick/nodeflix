@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -20,7 +20,7 @@ import colorScheme from '../../assets/color/colorScheme';
 
 const ProfileSelector = () => {
     // Navigation hook
-    const navigation = useNavigation();
+    const router = useRouter();
 
     // Various hooks
     const { request, loading, error } = useFetch();
@@ -63,7 +63,7 @@ const ProfileSelector = () => {
     // Function to clear the cache and go back to the login page
     const handleLogout = async () => {
         await AsyncStorage.clear();
-        navigation.navigate('Login');
+        router.replace('/(auth)/login');
     }
 
     // Function to save in cache all the needed data and redirect to index
@@ -75,10 +75,7 @@ const ProfileSelector = () => {
                 ['profileName', profileName],
                 ['isKid', isKid]
             ]);
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'Main' }],
-            });
+            router.replace('/(main)');
         } catch (error) {
             setErrorMessage(error.message);
             setHasError(true);
@@ -109,7 +106,7 @@ const ProfileSelector = () => {
                     color='#FF6B6B'
                     onExit={() => {
                         setHasError(false)
-                        navigation.navigate('Login');
+                        router.replace('/(auth)/login');
                     }}
                 />
             }

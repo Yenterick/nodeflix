@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Pressable, ScrollView, Image,
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEffect, useState, useRef } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -17,12 +17,23 @@ import Button from '../../components/Button';
 import InfoModal from '../../components/modals/InfoModal';
 
 // FIXME: Loading and error screen without breaking the entire app peepo clown
-const VideoPlayer = ({ route }) => {
-    // Getting the route params
-    const { contentId, contentType, season, episode, watchedProgress } = route.params;
+const VideoPlayer = () => {
+    // Getting route params via Expo Router
+    const {
+        contentId,
+        contentType,
+        season: seasonParam,
+        episode: episodeParam,
+        watchedProgress: watchedProgressStr,
+    } = useLocalSearchParams();
 
-    // Navigation hook
-    const navigation = useNavigation();
+    // Parse params from URL strings
+    const season = seasonParam ? Number(seasonParam) : undefined;
+    const episode = episodeParam ? Number(episodeParam) : undefined;
+    const watchedProgress = watchedProgressStr ? JSON.parse(watchedProgressStr) : undefined;
+
+    // Router hook
+    const router = useRouter();
 
     // Insets hook
     const insets = useSafeAreaInsets();
@@ -274,7 +285,7 @@ const VideoPlayer = ({ route }) => {
                     text={errorMessage}
                     icon='error-outline'
                     color='#FF6B6B'
-                    onExit={() => navigation.goBack()}
+                    onExit={() => router.back()}
                 />
             }
             {/* Video player render */}
@@ -308,7 +319,7 @@ const VideoPlayer = ({ route }) => {
                         {/* FIXME: It blinks when I go back to the movies screen (Maybe go nuclear again) :D */}
                         <TouchableOpacity
                             style={styles.exitButton}
-                            onPress={() => navigation.goBack()}
+                            onPress={() => router.back()}
                         >
                             <MaterialIcons
                                 name='arrow-back-ios-new'

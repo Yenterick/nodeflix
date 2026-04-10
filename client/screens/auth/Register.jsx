@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import Animated, { FadeInRight, FadeInUp, useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
@@ -19,7 +19,7 @@ import colorScheme from '../../assets/color/colorScheme';
 // Register screen
 const Register = () => {
     // Navigation hook
-    const navigation = useNavigation();
+    const router = useRouter();
 
     // Various hooks
     const insets = useSafeAreaInsets();
@@ -104,7 +104,7 @@ const Register = () => {
             {showInfoModal &&
                 <InfoModal text='Succesfully registered! Please log in...' icon='check' onExit={() => {
                     setShowInfoModal(false);
-                    navigation.navigate('Login');
+                    router.push('/(auth)/login');
                 }} />
             }
 
@@ -274,7 +274,7 @@ const Register = () => {
                                 color: colorScheme.lightGreen,
                                 textDecorationLine: 'underline'
                             }}
-                            onPress={() => { navigation.navigate('Login') }}
+                            onPress={() => { router.push('/(auth)/login') }}
                         >
                             Login
                         </Text>

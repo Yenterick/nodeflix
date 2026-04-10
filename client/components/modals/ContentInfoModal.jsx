@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 // Modules and components imports
 import colorScheme from '../../assets/color/colorScheme';
@@ -20,8 +20,8 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
 
     const isSeries = contentType === 'series';
 
-    // Navigation hook
-    const navigation = useNavigation();
+    // Router hook
+    const router = useRouter();
 
     // Various hooks
     const { error, loading, request } = useFetch();
@@ -84,14 +84,17 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
         setNuke(true);
 
         setTimeout(() => {
-            navigation.navigate('VideoPlayer', {
-                contentId: item._id,
-                contentType: isSeries ? 'series' : 'movie',
-                ...(isSeries && {
-                    season: seasonNumber || watchedProgress?.season || 1,
-                    episode: episodeNumber || watchedProgress?.episode || 1
-                }),
-                watchedProgress: watchedProgress
+            router.push({
+                pathname: '/video-player',
+                params: {
+                    contentId: item._id,
+                    contentType: isSeries ? 'series' : 'movie',
+                    ...(isSeries && {
+                        season: String(seasonNumber || watchedProgress?.season || 1),
+                        episode: String(episodeNumber || watchedProgress?.episode || 1),
+                    }),
+                    watchedProgress: watchedProgress ? JSON.stringify(watchedProgress) : '',
+                },
             });
             onClose();
         }, 50);
