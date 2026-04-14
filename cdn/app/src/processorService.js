@@ -1,7 +1,8 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
-const ffmpegPath = require('ffmpeg-static');
+let ffmpegPath = require('ffmpeg-static');
+ffmpegPath = ffmpegPath.replace('app.asar', 'app.asar.unpacked');
 const SftpClient = require('ssh2-sftp-client');
 const mongoose = require('mongoose');
 
@@ -15,7 +16,7 @@ class ProcessorService {
             host: sshConfig.host,
             port: parseInt(sshConfig.port),
             username: sshConfig.username,
-            privateKey: fs.readFileSync(sshConfig.keyPath)
+            privateKey: fs.readFileSync(sshConfig.keyPath, 'utf8').trim()
         };
         this.sftp = new SftpClient();
     }
@@ -30,7 +31,7 @@ class ProcessorService {
     // Converts videos to hls
     async convertToHls(inputPath, outputDir, onProgress) {
         await this.ensureLocalDir(outputDir);
-        
+
         return new Promise((resolve, reject) => {
             const args = [
                 '-i', inputPath,
@@ -70,6 +71,28 @@ class ProcessorService {
 
             ffmpeg.on('close', (code) => {
                 if (code === 0) resolve(outputPath);
+                else reject(new Error(`ffmpeg exited with code ${code}`));
+            });
+        });
+    }
+
+    // Converts an image to a 720x720 square JPEG
+    async convertImage(inputPath, outputPath) {
+        await this.ensureLocalDir(path.dirname(outputPath));
+        return new Promise((resolve, reject) => {
+            const args = [
+                '-i', inputPath,
+                '-vf', 'scale=720:720:force_original_aspect_ratio=increase,crop=720:720',
+                '-vframes', '1',
+                '-q:v', '2',
+                outputPath
+            ];
+
+            const ffmpeg = spawn(ffmpegPath, args);
+            ffmpeg.stderr.on('data', () => { });
+
+            ffmpeg.on('close', (code) => {
+                if (code === 0) resolve();
                 else reject(new Error(`ffmpeg exited with code ${code}`));
             });
         });

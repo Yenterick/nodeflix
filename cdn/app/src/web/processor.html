@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nodeflix Media Processor - Content</title>
+    <title>Nodeflix Media Processor</title>
     <link rel="shortcut icon" href="../../public/assets/icon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,9 +54,16 @@
             >
                 Series
             </button>
+            <button 
+                type="button" 
+                id="picturesTab" 
+                class="tab-btn"
+            >
+                Pictures
+            </button>
         </div>
 
-        <form id="mediaForm" class="environment-form">
+        <form id="mediaForm" class="environment-form" novalidate>
             <div id="commonFields">
                 <div class="form-section">
                     <p class="form-title">
@@ -346,6 +353,41 @@
                         class="action-btn"
                     >
                         + Add Season
+                    </button>
+                </div>
+            </div>
+
+            <div 
+                id="picturesSection" 
+                style="display: none;"
+            >
+                <div class="form-section">
+                    <p class="form-title">
+                        Content Reference
+                    </p>
+                    <div class="form-line">
+                        <div class="form-group">
+                            <label>Movies</label>
+                            <div id="moviesList" class="content-list"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Series</label>
+                            <div id="seriesList" class="content-list"></div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedContentName">
+                </div>
+                <div class="form-section">
+                    <p class="form-title">
+                        Photos
+                    </p>
+                    <div id="photosContainer"></div>
+                    <button 
+                        type="button" 
+                        id="addPhoto" 
+                        class="action-btn"
+                    >
+                        + Add Photo
                     </button>
                 </div>
             </div>

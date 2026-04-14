@@ -1,6 +1,6 @@
 {
   "name": "nodeflix-cdn-app",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Content distribution network app for Nodeflix.",
   "keywords": [
     "cdn",
@@ -14,14 +14,40 @@
   "main": "./src/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "nodemon --watch . --exec 'electron .'"
+    "dev": "nodemon --watch . --exec 'electron .'",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.mediaprocessor.nodeflix",
+    "productName": "Nodeflix Media Processor",
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "public/assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.utilities",
+      "icon": "public/assets/icon.icns"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "public/assets"
+    }
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "electron-builder": "^26.8.1",
+    "nodemon": "^3.1.14",
+    "electron": "^41.1.0"
+    
   },
   "dependencies": {
     "dotenv": "^17.3.1",
-    "electron": "^41.1.0",
     "ffmpeg-static": "^5.3.0",
     "mongoose": "^9.3.3",
     "ssh2": "^1.17.0",

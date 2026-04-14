@@ -48,7 +48,7 @@ body {
 /* Logos style config */
 .back-link {
     border: none;
-    background-color: #ff4757;
+    background-color: #FF6B6B;
     color: white;
     padding: 8px 20px;
     border-radius: 12px;
@@ -218,22 +218,23 @@ button:disabled {
 
 .status-message.success {
     display: block;
-    background-color: rgba(98, 129, 65, 0.2);
-    color: var(--light-green);
-    border: 1px solid var(--green);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .status-message.error {
     display: block;
-    background-color: rgba(255, 71, 87, 0.2);
-    color: #ff4757;
-    border: 1px solid #ff4757;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .status-message.loading {
     display: block;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
     color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Remember me styles */
@@ -379,7 +380,7 @@ textarea:focus {
 }
 
 .remove-btn {
-    background-color: #ff4757;
+    background-color: #FF6B6B;
     color: white;
     font-family: 'Funnel Display', sans-serif;
     font-size: 0.85rem;
@@ -475,7 +476,7 @@ textarea:focus {
     box-shadow: 
         0 0 60px rgba(241, 58, 92, 0.3) 
         0 15px 40px rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(241, 58, 92, 0.3);
+    border: 1px solid #FF6B6B;
     animation: fadeInDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-align: center;
     position: relative;
@@ -499,7 +500,7 @@ textarea:focus {
 }
 
 .close-modal-btn {
-    background-color: rgba(241, 58, 92, 0.3);
+    background-color: #FF6B6B;
     color: #f9f6eeb9;
     font-family: 'Funnel Display', sans-serif;
     font-size: 1.1rem;
@@ -557,4 +558,59 @@ textarea:focus {
     0% { opacity: 1; }
     50% { opacity: 0.6; }
     100% { opacity: 1; }
+}
+
+/* Content selection lists for Pictures tab */
+.content-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    max-height: 180px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.content-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.content-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content-list::-webkit-scrollbar-thumb {
+    background: var(--green-translucent);
+    border-radius: 4px;
+}
+
+.content-list-item {
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: #f9f6eeb9;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    user-select: none;
+}
+
+.content-list-item:hover {
+    background-color: rgba(98, 129, 65, 0.2);
+}
+
+.content-list-item.selected {
+    background-color: var(--green);
+    color: white;
+}
+
+.content-list-empty {
+    padding: 8px 12px;
+    color: #f9f6eeb9;
+    font-size: 0.85rem;
+    opacity: 0.4;
+    text-align: center;
 }

@@ -9,5 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getCredentials: () => ipcRenderer.invoke('get-credentials'),
     processMedia: (data) => ipcRenderer.invoke('process-media', data),
     getVideoDuration: (filePath) => ipcRenderer.invoke('get-video-duration', filePath),
+    getAllContent: () => ipcRenderer.invoke('get-all-content'),
+    processPictures: (data) => ipcRenderer.invoke('process-pictures', data),
     onProgress: (callback) => ipcRenderer.on('process-progress', (event, value) => callback(value))
 });
