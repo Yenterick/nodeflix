@@ -6,7 +6,7 @@ const getAllMovies = async (req, res) => {
     try {
         const isKid = req.params.kidCheck === 'kid';
         const movies = await movieModel.selectAllMovies(isKid);
-        res.status(200).json({ success: true, msg: 'Movies successfully retrieved.', data:  movies });
+        res.status(200).json({ success: true, msg: 'Movies successfully retrieved.', data: movies });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }

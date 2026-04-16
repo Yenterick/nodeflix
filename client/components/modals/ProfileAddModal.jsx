@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import InfoModal from './InfoModal';
 import colorScheme from '../../assets/color/colorScheme';
 import PreferencesSelectionModal from './PreferencesSelectionModal';
+import ProfilePictureModal from './ProfilePictureModal';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import ModalLayout from './ModalLayout';
 import Button from '../Button';
@@ -24,7 +25,7 @@ const ProfileAddModal = ({ onClose }) => {
     // Profile hooks
     const [createdProfileId, setCreatedProfileId] = useState(null);
     const [profileName, setProfileName] = useState('');
-    const [profilePic, setProfilePic] = useState('https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png');
+    const [profilePic, setProfilePic] = useState('/pictures/default/1.jpeg');
     
     // Scale shared value
     const nameScale = useSharedValue(1);
@@ -36,6 +37,7 @@ const ProfileAddModal = ({ onClose }) => {
 
     const [isKid, setIsKid] = useState(false);
     const [showPreferencesModal, setShowPreferencesModal] = useState(false);
+    const [showProfilePictureModal, setShowProfilePictureModal] = useState(false);
 
     // Prefereces hooks
     const [selectedMovies, setSelectedMovies] = useState([]);
@@ -56,8 +58,7 @@ const ProfileAddModal = ({ onClose }) => {
                 {
                     userId: userId,
                     name: profileName,
-                    // TODO: Change uploaded pfp
-                    profilePic: '',
+                    profilePic: profilePic,
                     isKid: isKid
                 }
             );
@@ -135,6 +136,18 @@ const ProfileAddModal = ({ onClose }) => {
                 <PreferencesSelectionModal onClose={handleSkip} onSave={(data) => handleCreateNewPreferences(createdProfileId, data)} />
             }
 
+            {/* Profile Picture Modal */}
+            {showProfilePictureModal &&
+                <ProfilePictureModal
+                    onClose={() => setShowProfilePictureModal(false)}
+                    currentPic={profilePic}
+                    onSave={(pic) => {
+                        setProfilePic(pic);
+                        setShowProfilePictureModal(false);
+                    }}
+                />
+            }
+
             <View style={styles.modalContainer}>
                 {/* Modal title */}
                 <Text style={[
@@ -150,9 +163,10 @@ const ProfileAddModal = ({ onClose }) => {
                     <TouchableOpacity
                         style={styles.profilePicWrapper}
                         activeOpacity={0.8}
+                        onPress={() => setShowProfilePictureModal(true)}
                     >
                         <Image
-                            source={{ uri: profilePic }}
+                            source={{ uri: `${process.env.EXPO_PUBLIC_CDN_URL}${profilePic}` }}
                             style={styles.profilePic}
                         />
                         <View style={styles.editIconContainer}>

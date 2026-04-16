@@ -16,6 +16,7 @@ const listEventRouter = require('./routes/listEvent');
 const interactionEventRouter = require('./routes/interactionEvent');
 const movieRouter = require('./routes/movie');
 const seriesRouter = require('./routes/series');
+const profilePictureRouter = require('./routes/profilePicture')
 
 // Previous variable declarations
 const port = 5000;
@@ -23,7 +24,7 @@ const replicaApp = process.env.APP_NAME;
 const app = express();
 
 // Previous app configuration
-// TODO: Change cors origins before deploying
+// TODO: Change cors origins before deploying (Maybe it's impossible)
 app.use(cors({origin: '*'}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -36,6 +37,7 @@ app.use('/api/listEvent', listEventRouter);
 app.use('/api/interactionEvent', interactionEventRouter);
 app.use('/api/movie', movieRouter);
 app.use('/api/series', seriesRouter);
+app.use('/api/profilePicture', profilePictureRouter);
 
 // Server health check
 app.get('/api/health', (req, res) => {

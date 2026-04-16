@@ -9,6 +9,7 @@ import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import ConfirmationModal from './ConfirmationModal';
 import ModalLayout from './ModalLayout';
+import ProfilePictureModal from './ProfilePictureModal';
 import Button from '../Button';
 import Divider from '../Divider'
 import useFetch from '../../hooks/useFetch';
@@ -35,6 +36,7 @@ const ProfileEditModal = ({ profile, onClose }) => {
 
     const [profilePic, setProfilePic] = useState(profile.profile_pic);
     const [isKid, setIsKid] = useState(profile.is_kid);
+    const [showProfilePictureModal, setShowProfilePictureModal] = useState(false);
 
     // Function to save the changes
     const handleProfileEdit = async () => {
@@ -99,6 +101,18 @@ const ProfileEditModal = ({ profile, onClose }) => {
                     loading={loading}
                 />
             }
+
+            {/* Profile Picture Modal */}
+            {showProfilePictureModal &&
+                <ProfilePictureModal
+                    onClose={() => setShowProfilePictureModal(false)}
+                    currentPic={profilePic}
+                    onSave={(pic) => {
+                        setProfilePic(pic);
+                        setShowProfilePictureModal(false);
+                    }}
+                />
+            }
             {/* General container */}
             <View style={styles.modalContainer}>
                 {/* Modal title */}
@@ -111,14 +125,14 @@ const ProfileEditModal = ({ profile, onClose }) => {
                 </Text>
 
                 {/* Profile picture section */}
-                {/* TODO: Implement profile pictures screen */}
                 <View style={styles.profileSection}>
                     <TouchableOpacity
                         style={styles.profilePicWrapper}
                         activeOpacity={0.8}
+                        onPress={() => setShowProfilePictureModal(true)}
                     >
                         <Image
-                            source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png' || profilePic }}
+                            source={{ uri:`${process.env.EXPO_PUBLIC_CDN_URL}${profilePic}` }}
                             style={styles.profilePic}
                         />
                         <View style={styles.editIconContainer}>

@@ -12,7 +12,7 @@ const auth = require('../middlewares/auth.middleware.js');
 const kidFilter = require('../middlewares/kidFilter.middleware');
 
 // Protected routes configuration
-router.post('/:kidCheck', auth, createProfile);
+router.post('/', auth, createProfile);
 router.delete('/:profileId', auth, deleteProfile);
 router.put('/:profileId', auth, updateProfile);
 router.get('/:profileId/started', auth, kidFilter, getProfileStartedContent);

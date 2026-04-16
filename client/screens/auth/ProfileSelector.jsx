@@ -16,8 +16,6 @@ import Button from '../../components/Button';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import colorScheme from '../../assets/color/colorScheme';
 
-// TODO: Remove static Netflix pfp image
-
 const ProfileSelector = () => {
     // Navigation hook
     const router = useRouter();
@@ -71,7 +69,7 @@ const ProfileSelector = () => {
         try {
             await AsyncStorage.multiSet([
                 ['profileId', profileId],
-                ['profilePic', profilePic || 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png'],
+                ['profilePic', profilePic],
                 ['profileName', profileName],
                 ['isKid', isKid]
             ]);
@@ -189,7 +187,7 @@ const ProfileSelector = () => {
                                         />
                                     }
                                     <Image
-                                        source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png' || profile.profile_pic }}
+                                        source={{ uri: `${process.env.EXPO_PUBLIC_CDN_URL}${profile.profile_pic}` }}
                                         style={[
                                             styles.profilePic,
                                             management && styles.profilePicEdit
