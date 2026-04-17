@@ -45,11 +45,16 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
     const player = useVideoPlayer(videoUrl ? process.env.EXPO_PUBLIC_CDN_URL + videoUrl : null, player => {
         player.loop = true;
         player.muted = true;
-        if (videoUrl) player.play();
     });
 
     // Video playing events
     const { status } = useEvent(player, 'statusChange', { status: player.status });
+
+    useEffect(() => {
+        if (status === 'readyToPlay') {
+            player.play();
+        }
+    }, [status]);
 
     // Loading checker
     const isBufferLoading = status === 'idle' || status === 'loading';
@@ -251,7 +256,7 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
             <View style={[
                 styles.modalContainer,
                 {
-                    maxHeight: isSeries ? '88%' : '100%'
+                    maxHeight: isSeries ? '88%' : '100%',
                 }
             ]}>
                 {/* Error modal */}
@@ -267,18 +272,18 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                 >
                     <View style={styles.videoContainer}>
                         {isLoading && (
-                            <View 
+                            <View
                                 style={styles.loaderContainer}
                                 pointerEvents="none"
                             >
                                 <ActivityIndicator
-                                    size="large" 
+                                    size="large"
                                     color="white"
                                     style={
                                         {
                                             transform: [{ scale: 1.5 }]
                                         }
-                                    } 
+                                    }
                                 />
                             </View>
                         )}
@@ -371,7 +376,7 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                                         {watchedProgress && !watchedProgress.completed ? 'Continue Watching' : 'Play'}
                                     </>
                                 }
-                                
+
                             </Text>
                         </Button>
                     </View>
@@ -522,7 +527,7 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                             </Text>
                         </TouchableOpacity>
                     </View>
-                    
+
                     {isSeries && (
                         <>
                             <Divider
@@ -631,7 +636,8 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
 const styles = StyleSheet.create({
     // General container styles config
     modalContainer: {
-        width: 340,
+        width: '90%',
+        maxWidth: 500,
         backgroundColor: colorScheme.bgDarkGreen,
         borderRadius: 30,
         padding: 24,
@@ -641,7 +647,9 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.4,
         shadowRadius: 12,
         elevation: 10,
-        zIndex: 20
+        zIndex: 20,
+        flexShrink: 1,
+        cursor: 'auto'
     },
 
     // Loading icon styles config

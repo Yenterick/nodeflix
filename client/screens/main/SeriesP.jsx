@@ -15,7 +15,7 @@ import useFetch from '../../hooks/useFetch';
 
 const SeriesP = () => {
     // Placeholder array in case series don't charge
-    const placeholders = Array.from({ length: 6 });
+    const placeholders = Array.from({ length: 10 });
 
     // Navigation hook
     const router = useRouter();

@@ -15,7 +15,7 @@ import useFetch from '../../hooks/useFetch';
 
 const Movies = () => {
     // Placeholder array in case movies don't charge
-    const placeholders = Array.from({ length: 6 });
+    const placeholders = Array.from({ length: 10 });
 
     // Navigation hook
     const router = useRouter();

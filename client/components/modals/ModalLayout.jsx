@@ -30,6 +30,7 @@ const ModalLayout = ({ children, onClose }) => {
                     />
                     <Animated.View 
                         style={styles.contentContainer}
+                        pointerEvents="box-none"
                         entering={FadeInDown
                             .delay(100)
                             .duration(400)}
@@ -51,7 +52,11 @@ const styles = StyleSheet.create({
 
     contentContainer: {
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexShrink: 1,
+        width: '100%',
+        maxHeight: '100%',
+        paddingVertical: 20
     }
 });
 

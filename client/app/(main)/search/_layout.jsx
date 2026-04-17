@@ -8,9 +8,8 @@ import colorScheme from '../../../assets/color/colorScheme';
 import Footer from '../../../components/Footer';
 
 export default function TabLayout() {
-  
-     // Android fallback bc NativeTabs on Android is pretty unstable
-    if (Platform.OS === 'android') {
+    // Android fallback bc NativeTabs on Android is pretty unstable
+    if (Platform.OS !== 'ios') {
         return (
             <Tabs
                 tabBar={(props) => <Footer {...props} />}

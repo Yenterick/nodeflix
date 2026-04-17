@@ -10,7 +10,7 @@ import Footer from '../../components/Footer';
 // New main stack layout simulating the deprecated one but using expo-router (LIQUID GLASS LET'S GOOOO)
 export default function MainLayout() {
     // Android fallback bc NativeTabs on Android is pretty unstable
-    if (Platform.OS === 'android') {
+    if (Platform.OS !== 'ios') {
         return (
             <Tabs
                 tabBar={(props) => <Footer {...props} />}
