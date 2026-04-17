@@ -113,21 +113,53 @@ document.addEventListener('click', async (e) => {
     }
 });
 
-// Seasons and episodes cards and logic
+// Seasons and episodes cards
+window.removeSeason = (seasonId) => {
+    document.getElementById(seasonId).remove();
+    seasonsContainer.querySelectorAll('.season-card').forEach((card, index) => {
+        const num = index + 1;
+        card.setAttribute('data-number', num);
+        card.querySelector('.card-header h3').textContent = `Season ${num}`;
+    });
+};
+
+window.removeEpisode = (episodeId, seasonId) => {
+    document.getElementById(episodeId).remove();
+    const seasonCard = document.getElementById(seasonId);
+    if (seasonCard) {
+        seasonCard.querySelectorAll('.episode-card').forEach((card, index) => {
+            const num = index + 1;
+            card.setAttribute('data-number', num);
+            card.querySelector('.card-header h4').textContent = `Episode ${num}`;
+        });
+    }
+};
+
+window.removePhoto = (photoId) => {
+    document.getElementById(photoId).remove();
+    photosContainer.querySelectorAll('.episode-card').forEach((card, index) => {
+        const num = index + 1;
+        card.setAttribute('data-number', num);
+        card.querySelector('.card-header h4').textContent = `Photo ${num}`;
+    });
+};
+
 let seasonCount = 0;
+let episodeCount = 0;
 addSeasonBtn.addEventListener('click', () => {
     seasonCount++;
+    const displayNumber = seasonsContainer.querySelectorAll('.season-card').length + 1;
     const seasonId = `season-${seasonCount}`;
     const seasonHtml = `
-        <div class="season-card" id="${seasonId}" data-number="${seasonCount}">
+        <div class="season-card" id="${seasonId}" data-number="${displayNumber}">
             <div class="card-header">
                 <h3>
-                    Season ${seasonCount}
+                    Season ${displayNumber}
                 </h3>
                 <button 
                     type="button" 
                     class="remove-btn" 
-                    onclick="document.getElementById('${seasonId}').remove()"
+                    onclick="removeSeason('${seasonId}')"
                 >
                     Remove Season
                 </button>
@@ -146,22 +178,23 @@ addSeasonBtn.addEventListener('click', () => {
 });
 
 window.addEpisode = (seasonId) => {
+    episodeCount++;
     const seasonCard = document.getElementById(seasonId);
     const container = seasonCard.querySelector('.episodes-container');
     const seasonNumber = seasonCard.getAttribute('data-number');
-    const episodeNumber = container.children.length + 1;
-    const episodeId = `${seasonId}-ep-${episodeNumber}`;
+    const displayNumber = container.children.length + 1;
+    const episodeId = `ep-${episodeCount}`;
 
     const epHtml = `
-        <div class="episode-card" id="${episodeId}" data-number="${episodeNumber}">
+        <div class="episode-card" id="${episodeId}" data-number="${displayNumber}">
             <div class="card-header">
                 <h4>
-                    Episode ${episodeNumber}
+                    Episode ${displayNumber}
                 </h4>
                 <button 
                     type="button" 
                     class="remove-btn" 
-                    onclick="document.getElementById('${episodeId}').remove()"
+                    onclick="removeEpisode('${episodeId}', '${seasonId}')"
                 >
                     Remove Episode
                 </button>
@@ -268,15 +301,16 @@ const loadContentLists = async () => {
 let photoCount = 0;
 addPhotoBtn.addEventListener('click', () => {
     photoCount++;
+    const displayNumber = photosContainer.querySelectorAll('.episode-card').length + 1;
     const photoId = `photo-${photoCount}`;
     const photoHtml = `
-        <div class="episode-card" id="${photoId}" data-number="${photoCount}">
+        <div class="episode-card" id="${photoId}" data-number="${displayNumber}">
             <div class="card-header">
-                <h4>Photo ${photoCount}</h4>
+                <h4>Photo ${displayNumber}</h4>
                 <button 
                     type="button" 
                     class="remove-btn" 
-                    onclick="document.getElementById('${photoId}').remove()"
+                    onclick="removePhoto('${photoId}')"
                 >
                     Remove Photo
                 </button>
