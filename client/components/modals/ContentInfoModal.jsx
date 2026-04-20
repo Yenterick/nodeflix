@@ -31,7 +31,6 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('An error has ocurred while fetching profile context!');
 
-    // FIXME: FKN NUCLEAR SCREEN ALTERNATIVE
     const [nuke, setNuke] = useState(false);
 
     const videoUrl = isSeries

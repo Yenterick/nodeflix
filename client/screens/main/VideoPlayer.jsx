@@ -87,7 +87,7 @@ const VideoPlayer = () => {
         } else if (x > screenW * 0.65) {
             // Right zone
             if (now - lastTapRight.current < DOUBLE_TAP_DELAY) {
-                player.currentTime = Math.min(duration, player.currentTime + 10);
+                player.currentTime = Math.min(Math.max(0, duration - 0.1), player.currentTime + 10);
                 resetControlsTimer();
                 if (seekFeedbackTimeout.current) clearTimeout(seekFeedbackTimeout.current);
                 setSeekFeedback('right');
