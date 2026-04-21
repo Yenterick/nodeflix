@@ -62,6 +62,13 @@ const Register = () => {
             return;
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setHasError(true);
+            setErrorMessage("Please enter a valid email address!");
+            return;
+        }
+
         if (password !== confirmPassword) {
             setHasError(true);
             setErrorMessage('The passwords must be the same!');
@@ -169,6 +176,11 @@ const Register = () => {
                         <TextInput
                             placeholder='Insert your email...'
                             placeholderTextColor={'gray'}
+                            keyboardType="email-address"
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            autoComplete="email"
+                            textContentType="emailAddress"
                             value={email}
                             maxLength={64}
                             onChangeText={setEmail}

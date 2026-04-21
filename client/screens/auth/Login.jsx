@@ -33,7 +33,7 @@ const Login = () => {
     // Form hooks
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
+
     // Scale shared values
     const emailScale = useSharedValue(1);
     const passwordScale = useSharedValue(1);
@@ -54,6 +54,14 @@ const Login = () => {
             setErrorMessage("You can't send empty values!");
             return;
         }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setHasError(true);
+            setErrorMessage("Please enter a valid email address!");
+            return;
+        }
+
         try {
             const response = await request(
                 '/user/login',
@@ -97,13 +105,13 @@ const Login = () => {
             }
 
             {/* Login panel container */}
-            <Animated.View 
+            <Animated.View
                 style={styles.loginContainer}
                 entering={FadeInLeft
                     .springify()
                     .duration(2000)
                     .delay(250)
-                }    
+                }
             >
                 {/* Login header container */}
                 <View style={styles.loginHeader}>
@@ -112,11 +120,11 @@ const Login = () => {
                         <Animated.Image
                             source={require('../../assets/icon.png')}
                             style={styles.image}
-                                entering={FadeInUp
+                            entering={FadeInUp
                                 .springify()
                                 .duration(2000)
                                 .delay(300)
-                            }  
+                            }
                         />
                         <Divider
                             orientation='vertical'
@@ -130,7 +138,7 @@ const Login = () => {
                                 .springify()
                                 .duration(2000)
                                 .delay(300)
-                            }  
+                            }
                         />
                     </View>
                     <Text style={[
@@ -152,6 +160,11 @@ const Login = () => {
                         <TextInput
                             placeholder='Insert your email...'
                             placeholderTextColor={'gray'}
+                            keyboardType="email-address"
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            autoComplete="email"
+                            textContentType="emailAddress"
                             value={email}
                             maxLength={64}
                             onChangeText={setEmail}

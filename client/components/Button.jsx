@@ -44,6 +44,7 @@ const Button = ({
 
     return (
         <AnimatedPressable
+            accessibilityRole="button"
             onPressIn={onPressIn}
             onPressOut={onPressOut}
             onPress={onPress}
