@@ -141,6 +141,7 @@ const ProfileSelector = () => {
                     }
                 ]}
                 color='#FF6B6B'
+                testId='logout-button'
                 onPress={() => { handleLogout() }}
             >
                 <MaterialIcons
@@ -158,6 +159,7 @@ const ProfileSelector = () => {
                     }
                 ]}
                 color='#B6AFAC'
+                testId='user-settings'
                 onPress={() => { setShowUserSettingsModal(true) }}
             >
                 <MaterialIcons

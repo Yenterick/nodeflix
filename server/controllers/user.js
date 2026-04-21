@@ -57,7 +57,7 @@ const updateUserPassword = async (req, res) => {
 
         const valid = await bcrypt.compare(password, user.password);
 
-        if (!valid) return res.status(401).json({ success: false, msg: 'Incorrect password' });
+        if (!valid) return res.status(401).json({ success: false, msg: 'Incorrect password.' });
 
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
         await userModel.updatePasswordById(userId, hashedPassword);

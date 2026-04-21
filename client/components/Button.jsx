@@ -14,7 +14,8 @@ const Button = ({
     onPress,
     style,
     children,
-    disabled
+    disabled,
+    testId
 }) => {
 
     // Animation value
@@ -49,6 +50,7 @@ const Button = ({
             onPressOut={onPressOut}
             onPress={onPress}
             disabled={disabled}
+            testID={testId}
             style={[
                 {
                     alignSelf: 'auto',

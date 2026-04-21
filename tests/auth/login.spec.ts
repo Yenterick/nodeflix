@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
 
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
+
 // All login related tests
 test.describe('Login Tests', () => {
     // Go to the starting url before each test

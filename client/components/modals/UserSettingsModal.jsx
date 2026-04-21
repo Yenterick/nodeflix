@@ -74,7 +74,12 @@ const UserSettingsModal = ({ onClose }) => {
                 }
             );
 
-            setShowInformation(true);
+            if (response && response.success) {
+                setShowInformation(true);
+            } else {
+                setHasError(true);
+                setErrorMessage(error || response?.msg || 'An error has ocurred while configuring the user!');
+            }
         } catch (error) {
             setHasError(true);
             setErrorMessage(error.message);
