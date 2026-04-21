@@ -67,6 +67,7 @@ const Login = () => {
                 await AsyncStorage.multiSet([
                     ['token', response.token],
                     ['userId', String(response.id)],
+                    ['userEmail', String(response.email)],
                     ['screens', String(response.screens)]
                 ]);
                 router.push('/(auth)/profile-selector');

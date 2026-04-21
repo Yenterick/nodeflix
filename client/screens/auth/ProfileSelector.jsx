@@ -12,6 +12,7 @@ import useFetch from '../../hooks/useFetch';
 import InfoModal from '../../components/modals/InfoModal';
 import ProfileEditModal from '../../components/modals/ProfileEditModal';
 import ProfileAddModal from '../../components/modals/ProfileAddModal';
+import UserSettingsModal from '../../components/modals/UserSettingsModal';
 import Button from '../../components/Button';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import colorScheme from '../../assets/color/colorScheme';
@@ -35,6 +36,9 @@ const ProfileSelector = () => {
 
     // Add states
     const [showProfileAddModal, setshowProfileAddModal] = useState(false);
+
+    // Settings states
+    const [showUserSettingsModal, setShowUserSettingsModal] = useState(false);
 
     // Function to load the user's profiles
     const fetchProfiles = async () => {
@@ -121,6 +125,12 @@ const ProfileSelector = () => {
                     onClose={() => setshowProfileAddModal(false)}
                 />
             }
+            {/* User Settings Modal */}
+            {showUserSettingsModal && 
+                <UserSettingsModal
+                    onClose={() => setShowUserSettingsModal(false)}
+                />
+            }
             {/* Logout button */}
             <Button
                 style={[
@@ -137,6 +147,23 @@ const ProfileSelector = () => {
                     name='logout'
                     size={36}
                     color='white'
+                />
+            </Button>
+            <Button
+                style={[
+                    styles.logoutButton,
+                    {
+                        top: insets.top + 10,
+                        right: 20
+                    }
+                ]}
+                color='#B6AFAC'
+                onPress={() => { setShowUserSettingsModal(true) }}
+            >
+                <MaterialIcons
+                    name='settings'
+                    size={36}
+                    color={'white'}
                 />
             </Button>
             {/* Main title */}
@@ -364,7 +391,7 @@ const styles = StyleSheet.create({
     // Manage profile button style config
     profileButton: {
         marginTop: 20,
-        width: '40%'
+        maxWidth: 360
     },
 
     profileButtonText: {

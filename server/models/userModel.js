@@ -54,6 +54,19 @@ const userModel = {
         );
     },
 
+    updatePasswordById: async (userId, newPassword) => {
+        return(
+            await User.update({
+                password: newPassword
+            },
+            {
+                where: {
+                    user_id: userId
+                } 
+            })
+        )
+    },
+
     deleteUserById: async (userId) => {
         return(
             await User.destroy({

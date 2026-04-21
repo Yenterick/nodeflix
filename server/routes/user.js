@@ -5,6 +5,7 @@ const router = express.Router();
 const {
     registerUser,
     loginUser,
+    updateUserPassword,
     deleteUser,
     getUserProfiles
 } = require('../controllers/user');
@@ -16,5 +17,7 @@ router.post('/login', loginUser);
 
 // Protected routes configuration
 router.get('/profiles/:userId', auth, getUserProfiles);
+router.post('/update/:userId', auth, updateUserPassword);
 router.delete('/:userId', auth, deleteUser);
+
 module.exports = router;

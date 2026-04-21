@@ -32,14 +32,37 @@ const loginUser = async (req, res) => {
         
         const user = await userModel.selectUserByEmail(email);
 
+        if (!user) return res.status(401).json({ success: false, msg: 'That email is not registered.' });
+
+        const valid = await bcrypt.compare(password, user.password);
+
+        if (!valid) return res.status(401).json({ success: false, msg: 'Incorrect password.' });
+
+        const token = generateToken(user);
+        res.status(200).json({ success: true, msg: 'Logged successfully.', token, id: user.user_id, screens: user.screens, email: user.email });
+    } catch (error) {
+        res.status(500).json({ success: false, msg: error.message });
+    }
+}
+
+// Updates an user password
+const updateUserPassword = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { email, password, newPassword } = req.body;
+        
+        const user = await userModel.selectUserByEmail(email);
+
         if (!user) return res.status(401).json({ success: false, msg: "That email is not registered." });
 
         const valid = await bcrypt.compare(password, user.password);
 
-        if (!valid) return res.status(401).json({ success: false, msg: "Incorrect password." });
+        if (!valid) return res.status(401).json({ success: false, msg: 'Incorrect password' });
 
-        const token = generateToken(user);
-        res.status(200).json({ success: true, msg: 'Logged successfully.', token, id: user.user_id, screens: user.screens });
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        await userModel.updatePasswordById(userId, hashedPassword);
+
+        res.status(200).json({ success: true, msg: 'User password successfully updated.' })
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }
@@ -73,6 +96,7 @@ const getUserProfiles = async (req, res) => {
 module.exports = {
     registerUser,
     loginUser,
+    updateUserPassword,
     deleteUser,
     getUserProfiles
 }
