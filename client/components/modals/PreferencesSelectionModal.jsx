@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, Platform, ScrollView } from 'react-native';
 import { useEffect, useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -9,6 +9,15 @@ import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import Button from '../Button';
 import useFetch from '../../hooks/useFetch';
+
+// Function to distribute an array into a specific number of rows
+const distributeIntoRows = (array, numRows) => {
+    const rows = Array.from({ length: numRows }, () => []);
+    array.forEach((item, index) => {
+        rows[index % numRows].push(item);
+    });
+    return rows;
+};
 
 // Preferences selection modal
 const PreferencesSelectionModal = ({ onClose, onSave }) => {
@@ -116,9 +125,13 @@ const PreferencesSelectionModal = ({ onClose, onSave }) => {
 
     const totalSelected = selectedMovies.size + selectedSeries.size;
 
+    const movieRows = distributeIntoRows(movies, 3);
+    const seriesRows = distributeIntoRows(series, 3);
+
     // Function to render a chip
     const renderChip = (item, isSelected, contentType) => (
         <TouchableOpacity
+            key={item._id}
             style={[
                 styles.chip,
                 isSelected && styles.chipSelected
@@ -225,14 +238,19 @@ const PreferencesSelectionModal = ({ onClose, onSave }) => {
                                     </View>
                                 )}
                             </View>
-                            <FlatList
+                            <ScrollView
                                 horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                data={movies}
+                                showsHorizontalScrollIndicator={Platform.OS === 'web'}
                                 contentContainerStyle={styles.chipList}
-                                renderItem={({ item }) => renderChip(item, selectedMovies.has(item._id), 'movie')}
-                                keyExtractor={(item) => item._id}
-                            />
+                            >
+                                <View style={styles.rowsContainer}>
+                                    {movieRows.map((row, index) => (
+                                        <View key={index} style={styles.chipRow}>
+                                            {row.map(item => renderChip(item, selectedMovies.has(item._id), 'movie'))}
+                                        </View>
+                                    ))}
+                                </View>
+                            </ScrollView>
                         </View>
 
                         {/* Series section */}
@@ -259,14 +277,19 @@ const PreferencesSelectionModal = ({ onClose, onSave }) => {
                                     </View>
                                 )}
                             </View>
-                            <FlatList
+                            <ScrollView
                                 horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                data={series}
+                                showsHorizontalScrollIndicator={Platform.OS === 'web'}
                                 contentContainerStyle={styles.chipList}
-                                renderItem={({ item }) => renderChip(item, selectedSeries.has(item._id), 'series')}
-                                keyExtractor={(item) => item._id}
-                            />
+                            >
+                                <View style={styles.rowsContainer}>
+                                    {seriesRows.map((row, index) => (
+                                        <View key={index} style={styles.chipRow}>
+                                            {row.map(item => renderChip(item, selectedSeries.has(item._id), 'series'))}
+                                        </View>
+                                    ))}
+                                </View>
+                            </ScrollView>
                         </View>
 
                         {/* Buttons section */}
@@ -401,8 +424,17 @@ const styles = StyleSheet.create({
     // Chips styles config
     chipList: {
         paddingVertical: 4,
-        gap: 8,
         paddingHorizontal: 2
+    },
+
+    rowsContainer: {
+        flexDirection: 'column',
+        gap: 8
+    },
+
+    chipRow: {
+        flexDirection: 'row',
+        gap: 8
     },
 
     chip: {

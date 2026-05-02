@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ScrollView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
@@ -88,7 +88,7 @@ const SeriesP = () => {
                 </Text>
                 <FlatList
                     horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     data={series.length ? series : placeholders}
                     renderItem={({ item, index }) =>
                         series.length ? (
@@ -110,7 +110,7 @@ const SeriesP = () => {
                 </Text>
                 <FlatList
                     horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     data={series.length ? series : placeholders}
                     renderItem={({ item, index }) =>
                         series.length ? (

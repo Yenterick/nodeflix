@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
 import { useEffect, useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -138,7 +138,7 @@ const ProfilePictureModal = ({ onClose, onSave, currentPic }) => {
                                     </View>
                                     <FlatList
                                         horizontal={true}
-                                        showsHorizontalScrollIndicator={false}
+                                        showsHorizontalScrollIndicator={Platform.OS === 'web'}
                                         data={category.pictures}
                                         contentContainerStyle={styles.picList}
                                         renderItem={({ item }) => renderPicture(item)}

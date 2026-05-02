@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ScrollView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
@@ -88,7 +88,7 @@ const Movies = () => {
                 </Text>
                 <FlatList
                     horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     data={movies.length ? movies : placeholders}
                     renderItem={({ item, index }) =>
                         movies.length ? (
@@ -110,7 +110,7 @@ const Movies = () => {
                 </Text>
                 <FlatList
                     horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     data={movies.length ? movies : placeholders}
                     renderItem={({ item, index }) =>
                         movies.length ? (
@@ -131,7 +131,7 @@ const Movies = () => {
                 </Text>
                 <FlatList
                     horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     data={movies.length ? movies : placeholders}
                     renderItem={({ item, index }) =>
                         movies.length ? (
@@ -153,7 +153,7 @@ const Movies = () => {
                 </Text>
                 <FlatList
                     horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     data={movies.length ? movies : placeholders}
                     renderItem={({ item, index }) =>
                         movies.length ? (
@@ -174,7 +174,7 @@ const Movies = () => {
                 </Text>
                 <FlatList
                     horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     data={movies.length ? movies : placeholders}
                     renderItem={({ item, index }) =>
                         movies.length ? (
@@ -196,7 +196,7 @@ const Movies = () => {
                 </Text>
                 <FlatList
                     horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     data={movies.length ? movies : placeholders}
                     renderItem={({ item, index }) =>
                         movies.length ? (
@@ -217,7 +217,7 @@ const Movies = () => {
                 </Text>
                 <FlatList
                     horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     data={movies.length ? movies : placeholders}
                     renderItem={({ item, index }) =>
                         movies.length ? (
@@ -239,7 +239,7 @@ const Movies = () => {
                 </Text>
                 <FlatList
                     horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     data={movies.length ? movies : placeholders}
                     renderItem={({ item, index }) =>
                         movies.length ? (

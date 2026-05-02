@@ -92,15 +92,15 @@ const getProfileListContent = async (req, res) => {
     }
 }
 
-/*
+// Uses req.isKid (injected by kidFilter middleware) to filter recommendations
+const getProfileRecommendedContent = async (req, res) => {
+    /*
     This function handles the preferences of the profile as
     a points system, adding 2 points if the profile liked the content,
     subtracting 2 otherwise, and getting 1 point if the user watched the
     entire movie/series. The points system will be stored in a hashmap
     using the genre as the key and the points as the value.
- */
-// Uses req.isKid (injected by kidFilter middleware) to filter recommendations
-const getProfileRecommendedContent = async (req, res) => {
+    */
     try {
         const isKid = req.isKid ?? false;
         const { profileId } = req.params;
