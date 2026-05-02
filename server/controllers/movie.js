@@ -1,5 +1,31 @@
 const movieModel = require('../models/movieModel');
 
+// Searches movies by title and/or genre
+const searchMovies = async (req, res) => {
+    try {
+        const isKid = req.params.kidCheck === 'kid';
+        const { q, genre } = req.query;
+
+        let movies;
+        if (q && q.trim() !== '') {
+            movies = await movieModel.selectMovieBySearch(q.trim(), isKid);
+        } else if (genre && genre !== 'All') {
+            movies = await movieModel.selectMoviesByGenresPrecise([genre], isKid);
+        } else {
+            movies = await movieModel.selectAllMovies(isKid);
+        }
+
+        // If genre filter is applied alongside a text search, filter client-side
+        if (q && q.trim() !== '' && genre && genre !== 'All') {
+            movies = movies.filter(m => m.genres && m.genres.includes(genre));
+        }
+
+        res.status(200).json({ success: true, msg: 'Movies search results retrieved.', data: movies });
+    } catch (error) {
+        res.status(500).json({ success: false, msg: error.message });
+    }
+}
+
 // Selects all the movies
 // Accepts optional `kidCheck` boolean in the request params
 const getAllMovies = async (req, res) => {
@@ -36,5 +62,6 @@ const getMovieNames = async (req, res) => {
 module.exports = {
     getAllMovies,
     getMovie,
-    getMovieNames
+    getMovieNames,
+    searchMovies
 }

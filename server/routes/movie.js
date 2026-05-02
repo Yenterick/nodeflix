@@ -5,7 +5,8 @@ const router = express.Router();
 const {
     getAllMovies,
     getMovie,
-    getMovieNames
+    getMovieNames,
+    searchMovies
 } = require('../controllers/movie');
 const { getContentDetails } = require('../controllers/profileContext');
 const { getAllTendencies, getMovieTendencies } = require('../controllers/contentContext');
@@ -49,6 +50,37 @@ const kidFilter = require('../middlewares/kidFilter.middleware');
  *                       items:
  *                         $ref: '#/components/schemas/Movie'
  */
+/**
+ * @swagger
+ * /api/movie/search/{kidCheck}:
+ *   get:
+ *     summary: Search movies by title and/or genre.
+ *     tags: [Movie]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: kidCheck
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [kid, all]
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: Title search query.
+ *       - in: query
+ *         name: genre
+ *         schema:
+ *           type: string
+ *         description: Genre filter.
+ *     responses:
+ *       200:
+ *         description: Search results retrieved.
+ */
+router.get('/search/:kidCheck', auth, searchMovies);
+
 router.get('/:kidCheck', auth, getAllMovies);
 
 /**

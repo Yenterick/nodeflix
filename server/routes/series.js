@@ -5,7 +5,8 @@ const router = express.Router();
 const {
     getAllSeries,
     getSeries,
-    getSeriesNames
+    getSeriesNames,
+    searchSeries
 } = require('../controllers/series');
 const { getContentDetails } = require('../controllers/profileContext');
 const { getAllTendencies, getSeriesTendencies } = require('../controllers/contentContext');
@@ -49,6 +50,37 @@ const kidFilter = require('../middlewares/kidFilter.middleware');
  *                       items:
  *                         $ref: '#/components/schemas/Series'
  */
+/**
+ * @swagger
+ * /api/series/search/{kidCheck}:
+ *   get:
+ *     summary: Search series by title and/or genre.
+ *     tags: [Series]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: kidCheck
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [kid, all]
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: Title search query.
+ *       - in: query
+ *         name: genre
+ *         schema:
+ *           type: string
+ *         description: Genre filter.
+ *     responses:
+ *       200:
+ *         description: Search results retrieved.
+ */
+router.get('/search/:kidCheck', auth, searchSeries);
+
 router.get('/:kidCheck', auth, getAllSeries);
 
 /**
