@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./docs/images/nodeflixCdn.png" alt="Nodeflix CDN"/>
+    <img src="./docs/nodeflixCdn.png" alt="Nodeflix CDN"/>
 </p>
 
 <p align="center">
@@ -332,7 +332,7 @@ And wait for the app to finish building, and you will find the installer inside 
 After installing the app, you can use the user interface:
 
 <p align="center">
-    <img src="./docs/images/mediaProcessor.png" alt="Nodeflix CDN"/>
+    <img src="./docs/mediaProcessor.png" alt="Nodeflix CDN"/>
 </p>
 
 >If you check the box to remember credentials, all your information will be saved inside the **%appdata%** folder of your user.
