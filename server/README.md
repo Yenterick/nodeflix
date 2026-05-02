@@ -8,7 +8,7 @@
 
 <p align="center">
     <a href="#"><img src="https://img.shields.io/badge/Node.js-18+-green?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js"></a>
-    <a href="#"><img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js"/></a>
+    <a href="#"><img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express&logoColor=white" alt="Express.js"/></a>
     <a href="#"><img src="https://img.shields.io/badge/API-Swagger-green?style=for-the-badge" alt="Api Swagger"/></a>
     <a href="#"><img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" alt="Status"></a>
     <a href="#"><img src="https://img.shields.io/badge/Version-3.0.0-orange?style=for-the-badge" alt="Version"></a>
