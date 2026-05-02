@@ -1,15 +1,17 @@
 {
   "name": "nodeflix",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A mobile application streaming platform inspired by modern services",
+  "main": "",
   "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Yenterick/nodeflix.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+
+  ],
+  "author": "Yenterick <yenterick@gmail.com>",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {

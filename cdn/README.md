@@ -28,11 +28,15 @@ All the images are in jpeg format.
 
 ## Quick Start
 
-If you already have the SSH connection configured via key on both PCs (the one with the CDN and the one where the content will be processed), the only thing left to do is configure NGINX.
+### Configuration
 
----
+Before starting, copy the example environment file and configure it with your settings:
 
-### NGINX Setup
+```bash
+cp .env.example .env
+```
+
+## NGINX Setup
 
 Follow these steps to install and configure NGINX for Nodeflix CDN.
 
