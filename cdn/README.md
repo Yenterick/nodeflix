@@ -203,6 +203,14 @@ ssh user@your-server-ip
 
 If everything is correct, it should connect without asking for a password.
 
+#### 7. Setup default profile picture
+
+You must place the following file:
+
+`/var/www/hls/pictures/default/1.jpeg`
+
+This image will be served whenever a user doesn't select a profile picture.
+
 ---
 
 # Media Processor Script (Deprecated)
