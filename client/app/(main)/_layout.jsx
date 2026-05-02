@@ -1,14 +1,25 @@
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { NativeTabs, Icon, Label } from 'expo-router/unstable-native-tabs';
-import { Tabs } from 'expo-router';
+import { Tabs, Slot } from 'expo-router';
 import { DynamicColorIOS } from 'react-native';
 
 // Module and components imports
 import colorScheme from '../../assets/color/colorScheme';
 import Footer from '../../components/Footer';
+import Navbar from '../../components/Navbar';
 
 // New main stack layout simulating the deprecated one but using expo-router (LIQUID GLASS LET'S GOOOO)
 export default function MainLayout() {
+    // Web Layout
+    if (Platform.OS === 'web') {
+        return (
+            <View style={{ flex: 1, backgroundColor: colorScheme.darkGreen }}>
+                <Navbar />
+                <Slot />
+            </View>
+        );
+    }
+
     // Android fallback bc NativeTabs on Android is pretty unstable
     if (Platform.OS !== 'ios') {
         return (
@@ -20,6 +31,7 @@ export default function MainLayout() {
                 <Tabs.Screen name='movies' />
                 <Tabs.Screen name='series' />
                 <Tabs.Screen name='search' />
+                <Tabs.Screen name='logout' />
             </Tabs>
         );
     }
@@ -59,10 +71,6 @@ export default function MainLayout() {
                 <Icon sf={{ default: 'magnifyingglass', selected: 'magnifyingglass' }} md="search" />
             </NativeTabs.Trigger>
 
-            {/* <NativeTabs.Trigger name="logout">
-                <Label>Exit</Label>
-                <Icon sf="arrow.right.square.fill" md="logout" />
-            </NativeTabs.Trigger> */}
         </NativeTabs>
     );
 }

@@ -1,5 +1,7 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // Module and components imports
 import colorScheme from '../../assets/color/colorScheme';
@@ -7,8 +9,9 @@ import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 
 const Index = () => {
 
-    // insets hook
+    // Hooks
     const insets = useSafeAreaInsets();
+    const router = useRouter();
 
     return (
         <View
@@ -21,6 +24,15 @@ const Index = () => {
                 }
             ]}
         >
+            {Platform.OS === 'ios' && (
+                <TouchableOpacity 
+                    style={[styles.logoutButton, { top: insets.top + 10 }]}
+                    onPress={() => router.replace('/(auth)/profile-selector')}
+                >
+                    <MaterialIcons name="logout" size={36} color="#FF6B6B" />
+                </TouchableOpacity>
+            )}
+
             <Text
                 style={[
                     funnelDisplay.bold,
@@ -42,7 +54,20 @@ const styles = StyleSheet.create({
     background: {
         backgroundColor: colorScheme.darkGreen,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        position: 'relative',
+    },
+    logoutButton: {
+        position: 'absolute',
+        right: 20,
+        zIndex: 10,
+        width: 56,
+        height: 56,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 4, // Visually centers the asymmetrical logout icon
+        backgroundColor: 'rgba(255, 107, 107, 0.1)',
+        borderRadius: 50,
     }
 })
 

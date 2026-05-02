@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./config/swagger');
 
 // Module imports
 const { getLogPrefix, log, sleep } = require('./utils/utils');
@@ -25,7 +27,7 @@ const app = express();
 
 // Previous app configuration
 // TODO: Change cors origins before deploying (Maybe it's impossible)
-app.use(cors({origin: '*'}));
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -38,11 +40,12 @@ app.use('/api/interactionEvent', interactionEventRouter);
 app.use('/api/movie', movieRouter);
 app.use('/api/series', seriesRouter);
 app.use('/api/profilePicture', profilePictureRouter);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // Server health check
 app.get('/api/health', (req, res) => {
     try {
-        res.status(200).json({ success: true, msg: 'Nodeflix server is up and healthy!'});
+        res.status(200).json({ success: true, msg: 'Nodeflix server is up and healthy!' });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message })
     }

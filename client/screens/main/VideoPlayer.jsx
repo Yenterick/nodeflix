@@ -46,6 +46,7 @@ const VideoPlayer = () => {
     const [content, setContent] = useState(undefined);
     const [currentSeason, setCurrentSeason] = useState(season || watchedProgress?.season || 1);
     const [currentEpisode, setCurrentEpisode] = useState(episode || watchedProgress?.episode || 1);
+    const [viewingSeason, setViewingSeason] = useState(season || watchedProgress?.season || 1);
     const [showDropdown, setShowDropdown] = useState(null); // 'seasons' | 'episodes' | null
     const { request, loading, error } = useFetch();
 
@@ -63,6 +64,7 @@ const VideoPlayer = () => {
     const lastTapRight = useRef(0);
     const [seekFeedback, setSeekFeedback] = useState(null);
     const seekFeedbackTimeout = useRef(null);
+    const isInitialLoad = useRef(true);
 
     // Single tap handler
     const handleTap = (event) => {
@@ -196,7 +198,7 @@ const VideoPlayer = () => {
             if (seekFeedbackTimeout.current) clearTimeout(seekFeedbackTimeout.current);
         };
 
-    }, [contentId, contentType, currentEpisode, currentSeason]);
+    }, [contentId, contentType]);
 
     // Ugly ass Android button handler 
     useEffect(() => {
@@ -222,10 +224,22 @@ const VideoPlayer = () => {
     // Creating video player
     const player = useVideoPlayer(videoUrl ? `${process.env.EXPO_PUBLIC_CDN_URL}${videoUrl}` : null, player => {
         player.loop = false;
-        player.play();
-        player.currentTime = watchedProgress?.watchedSeconds || 0;
         player.timeUpdateEventInterval = 0.5;
     });
+
+    // Handle episode/source changes
+    useEffect(() => {
+        if (player && videoUrl) {
+            // Force play and handle initial progress
+            if (isInitialLoad.current) {
+                player.currentTime = watchedProgress?.watchedSeconds || 0;
+                isInitialLoad.current = false;
+            } else {
+                player.currentTime = 0;
+            }
+            player.play();
+        }
+    }, [videoUrl, player]);
 
     // Video playing events
     const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
@@ -277,12 +291,12 @@ const VideoPlayer = () => {
         handlePlay(nextEpisodeInfo.season, nextEpisodeInfo.episode);
     };
 
-    // Idk why on web it doesn't start playing automatically but I needed to force it
+    // Force play on web when ready
     useEffect(() => {
-        if (Platform.OS === 'web' && status === 'readyToPlay' && !isPlaying) {
+        if (Platform.OS === 'web' && status === 'readyToPlay' && !isPlaying && videoUrl) {
             player.play();
         }
-    }, [status]);
+    }, [status, videoUrl]);
 
     // Function to format the timestamps
     const formatSecondsVideo = (totalSeconds) => {
@@ -442,10 +456,10 @@ const VideoPlayer = () => {
                         .duration(500)}
                     pointerEvents="none"
                 >
-                    <MaterialIcons 
-                        name='replay-10' 
+                    <MaterialIcons
+                        name='replay-10'
                         size={120}
-                        color='rgba(255, 255, 255, 0.6)' 
+                        color='rgba(255, 255, 255, 0.6)'
                     />
                 </Animated.View>
             )}
@@ -460,10 +474,10 @@ const VideoPlayer = () => {
                         .duration(300)}
                     pointerEvents="none"
                 >
-                    <MaterialIcons 
-                        name='forward-10' 
-                        size={120} 
-                        color='rgba(255, 255, 255, 0.6)' 
+                    <MaterialIcons
+                        name='forward-10'
+                        size={120}
+                        color='rgba(255, 255, 255, 0.6)'
                     />
                 </Animated.View>
             )}
@@ -600,6 +614,7 @@ const VideoPlayer = () => {
                                     style={styles.seasonsButton}
                                     onPress={() => {
                                         resetControlsTimer();
+                                        setViewingSeason(currentSeason);
                                         setShowDropdown('seasons');
                                     }}
                                 >
@@ -642,22 +657,22 @@ const VideoPlayer = () => {
                                             key={season.season_number}
                                             style={[
                                                 styles.seasonCard,
-                                                currentSeason === season.season_number && styles.seasonCardActive
+                                                viewingSeason === season.season_number && styles.seasonCardActive
                                             ]}
                                             onPress={() => {
-                                                setCurrentSeason(season.season_number);
+                                                setViewingSeason(season.season_number);
                                                 setShowDropdown('episodes');
                                             }}
                                         >
                                             <MaterialIcons
                                                 name='airplay'
                                                 size={20}
-                                                color={currentSeason === season.season_number ? colorScheme.lightGreen : 'white'}
+                                                color={viewingSeason === season.season_number ? colorScheme.lightGreen : 'white'}
                                             />
                                             <Text style={[
                                                 funnelDisplay.bold,
                                                 styles.seasonTitle,
-                                                currentSeason === season.season_number && { color: colorScheme.lightGreen }
+                                                viewingSeason === season.season_number && { color: colorScheme.lightGreen }
                                             ]}>
                                                 Season {season.season_number}
                                             </Text>
@@ -686,7 +701,7 @@ const VideoPlayer = () => {
                                         funnelDisplay.bold,
                                         styles.panelTitle
                                     ]}>
-                                        Season {currentSeason}
+                                        Season {viewingSeason}
                                     </Text>
                                 </View>
                                 <ScrollView
@@ -695,15 +710,15 @@ const VideoPlayer = () => {
                                     showsVerticalScrollIndicator={false}
                                 >
                                     {content.seasons
-                                        .find(s => s.season_number === currentSeason)
+                                        .find(s => s.season_number === viewingSeason)
                                         ?.episodes.map((episode) => (
                                             <TouchableOpacity
                                                 key={episode.episode_number}
                                                 style={[
                                                     styles.episodeCard,
-                                                    currentEpisode === episode.episode_number && styles.episodeCardActive
+                                                    currentSeason === viewingSeason && currentEpisode === episode.episode_number && styles.episodeCardActive
                                                 ]}
-                                                onPress={() => handlePlay(currentSeason, episode.episode_number)}
+                                                onPress={() => handlePlay(viewingSeason, episode.episode_number)}
                                             >
                                                 <View style={styles.episodeHeader}>
                                                     <Image

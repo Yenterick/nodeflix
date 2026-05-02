@@ -27,7 +27,7 @@ const getMovie = async (req, res) => {
 const getMovieNames = async (req, res) => {
     try {
         const movies = await movieModel.selectMovieNames();
-        res.status(200).json({ success: true, msg: 'Movie names and IDs successfully retrieved.', data:  movies });
+        res.status(200).json({ success: true, msg: 'Movie names and IDs successfully retrieved.', data: movies });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }
