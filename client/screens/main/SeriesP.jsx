@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 // Module and componets imports
 import colorScheme from '../../assets/color/colorScheme';
@@ -13,18 +14,18 @@ import ContentInfoModal from '../../components/modals/ContentInfoModal';
 import useFetch from '../../hooks/useFetch';
 
 const GENRE_TITLES = {
-    'Action': 'Adrenaline Rush',
-    'Comedy': 'Laugh Out Loud',
-    'Drama': 'Critically Acclaimed Dramas',
-    'Horror': 'Keep the Lights On',
-    'Sci-Fi': 'Out of this World',
-    'Thriller': 'Edge of Your Seat',
-    'Romance': 'Swoon-Worthy Romance',
-    'Documentary': 'Real Life Stories',
-    'Animation': 'Animated Masterpieces',
-    'Family': 'Fun for the Whole Family',
-    'Fantasy': 'Magical Worlds',
-    'Crime': 'Unsolved Mysteries',
+    'Action': 'Binge-Worthy Action',
+    'Comedy': 'Non-Stop Laughs',
+    'Drama': 'Gripping TV Dramas',
+    'Horror': 'Spooky Series',
+    'Sci-Fi': 'Worlds of Tomorrow',
+    'Thriller': 'Suspenseful Episodes',
+    'Romance': 'Sweet TV Romances',
+    'Documentary': 'Compelling Docuseries',
+    'Animation': 'Toon Marathons',
+    'Family': 'Shows for the Family',
+    'Fantasy': 'Epic Sagas',
+    'Crime': 'Crime Scene Investigations',
 };
 
 const SeriesP = () => {
@@ -88,13 +89,15 @@ const SeriesP = () => {
                     data={data}
                     keyExtractor={(item, index) => `${item._id}-${index}`}
                     contentContainerStyle={styles.rowList}
-                    renderItem={({ item }) => (
-                        <ContentCard
-                            uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
-                            onPress={() => handleSelectSeries(item)}
-                            title={item.title}
-                            contentType="series"
-                        />
+                    renderItem={({ item, index }) => (
+                        <Animated.View entering={FadeIn.delay(index * 40).duration(400)}>
+                            <ContentCard
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectSeries(item)}
+                                title={item.title}
+                                contentType="series"
+                            />
+                        </Animated.View>
                     )}
                 />
             </View>

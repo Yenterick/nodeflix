@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 // Module and componets imports
 import colorScheme from '../../assets/color/colorScheme';
@@ -13,18 +14,18 @@ import ContentInfoModal from '../../components/modals/ContentInfoModal';
 import useFetch from '../../hooks/useFetch';
 
 const GENRE_TITLES = {
-    'Action': 'Adrenaline Rush',
-    'Comedy': 'Laugh Out Loud',
-    'Drama': 'Critically Acclaimed Dramas',
-    'Horror': 'Keep the Lights On',
-    'Sci-Fi': 'Out of this World',
-    'Thriller': 'Edge of Your Seat',
-    'Romance': 'Swoon-Worthy Romance',
-    'Documentary': 'Real Life Stories',
-    'Animation': 'Animated Masterpieces',
-    'Family': 'Fun for the Whole Family',
-    'Fantasy': 'Magical Worlds',
-    'Crime': 'Unsolved Mysteries',
+    'Action': 'High-Octane Action',
+    'Comedy': 'Big Screen Comedies',
+    'Drama': 'Cinematic Masterpieces',
+    'Horror': 'Midnight Chills',
+    'Sci-Fi': 'Intergalactic Adventures',
+    'Thriller': 'Pulse-Pounding Thrillers',
+    'Romance': 'Romantic Escapes',
+    'Documentary': 'Insightful Documentaries',
+    'Animation': 'Animated Features',
+    'Family': 'Kid-Friendly Movies',
+    'Fantasy': 'Magical Expeditions',
+    'Crime': 'Heists & Detectives',
 };
 
 const Movies = () => {
@@ -88,13 +89,15 @@ const Movies = () => {
                     data={data}
                     keyExtractor={(item, index) => `${item._id}-${index}`}
                     contentContainerStyle={styles.rowList}
-                    renderItem={({ item }) => (
-                        <ContentCard
-                            uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
-                            onPress={() => handleSelectMovie(item)}
-                            title={item.title}
-                            contentType="movie"
-                        />
+                    renderItem={({ item, index }) => (
+                        <Animated.View entering={FadeIn.delay(index * 40).duration(400)}>
+                            <ContentCard
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectMovie(item)}
+                                title={item.title}
+                                contentType="movie"
+                            />
+                        </Animated.View>
                     )}
                 />
             </View>

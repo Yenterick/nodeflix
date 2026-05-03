@@ -4,6 +4,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 // Module and components imports
 import colorScheme from '../../assets/color/colorScheme';
@@ -82,13 +83,15 @@ const Index = () => {
                     data={data}
                     keyExtractor={(item, index) => `${item._id}-${index}`}
                     contentContainerStyle={styles.rowList}
-                    renderItem={({ item }) => (
-                        <ContentCard
-                            uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
-                            onPress={() => handleSelectContent(item)}
-                            title={item.title}
-                            contentType={item.seasons ? 'series' : 'movie'}
-                        />
+                    renderItem={({ item, index }) => (
+                        <Animated.View entering={FadeIn.delay(index * 40).duration(400)}>
+                            <ContentCard
+                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                                onPress={() => handleSelectContent(item)}
+                                title={item.title}
+                                contentType={item.seasons ? 'series' : 'movie'}
+                            />
+                        </Animated.View>
                     )}
                 />
             </View>
