@@ -22,22 +22,48 @@ const kidFilter = require('../middlewares/kidFilter.middleware');
 
 /**
  * @swagger
- * /api/movie/{kidCheck}:
+ * /api/movie/tendencies:
  *   get:
- *     summary: Get all movies.
+ *     summary: Get all trending content (movies and series).
  *     tags: [Movie]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: kidCheck
- *         required: true
+ *       - in: query
+ *         name: isKid
  *         schema:
- *           type: string
- *           enum: [kid, all]
+ *           type: boolean
+ *         description: Filter for kids-only content.
  *     responses:
  *       200:
- *         description: Movies retrieved.
+ *         description: Tendencies retrieved.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         oneOf:
+ *                           - $ref: '#/components/schemas/Movie'
+ *                           - $ref: '#/components/schemas/Series'
+ */
+router.get('/tendencies', auth, kidFilter, getAllTendencies);
+
+/**
+ * @swagger
+ * /api/movie/movieTendencies:
+ *   get:
+ *     summary: Get trending movies only.
+ *     tags: [Movie]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Movie tendencies retrieved.
  *         content:
  *           application/json:
  *             schema:
@@ -50,6 +76,8 @@ const kidFilter = require('../middlewares/kidFilter.middleware');
  *                       items:
  *                         $ref: '#/components/schemas/Movie'
  */
+router.get('/movieTendencies', auth, kidFilter, getMovieTendencies);
+
 /**
  * @swagger
  * /api/movie/search/{kidCheck}:
@@ -80,8 +108,6 @@ const kidFilter = require('../middlewares/kidFilter.middleware');
  *         description: Search results retrieved.
  */
 router.get('/search/:kidCheck', auth, searchMovies);
-
-router.get('/:kidCheck', auth, getAllMovies);
 
 /**
  * @swagger
@@ -172,42 +198,22 @@ router.get('/:contentId/:profileId', auth, getContentDetails);
 
 /**
  * @swagger
- * /api/movie/tendencies:
+ * /api/movie/{kidCheck}:
  *   get:
- *     summary: Get all trending content.
+ *     summary: Get all movies.
  *     tags: [Movie]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: kidCheck
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [kid, all]
  *     responses:
  *       200:
- *         description: Tendencies retrieved.
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/ApiResponse'
- *                 - type: object
- *                   properties:
- *                     data:
- *                       type: array
- *                       items:
- *                         oneOf:
- *                           - $ref: '#/components/schemas/Movie'
- *                           - $ref: '#/components/schemas/Series'
- */
-router.get('/tendencies', auth, kidFilter, getAllTendencies);
-
-/**
- * @swagger
- * /api/movie/movieTendencies:
- *   get:
- *     summary: Get trending movies.
- *     tags: [Movie]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Movie tendencies retrieved.
+ *         description: Movies retrieved.
  *         content:
  *           application/json:
  *             schema:
@@ -220,7 +226,6 @@ router.get('/tendencies', auth, kidFilter, getAllTendencies);
  *                       items:
  *                         $ref: '#/components/schemas/Movie'
  */
-router.get('/movieTendencies', auth, kidFilter, getMovieTendencies);
+router.get('/:kidCheck', auth, getAllMovies);
 
 module.exports = router;
-

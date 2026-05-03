@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, ScrollView, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ScrollView, Platform, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
@@ -8,26 +8,33 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import colorScheme from '../../assets/color/colorScheme';
 import { funnelDisplay } from '../../assets/fonts/funnelDisplay';
 import ContentCard from '../../components/ContentCard';
-import SkeletonCard from '../../components/SkeletonCard';
 import InfoModal from '../../components/modals/InfoModal';
 import ContentInfoModal from '../../components/modals/ContentInfoModal';
 import useFetch from '../../hooks/useFetch';
 
+const GENRE_TITLES = {
+    'Action': 'Adrenaline Rush',
+    'Comedy': 'Laugh Out Loud',
+    'Drama': 'Critically Acclaimed Dramas',
+    'Horror': 'Keep the Lights On',
+    'Sci-Fi': 'Out of this World',
+    'Thriller': 'Edge of Your Seat',
+    'Romance': 'Swoon-Worthy Romance',
+    'Documentary': 'Real Life Stories',
+    'Animation': 'Animated Masterpieces',
+    'Family': 'Fun for the Whole Family',
+    'Fantasy': 'Magical Worlds',
+    'Crime': 'Unsolved Mysteries',
+};
+
 const SeriesP = () => {
-    // Placeholder array in case series don't charge
-    const placeholders = Array.from({ length: 10 });
-
-    // Navigation hook
     const router = useRouter();
-
-    // Various hooks
     const insets = useSafeAreaInsets();
-    const [hasError, setHasError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('An error has ocurred while retrieving the series!');
-    const { request, error, loading } = useFetch();
+    const { request, loading, error } = useFetch();
 
-    // Series hooks
-    const [series, setSeries] = useState([]);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [seriesByGenre, setSeriesByGenre] = useState({});
 
     // Series info modal hooks
     const [selectedSeries, setSelectedSeries] = useState(null);
@@ -36,115 +43,128 @@ const SeriesP = () => {
     const handleSelectSeries = (item) => {
         setSelectedSeries(item);
         setShowSeriesInfoModal(true);
-    }
+    };
 
-    // Load the series from the backend
     const fetchSeries = async () => {
         try {
-            const response = await request(
-                `/series/${await AsyncStorage.getItem('isKid') === 'true' ? 'kid' : 'all'}`, 
-                'GET'
-            );
+            const isKid = await AsyncStorage.getItem('isKid') === 'true';
+            const response = await request(`/series/${isKid ? 'kid' : 'all'}`, 'GET');
 
-            if (response && response.success) {
-                if (!response.data) {
-                    setHasError(true);
-                    setErrorMessage('An error has ocurred while retrieving the series!');
-                    return;
-                }
-                setSeries(response.data);
+            if (response && response.success && response.data) {
+                const grouped = response.data.reduce((acc, series) => {
+                    if (series.genres) {
+                        series.genres.forEach(genre => {
+                            if (!acc[genre]) acc[genre] = [];
+                            acc[genre].push(series);
+                        });
+                    }
+                    return acc;
+                }, {});
+                setSeriesByGenre(grouped);
             } else {
                 setHasError(true);
-                setErrorMessage(error || response?.msg || 'An error has ocurred while retrieving the series!');
+                setErrorMessage(error || response?.msg || 'Failed to load series.');
             }
         } catch (error) {
             setHasError(true);
             setErrorMessage(error.message);
         }
-    }
+    };
 
     useEffect(() => {
         fetchSeries();
-    }, [])
+    }, []);
+
+    const renderGenreRow = (genre, data) => {
+        if (!data || data.length === 0) return null;
+        const title = GENRE_TITLES[genre] || `${genre} Series`;
+
+        return (
+            <View style={styles.rowContainer} key={genre}>
+                <Text style={[funnelDisplay.semibold, styles.rowTitle]}>{title}</Text>
+                <FlatList
+                    horizontal
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
+                    data={data}
+                    keyExtractor={(item, index) => `${item._id}-${index}`}
+                    contentContainerStyle={styles.rowList}
+                    renderItem={({ item }) => (
+                        <ContentCard
+                            uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
+                            onPress={() => handleSelectSeries(item)}
+                            title={item.title}
+                            contentType="series"
+                        />
+                    )}
+                />
+            </View>
+        );
+    };
 
     return (
-        <>
-            {/* Error modal */}
-            {hasError &&
-                <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => router.replace('/(auth)/login')} />
-            }
-            {showSeriesInfoModal &&
-                <ContentInfoModal item={selectedSeries} contentType='series' onClose={() => setShowSeriesInfoModal(false)} />
-            }
-            <ScrollView 
-                style={styles.background}
-                contentInsetAdjustmentBehavior="automatic"
-            >
-                <Text style={[
-                    styles.h1,
-                    funnelDisplay.semibold
-                ]}>
-                    Trending...
-                </Text>
-                <FlatList
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
-                    data={series.length ? series : placeholders}
-                    renderItem={({ item, index }) =>
-                        series.length ? (
-                            <ContentCard
-                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
-                                onPress={() => handleSelectSeries(item)}
-                            />
-                        ) : (
-                            <SkeletonCard style={{ opacity: 1 - index * 0.12 }} />
-                        )
-                    }
-                    keyExtractor={(item, index) => series.length ? item._id : `placeholder-${index}`}
+        <View style={[styles.container, { paddingBottom: insets.bottom, paddingTop: insets.top }]}>
+            {hasError && (
+                <InfoModal
+                    text={errorMessage}
+                    icon='error-outline'
+                    color='#FF6B6B'
+                    onExit={() => { setHasError(false); router.replace('/(auth)/login'); }}
                 />
-                <Text style={[
-                    styles.h1,
-                    funnelDisplay.semibold
-                ]}>
-                    What's new?
-                </Text>
-                <FlatList
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
-                    data={series.length ? series : placeholders}
-                    renderItem={({ item, index }) =>
-                        series.length ? (
-                            <ContentCard
-                                uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
-                                onPress={() => handleSelectSeries(item)}
-                            />
-                        ) : (
-                            <SkeletonCard style={{ opacity: 1 - index * 0.12 }} />
-                        )
-                    }
-                    keyExtractor={(item, index) => series.length ? item._id : `placeholder-${index}`}
+            )}
+
+            {showSeriesInfoModal && selectedSeries && (
+                <ContentInfoModal
+                    item={selectedSeries}
+                    contentType='series'
+                    onClose={() => setShowSeriesInfoModal(false)}
                 />
-            </ScrollView>
-        </>
-    )
-}
+            )}
+
+            {loading ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="white" />
+                </View>
+            ) : (
+                <ScrollView
+                    style={styles.background}
+                    contentContainerStyle={{ paddingVertical: 20 }}
+                    showsVerticalScrollIndicator={false}
+                >
+                    {Object.keys(seriesByGenre).map(genre => renderGenreRow(genre, seriesByGenre[genre]))}
+
+                    {Object.keys(seriesByGenre).length === 0 && (
+                        <Text style={[funnelDisplay.medium, { color: 'gray', textAlign: 'center', marginTop: 50 }]}>
+                            No series available right now.
+                        </Text>
+                    )}
+                </ScrollView>
+            )}
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
-    // General styles config
-    background: {
+    container: {
         flex: 1,
         backgroundColor: colorScheme.darkGreen,
-        paddingLeft: 20,
-        paddingRight: 20
     },
-
-    h1: {
+    background: {
+        flex: 1,
+    },
+    rowContainer: {
+        marginBottom: 24,
+    },
+    rowTitle: {
         color: 'white',
-        margin: 10,
-        fontSize: 24
+        fontSize: 20,
+        marginLeft: 20,
+        marginBottom: 10,
+        letterSpacing: 0.5,
     },
-
-    // Placeholder style config removed - handled by SkeletonCard
+    rowList: {
+        paddingHorizontal: 10,
+        paddingVertical: 15,
+    }
 });
 
 export default SeriesP;

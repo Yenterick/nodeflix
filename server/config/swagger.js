@@ -5,7 +5,7 @@ const options = {
     openapi: '3.0.0',
     info: {
       title: 'Nodeflix API',
-      version: '3.0.0',
+      version: '3.5.0',
       description: 'API documentation for the Nodeflix streaming platform.',
     },
     servers: [

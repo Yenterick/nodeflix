@@ -34,9 +34,12 @@ const Series = mongoose.model('Series', seriesSchema);
 const seriesModel = {
     selectAllSeries : async (isKid = false) => {
         const filter = isKid ? { is_for_kids: true } : {};
-        return (
-            await Series.find(filter)
-        );
+        return await Series.aggregate([
+            { $match: filter },
+            { $addFields: { randomOrder: { $rand: {} } } },
+            { $sort: { randomOrder: 1 } },
+            { $project: { randomOrder: 0 } }
+        ]);
     },
 
     selectSeriesById : async (id) => {
@@ -48,25 +51,35 @@ const seriesModel = {
     selectSeriesByGenresPrecise : async (genres, isKid = false) => { 
         const filter = { genres: { $all: genres } };
         if (isKid) filter.is_for_kids = true;
-        return (
-            await Series.find(filter)
-        );
+        return await Series.aggregate([
+            { $match: filter },
+            { $addFields: { randomOrder: { $rand: {} } } },
+            { $sort: { randomOrder: 1 } },
+            { $project: { randomOrder: 0 } }
+        ]);
     },
 
     selectSeriesByGenres : async (genres, excludeIds, isKid = false) => { 
-        const filter = { genres: { $in: genres }, _id: { $nin: excludeIds } };
+        const objectIds = excludeIds.map(id => new mongoose.Types.ObjectId(id));
+        const filter = { genres: { $in: genres }, _id: { $nin: objectIds } };
         if (isKid) filter.is_for_kids = true;
-        return (
-            await Series.find(filter)
-        );
+        return await Series.aggregate([
+            { $match: filter },
+            { $addFields: { randomOrder: { $rand: {} } } },
+            { $sort: { randomOrder: 1 } },
+            { $project: { randomOrder: 0 } }
+        ]);
     },
 
     selectSeriesBySearch : async (search, isKid = false) => {
         const filter = { title: { $regex: `^${search}`, $options: 'i' } };
         if (isKid) filter.is_for_kids = true;
-        return (
-            await Series.find(filter)
-        );
+        return await Series.aggregate([
+            { $match: filter },
+            { $addFields: { randomOrder: { $rand: {} } } },
+            { $sort: { randomOrder: 1 } },
+            { $project: { randomOrder: 0 } }
+        ]);
     },
 
     selectSeriesNames : async () => {

@@ -39,16 +39,20 @@ const getContentDetails = async (req, res) => {
 }
 
 // Checks for all the profile started content
-// Uses req.isKid (injected by kidFilter middleware) to filter kids-only content
 const getProfileStartedContent = async (req, res) => {
     try {
         const isKid = req.isKid ?? false;
         const { profileId } = req.params;
         const entries = await profileModel.selectProfileViewEvents(profileId);
 
-        const data = [];
+        let data = [];
+        const seenIds = new Set();
 
         for (const entry of entries) {
+            if (entry.completed) continue;
+            if (seenIds.has(entry.content_id)) continue;
+            seenIds.add(entry.content_id);
+
             let content;
             if (entry.content_type === 'movie') content = await movieModel.selectMovieById(entry.content_id);
             else content = await seriesModel.selectSeriesById(entry.content_id);
@@ -58,6 +62,8 @@ const getProfileStartedContent = async (req, res) => {
                 data.push(content);
             }
         }
+
+        data.sort(() => Math.random() - 0.5);
 
         res.status(200).json({ success: true, msg: 'Content details successfully retrieved.', data: data })
     } catch (error) {
@@ -66,16 +72,19 @@ const getProfileStartedContent = async (req, res) => {
 }
 
 // Checks for all the profile list content
-// Uses req.isKid (injected by kidFilter middleware) to filter kids-only content
 const getProfileListContent = async (req, res) => {
     try {
         const isKid = req.isKid ?? false;
         const { profileId } = req.params;
         const entries = await profileModel.selectProfileListEvents(profileId);
 
-        const data = [];
+        let data = [];
+        const seenIds = new Set();
 
         for (const entry of entries) {
+            if (seenIds.has(entry.content_id)) continue;
+            seenIds.add(entry.content_id);
+
             let content;
             if (entry.content_type === 'movie') content = await movieModel.selectMovieById(entry.content_id);
             else content = await seriesModel.selectSeriesById(entry.content_id);
@@ -86,13 +95,14 @@ const getProfileListContent = async (req, res) => {
             }
         }
 
+        data.sort(() => Math.random() - 0.5);
+
         res.status(200).json({ success: true, msg: 'Content details successfully retrieved.', data: data })
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }
 }
 
-// Uses req.isKid (injected by kidFilter middleware) to filter recommendations
 const getProfileRecommendedContent = async (req, res) => {
     /*
     This function handles the preferences of the profile as

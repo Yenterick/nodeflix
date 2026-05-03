@@ -15,7 +15,6 @@ const searchSeries = async (req, res) => {
             series = await seriesModel.selectAllSeries(isKid);
         }
 
-        // If genre filter is applied alongside a text search, filter client-side
         if (q && q.trim() !== '' && genre && genre !== 'All') {
             series = series.filter(s => s.genres && s.genres.includes(genre));
         }
@@ -27,11 +26,12 @@ const searchSeries = async (req, res) => {
 }
 
 // Selects all the series
-// Accepts optional `kidCheck` boolean in the request params
+
 const getAllSeries = async (req, res) => {
     try {
         const isKid = req.params.kidCheck === 'kid';
-        const series = await seriesModel.selectAllSeries(isKid);
+        let series = await seriesModel.selectAllSeries(isKid);
+        series.sort(() => Math.random() - 0.5);
 
         res.status(200).json({ success: true, msg: 'Series successfully retrieved.', data: series });
     } catch (error) {

@@ -19,44 +19,57 @@ const Movie = mongoose.model('Movie', movieSchema);
 
 // Movie model with all the required functions
 const movieModel = {
-    selectAllMovies : async (isKid = false) => {
+    selectAllMovies: async (isKid = false) => {
         const filter = isKid ? { is_for_kids: true } : {};
-        return (
-            await Movie.find(filter)
-        );
+        return await Movie.aggregate([
+            { $match: filter },
+            { $addFields: { randomOrder: { $rand: {} } } },
+            { $sort: { randomOrder: 1 } },
+            { $project: { randomOrder: 0 } }
+        ]);
     },
-    
-    selectMovieById : async (id) => {
+
+    selectMovieById: async (id) => {
         return (
             await Movie.findById(id)
-        ); 
+        );
     },
 
-    selectMoviesByGenresPrecise : async (genres, isKid = false) => { 
+    selectMoviesByGenresPrecise: async (genres, isKid = false) => {
         const filter = { genres: { $all: genres } };
         if (isKid) filter.is_for_kids = true;
-        return (
-            await Movie.find(filter)
-        );
+        return await Movie.aggregate([
+            { $match: filter },
+            { $addFields: { randomOrder: { $rand: {} } } },
+            { $sort: { randomOrder: 1 } },
+            { $project: { randomOrder: 0 } }
+        ]);
     },
 
-    selectMoviesByGenres : async (genres, excludeIds, isKid = false) => { 
-        const filter = { genres: { $in: genres }, _id: { $nin: excludeIds } };
+    selectMoviesByGenres: async (genres, excludeIds, isKid = false) => {
+        const objectIds = excludeIds.map(id => new mongoose.Types.ObjectId(id));
+        const filter = { genres: { $in: genres }, _id: { $nin: objectIds } };
         if (isKid) filter.is_for_kids = true;
-        return (
-            await Movie.find(filter)
-        );
+        return await Movie.aggregate([
+            { $match: filter },
+            { $addFields: { randomOrder: { $rand: {} } } },
+            { $sort: { randomOrder: 1 } },
+            { $project: { randomOrder: 0 } }
+        ]);
     },
 
-    selectMovieBySearch : async (search, isKid = false) => {
+    selectMovieBySearch: async (search, isKid = false) => {
         const filter = { title: { $regex: `^${search}`, $options: 'i' } };
         if (isKid) filter.is_for_kids = true;
-        return (
-            await Movie.find(filter)
-        );
+        return await Movie.aggregate([
+            { $match: filter },
+            { $addFields: { randomOrder: { $rand: {} } } },
+            { $sort: { randomOrder: 1 } },
+            { $project: { randomOrder: 0 } }
+        ]);
     },
 
-    selectMovieNames : async () => {
+    selectMovieNames: async () => {
         return (
             await Movie.find({}, 'title _id')
         );

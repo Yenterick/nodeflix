@@ -15,7 +15,6 @@ const searchMovies = async (req, res) => {
             movies = await movieModel.selectAllMovies(isKid);
         }
 
-        // If genre filter is applied alongside a text search, filter client-side
         if (q && q.trim() !== '' && genre && genre !== 'All') {
             movies = movies.filter(m => m.genres && m.genres.includes(genre));
         }
@@ -27,11 +26,11 @@ const searchMovies = async (req, res) => {
 }
 
 // Selects all the movies
-// Accepts optional `kidCheck` boolean in the request params
 const getAllMovies = async (req, res) => {
     try {
         const isKid = req.params.kidCheck === 'kid';
-        const movies = await movieModel.selectAllMovies(isKid);
+        let movies = await movieModel.selectAllMovies(isKid);
+        movies.sort(() => Math.random() - 0.5);
         res.status(200).json({ success: true, msg: 'Movies successfully retrieved.', data: movies });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });

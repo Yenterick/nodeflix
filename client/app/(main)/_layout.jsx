@@ -1,4 +1,4 @@
-import { Platform, View } from 'react-native';
+import { Platform, View, useWindowDimensions } from 'react-native';
 import { NativeTabs, Icon, Label } from 'expo-router/unstable-native-tabs';
 import { Tabs, Slot } from 'expo-router';
 import { DynamicColorIOS } from 'react-native';
@@ -10,13 +10,31 @@ import Navbar from '../../components/Navbar';
 
 // New main stack layout simulating the deprecated one but using expo-router (LIQUID GLASS LET'S GOOOO)
 export default function MainLayout() {
+    const { width } = useWindowDimensions();
+
     // Web Layout
     if (Platform.OS === 'web') {
+        // Use Navbar on wide screens, Footer on narrow screens (< 768px)
+        if (width >= 768) {
+            return (
+                <View style={{ flex: 1, backgroundColor: colorScheme.darkGreen }}>
+                    <Navbar />
+                    <Slot />
+                </View>
+            );
+        }
+        // Narrow web: use Footer tab bar like Android
         return (
-            <View style={{ flex: 1, backgroundColor: colorScheme.darkGreen }}>
-                <Navbar />
-                <Slot />
-            </View>
+            <Tabs
+                tabBar={(props) => <Footer {...props} />}
+                screenOptions={{ headerShown: false }}
+            >
+                <Tabs.Screen name='index' />
+                <Tabs.Screen name='movies' />
+                <Tabs.Screen name='series' />
+                <Tabs.Screen name='search' />
+                <Tabs.Screen name='logout' />
+            </Tabs>
         );
     }
 

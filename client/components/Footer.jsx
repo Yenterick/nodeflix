@@ -94,12 +94,12 @@ const Footer = ({ state, descriptors, navigation }) => {
                         <MaterialIcons
                             name={getIconName(route.name)}
                             size={24}
-                            color={isFocused ? colorScheme.green : 'white'}
+                            color={route.name === 'logout' ? '#FF6B6B' : isFocused ? colorScheme.green : 'white'}
                         />
                         <Text style={[
                             funnelDisplay.semibold,
                             styles.footerButtonText,
-                            { color: isFocused ? colorScheme.green : 'white' }
+                            { color: route.name === 'logout' ? '#FF6B6B' : isFocused ? colorScheme.green : 'white' }
                         ]}>
                             {getLabelName(route.name)}
                         </Text>

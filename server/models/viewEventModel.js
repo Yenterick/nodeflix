@@ -53,7 +53,7 @@ const ViewEvent = pgSequelize.define('ViewEvent', {
 // View event model with all the required functions
 const viewEventModel = {
     selectAllViewEvents: async () => {
-        return await ViewEvent.find();
+        return await ViewEvent.findAll();
     },
 
     insertViewEvent: async (contentId, contentType, season, episode, watchedSeconds, completed, profileId) => {
@@ -144,6 +144,19 @@ const viewEventModel = {
                 }
             }
         );
+    },
+
+    selectTopViewEvents: async (limit = 10) => {
+        return await ViewEvent.findAll({
+            attributes: [
+                'content_id',
+                'content_type',
+                [pgSequelize.fn('COUNT', pgSequelize.col('content_id')), 'view_count']
+            ],
+            group: ['content_id', 'content_type'],
+            order: [[pgSequelize.fn('COUNT', pgSequelize.col('content_id')), 'DESC']],
+            limit: limit
+        });
     }
 }
 

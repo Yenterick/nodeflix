@@ -331,31 +331,15 @@ const Search = () => {
                                 {results.map((item, index) => (
                                     <Animated.View
                                         key={`${item._contentType}-${item._id}`}
-                                        style={styles.gridCardWrapper}
                                         entering={FadeIn.delay(index * 40).duration(400)}
                                         layout={Layout.springify().damping(15)}
                                     >
                                         <ContentCard
                                             uriSource={process.env.EXPO_PUBLIC_CDN_URL + item.thumbnail_url}
                                             onPress={() => handleSelectItem(item, item._contentType)}
-                                            style={styles.gridCard}
+                                            title={item.title}
+                                            contentType={item._contentType}
                                         />
-                                        {/* Content type badge */}
-                                        <View style={[
-                                            styles.typeBadge,
-                                            item._contentType === 'series' && styles.typeBadgeSeries
-                                        ]}>
-                                            <Text style={[funnelDisplay.semibold, styles.typeBadgeText]}>
-                                                {item._contentType === 'movie' ? 'Movie' : 'Series'}
-                                            </Text>
-                                        </View>
-                                        {/* Title below card */}
-                                        <Text
-                                            style={[funnelDisplay.regular, styles.cardTitle]}
-                                            numberOfLines={2}
-                                        >
-                                            {item.title}
-                                        </Text>
                                     </Animated.View>
                                 ))}
                             </Animated.View>
@@ -491,51 +475,9 @@ const styles = StyleSheet.create({
     resultsGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 14,
+        gap: 1,
         rowGap: 16,
         justifyContent: 'center',
-    },
-
-    gridCardWrapper: {
-        width: 100,
-        gap: 6,
-        position: 'relative',
-        alignItems: 'center',
-    },
-
-    gridCard: {
-        width: 100,
-        height: 160,
-        marginHorizontal: 0,
-    },
-
-    typeBadge: {
-        position: 'absolute',
-        top: 8,
-        left: 8,
-        backgroundColor: 'rgba(14, 17, 14, 0.82)',
-        borderRadius: 4,
-        paddingHorizontal: 5,
-        paddingVertical: 2,
-        borderWidth: 1,
-        borderColor: colorScheme.green,
-    },
-
-    typeBadgeSeries: {
-        borderColor: colorScheme.lightGreen,
-    },
-
-    typeBadgeText: {
-        color: colorScheme.lightGreen,
-        fontSize: 9,
-        letterSpacing: 0.5,
-    },
-
-    cardTitle: {
-        color: 'rgba(255,255,255,0.75)',
-        fontSize: 12,
-        lineHeight: 16,
-        textAlign: 'center',
     },
 
     // Empty state
