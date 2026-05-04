@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpecs = require('./config/swagger');
 
@@ -30,6 +31,24 @@ const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Disabling powered by so people doesn't know this is Express
+app.disable('x-powered-by');
+
+// Rate limit configuration
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    skip: (req) => req.headers['x-bypass-ratelimit'] === process.env.BYPASS_RATELIMIT_SECRET,
+    message: {
+        success: false,
+        msg: 'Too many request from this IP, please try again in 15 minutes'
+    },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
+app.use('/api', limiter);
 
 // Routers configuration
 app.use('/api/user', userRouter);

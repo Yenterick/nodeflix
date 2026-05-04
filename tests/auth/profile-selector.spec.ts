@@ -1,11 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-import dotenv from 'dotenv';
-import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
-
 // All profile selector related tests
 test.describe('Profile Selector Tests', () => {
+
     let testEmail = '';
 
     test.beforeAll(async ({ browser }) => {

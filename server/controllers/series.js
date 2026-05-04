@@ -7,7 +7,7 @@ const searchSeries = async (req, res) => {
         const { q, genre } = req.query;
 
         let series;
-        if (q && q.trim() !== '') {
+        if (q && typeof q === 'string' && q.trim() !== '') {
             series = await seriesModel.selectSeriesBySearch(q.trim(), isKid);
         } else if (genre && genre !== 'All') {
             series = await seriesModel.selectSeriesByGenresPrecise([genre], isKid);
@@ -15,7 +15,7 @@ const searchSeries = async (req, res) => {
             series = await seriesModel.selectAllSeries(isKid);
         }
 
-        if (q && q.trim() !== '' && genre && genre !== 'All') {
+        if (q && typeof q === 'string' && q.trim() !== '' && genre && genre !== 'All') {
             series = series.filter(s => s.genres && s.genres.includes(genre));
         }
 

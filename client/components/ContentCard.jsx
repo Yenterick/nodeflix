@@ -22,7 +22,7 @@ const ContentCard = ({ uriSource, onPress, style, title, contentType }) => {
                         width: '100%',
                         height: 160,
                         position: 'relative',
-                        borderRadius: 10, // Added to fix shadow corners on web
+                        borderRadius: 10,
                         shadowColor: colorScheme.lightGreen,
                         shadowOffset: { width: 0, height: 0 },
                         shadowOpacity: 0.5,
@@ -43,7 +43,6 @@ const ContentCard = ({ uriSource, onPress, style, title, contentType }) => {
                     onError={() => setImageError(true)}
                 />
 
-                {/* Content type badge */}
                 {contentType && (
                     <View style={[
                         styles.typeBadge,
@@ -56,7 +55,6 @@ const ContentCard = ({ uriSource, onPress, style, title, contentType }) => {
                 )}
             </Pressable>
 
-            {/* Title below card */}
             {title && (
                 <Text
                     style={[funnelDisplay.regular, styles.cardTitle]}

@@ -7,7 +7,7 @@ const searchMovies = async (req, res) => {
         const { q, genre } = req.query;
 
         let movies;
-        if (q && q.trim() !== '') {
+        if (q && typeof q === 'string' && q.trim() !== '') {
             movies = await movieModel.selectMovieBySearch(q.trim(), isKid);
         } else if (genre && genre !== 'All') {
             movies = await movieModel.selectMoviesByGenresPrecise([genre], isKid);
@@ -15,7 +15,7 @@ const searchMovies = async (req, res) => {
             movies = await movieModel.selectAllMovies(isKid);
         }
 
-        if (q && q.trim() !== '' && genre && genre !== 'All') {
+        if (q && typeof q === 'string' && q.trim() !== '' && genre && genre !== 'All') {
             movies = movies.filter(m => m.genres && m.genres.includes(genre));
         }
 

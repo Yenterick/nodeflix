@@ -81,6 +81,36 @@ const kidFilter = require('../middlewares/kidFilter.middleware');
  */
 router.get('/search/:kidCheck', auth, searchSeries);
 
+/**
+ * @swagger
+ * /api/series/{kidCheck}:
+ *   get:
+ *     summary: Get all series.
+ *     tags: [Series]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: kidCheck
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [kid, all]
+ *     responses:
+ *       200:
+ *         description: Series retrieved.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Series'
+ */
 router.get('/:kidCheck', auth, getAllSeries);
 
 /**

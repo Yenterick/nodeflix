@@ -14,7 +14,6 @@ export default function MainLayout() {
 
     // Web Layout
     if (Platform.OS === 'web') {
-        // Use Navbar on wide screens, Footer on narrow screens (< 768px)
         if (width >= 768) {
             return (
                 <View style={{ flex: 1, backgroundColor: colorScheme.darkGreen }}>
@@ -23,7 +22,6 @@ export default function MainLayout() {
                 </View>
             );
         }
-        // Narrow web: use Footer tab bar like Android
         return (
             <Tabs
                 tabBar={(props) => <Footer {...props} />}
