@@ -6,7 +6,7 @@ const API_URL = process.env.PLAYWRIGHT_API_URL || 'http://localhost:5000/api';
 test.describe('API Security Tests', () => {
 
     // Test Rate Limiting protection by sending multiple requests
-    test('Rate limiting after 100 requests', async ({ request }) => {
+    test('Rate limiting after 350 requests', async ({ request }) => {
         test.slow();
         let lastResponse = await request.get(`${API_URL}/health`, {
             headers: { 'x-bypass-ratelimit': '' }
