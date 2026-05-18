@@ -258,6 +258,14 @@ const ContentInfoModal = ({ item, contentType, onClose }) => {
                     maxHeight: isSeries ? '88%' : '100%',
                 }
             ]}>
+                <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={onClose}
+                    accessibilityRole="button"
+                    accessibilityLabel="Close"
+                >
+                    <MaterialIcons name="close" size={24} color="white" />
+                </TouchableOpacity>
                 {/* Error modal */}
                 {hasError &&
                     <InfoModal text={errorMessage} icon='error-outline' color='#FF6B6B' onExit={() => {
@@ -649,6 +657,17 @@ const styles = StyleSheet.create({
         zIndex: 20,
         flexShrink: 1,
         cursor: 'auto'
+    },
+
+    closeButton: {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        borderRadius: 20,
+        padding: 8,
+        zIndex: 99,
+        elevation: 99,
     },
 
     // Loading icon styles config

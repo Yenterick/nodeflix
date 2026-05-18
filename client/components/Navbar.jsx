@@ -109,6 +109,9 @@ const Navbar = () => {
                 <TouchableOpacity
                     style={styles.logoutButton}
                     onPress={() => router.replace('/(auth)/profile-selector')}
+                    accessible={true}
+                    accessibilityLabel="logout"
+                    accessibilityRole="button"
                 >
                     <MaterialIcons name="logout" size={24} color="#FF6B6B" />
                 </TouchableOpacity>

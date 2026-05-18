@@ -23,8 +23,8 @@ test.describe('Login Tests', () => {
 
     // Test trying to log without a valid email
     test('Login with an invalid email', async ({ page }) => {
-        await page.getByPlaceholder(/Insert your email.../i).fill('wrong');
-        await page.getByPlaceholder(/Insert your password.../i).fill('wrongPassword');
+        await page.getByPlaceholder('Insert your email...').filter({ visible: true }).fill('wrong');
+        await page.getByPlaceholder('Insert your password...').filter({ visible: true }).fill('wrongPassword');
         await page.getByRole('button', { name: /Login/i }).click();
         await expect(page.getByText(`Please enter a valid email address!`)).toBeVisible();
         await page.getByRole('button', { name: /Accept/i }).click();
@@ -32,8 +32,8 @@ test.describe('Login Tests', () => {
 
     // Test trying to log with inexistent credentials
     test('Login with inexistent credentials', async ({ page }) => {
-        await page.getByPlaceholder(/Insert your email.../i).fill('wrong@wrong.com');
-        await page.getByPlaceholder(/Insert your password.../i).fill('wrongPassword');
+        await page.getByPlaceholder('Insert your email...').filter({ visible: true }).fill('wrong@wrong.com');
+        await page.getByPlaceholder('Insert your password...').filter({ visible: true }).fill('wrongPassword');
         await page.getByRole('button', { name: /Login/i }).click();
         await expect(page.getByText(`That email is not registered.`)).toBeVisible();
         await page.getByRole('button', { name: /Accept/i }).click();
@@ -41,8 +41,8 @@ test.describe('Login Tests', () => {
 
     // Test trying to log with incorrect password
     test('Login with incorrect password', async ({ page }) => {
-        await page.getByPlaceholder(/Insert your email.../i).fill('test@test.com');
-        await page.getByPlaceholder(/Insert your password.../i).fill('wrongPassword');
+        await page.getByPlaceholder('Insert your email...').filter({ visible: true }).fill('test@test.com');
+        await page.getByPlaceholder('Insert your password...').filter({ visible: true }).fill('wrongPassword');
         await page.getByRole('button', { name: /Login/i }).click();
         await expect(page.getByText(`Incorrect password.`)).toBeVisible();
         await page.getByRole('button', { name: /Accept/i }).click();
@@ -50,8 +50,8 @@ test.describe('Login Tests', () => {
 
     // Test trying to log with correct credentials
     test('Login with correct credentials', async ({ page }) => {
-        await page.getByPlaceholder(/Insert your email.../i).fill('test@test.com');
-        await page.getByPlaceholder(/Insert your password.../i).fill('test');
+        await page.getByPlaceholder('Insert your email...').filter({ visible: true }).fill('test@test.com');
+        await page.getByPlaceholder('Insert your password...').filter({ visible: true }).fill('test');
         await page.getByRole('button', { name: /Login/i }).click();
         await expect(page).toHaveURL(/profile-selector/i);
     });

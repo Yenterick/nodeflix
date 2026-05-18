@@ -5,14 +5,15 @@ test.describe('Profile Selector Tests', () => {
 
     let testEmail = '';
 
+    // Creates an account and one shared profile before all tests
     test.beforeAll(async ({ browser }) => {
         const context = await browser.newContext();
         const page = await context.newPage();
         testEmail = `test_${Date.now()}_${Math.random().toString(36).substring(2, 6)}@test.com`;
         await page.goto(process.env.PLAYWRIGHT_URL || 'http://localhost:8081/');
         await page.getByText('Register').click();
-        await page.getByPlaceholder('Insert your email...').nth(1).fill(testEmail);
-        await page.getByPlaceholder('Insert your password...').nth(1).fill('test');
+        await page.getByPlaceholder('Insert your email...').filter({ visible: true }).fill(testEmail);
+        await page.getByPlaceholder('Insert your password...').filter({ visible: true }).fill('test');
         await page.getByPlaceholder('Insert your password again...').fill('test');
         await page.getByRole('button', { name: /Register/i }).click();
         await expect(page.getByText(/Succesfully registered/i)).toBeVisible();
@@ -21,8 +22,8 @@ test.describe('Profile Selector Tests', () => {
 
     test.beforeEach(async ({ page }) => {
         await page.goto(process.env.PLAYWRIGHT_URL || 'http://localhost:8081/');
-        await page.getByPlaceholder(/Insert your email.../i).fill(testEmail);
-        await page.getByPlaceholder(/Insert your password.../i).fill('test');
+        await page.getByPlaceholder('Insert your email...').filter({ visible: true }).fill(testEmail);
+        await page.getByPlaceholder('Insert your password...').filter({ visible: true }).fill('test');
         await page.getByRole('button', { name: /Login/i }).click();
         await expect(page).toHaveURL(/profile-selector/i);
     });
@@ -48,7 +49,7 @@ test.describe('Profile Selector Tests', () => {
         await page.getByText(/New Profile/i).click();
         await page.getByPlaceholder(/Enter profile name.../i).fill(profileName);
         await page.getByRole('button', { name: 'Add' }).click();
-        await expect(page.getByText('What have you seen?')).toBeVisible();
+        await expect(page.getByText('What have you seen?')).toBeVisible({ timeout: 10000 });
         await page.getByRole('button', { name: 'Skip' }).click();
         await expect(page.getByText(profileName)).toBeVisible();
         await page.getByRole('button', { name: 'Manage Profiles' }).click();

@@ -16,6 +16,7 @@ const ContentCard = ({ uriSource, onPress, style, title, contentType }) => {
     return (
         <View style={[{ marginHorizontal: 10, width: 100, alignItems: 'center', gap: 6 }, style]}>
             <Pressable
+                testID="content-card"
                 onPress={onPress}
                 style={({ pressed }) => [
                     {

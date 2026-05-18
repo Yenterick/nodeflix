@@ -441,6 +441,7 @@ const VideoPlayer = () => {
             }
             {/* Full-screen tap zone */}
             <Pressable
+                testID="video-tap-zone"
                 style={styles.fullscreenTapZone}
                 onPress={handleTap}
             />
@@ -538,6 +539,7 @@ const VideoPlayer = () => {
                             pointerEvents="box-none"
                         >
                             <TouchableOpacity
+                                testID="video-exit-button"
                                 style={styles.exitButton}
                                 onPress={handleBack}
                             >
