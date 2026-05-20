@@ -30,7 +30,7 @@ This database system is designed to support all data operations within Nodeflix,
 ## Database Architecture
 
 <p align="center">
-    <img src="./docs/databaseDiagram.png" alt="Database Diagram"/>
+    <img src="./docs/databaseDiagramV2.png" alt="Database Diagram"/>
 </p>
 
 ---
