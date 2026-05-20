@@ -44,7 +44,6 @@ test.describe('Content Interaction Tests', () => {
         await expect(page.getByText('Movies').first()).toBeVisible({ timeout: 10000 });
         await page.getByText('Movies').first().click();
         await expect(page).toHaveURL(/movies/i);
-        // Open the first content card
         await page.locator('[data-testid="content-card"] img, .content-card img').first().click();
         await expect(page.getByText('Play', { exact: true })).toBeVisible({ timeout: 8000 });
     });

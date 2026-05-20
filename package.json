@@ -3,7 +3,12 @@
   "version": "1.0.1",
   "description": "A mobile application streaming platform inspired by modern services",
   "main": "",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Yenterick/nodeflix.git"

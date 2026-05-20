@@ -47,10 +47,10 @@ The system follows a distributed architecture to ensure scalability and separati
 
 ```bash
 nodeflix/
-├── client/          # Frontend mobile application (Expo)
+├── client/          # Frontend mobile application (Expo/React Native)
 ├── server/          # Backend API (Node.js/Express)
-├── cdn/             # Content Distribution Network & Media Processing
-├── db/              # Database models and configuration
+├── cdn/             # Content Distribution Network & Media Processing (Nginx)
+├── db/              # Database models and configuration (Postgres/MongoDB)
 ├── docs/            # Project documentation and assets
 ├── tests/           # End-to-end and integration tests
 └── docker-compose.yml
@@ -81,6 +81,48 @@ docker compose up -d --build
 - Backend: `http://localhost:5000`
 - CDN: `http://localhost:80`
 - Client: Follow instructions in [client/README.md](./client/README.md)
+
+---
+
+## Testing
+
+Nodeflix features a robust end-to-end and API testing suite implemented with **Playwright**.
+
+### Prerequisites
+
+Before running the tests, ensure that:
+1. All backend, database, and CDN services are running (e.g., using `docker compose up -d`).
+2. The client web server is running at the address specified by the environment variables (typically `http://localhost:8081/`).
+3. Your local `.env` file is properly configured with the test variables:
+   - `PLAYWRIGHT_URL` (or `PLAYWRIGHT_PAGE_URL`): The URL where the client is running (default `http://localhost:8081/`).
+   - `PLAYWRIGHT_API_URL`: The URL of the API gateway (default `http://localhost:5000/api`).
+   - `PLAYWRIGHT_JWT_TOKEN`: A valid JWT bearer token for authenticated API tests.
+   - `BYPASS_RATELIMIT_SECRET`: The rate-limit bypass key matching the backend configuration.
+
+>[!WARNING] JWT TOKEN needs to be retrieved manually with a HTTP request!
+
+### Running Tests
+
+We provide scripts in the root `package.json` to simplify test execution. You can run them using `npm`:
+
+```bash
+# Run all tests headlessly
+npm test
+
+# Run tests in UI Mode (with interactive browser and debugger)
+npm run test:ui
+
+# Run tests in headed/debug mode
+npm run test:debug
+
+# View the HTML report of the last test execution
+npm run test:report
+```
+
+To run a specific test file or directory, use:
+```bash
+npx playwright test tests/api/basics.spec.ts
+```
 
 ---
 
