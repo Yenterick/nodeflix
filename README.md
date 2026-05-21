@@ -26,10 +26,10 @@ A React Native / Expo application providing a responsive, mobile-first interface
 The core backend engine built with Node.js and Express, handling authentication, business logic, and orchestrating interactions between users and metadata.
 
 ### [CDN](./cdn/README.md)
-A specialized content distribution network using NGINX and HLS streaming to deliver video segments and media assets efficiently across different network conditions.
+A specialized content distribution network using NGINX and HLS streaming to deliver video segments and media assets.
 
 ### [Database](./db/README.md)
-A robust dual-layer storage system combining **PostgreSQL** for relational user data and **MongoDB** for flexible content metadata and analytics.
+A robust dual-layer storage system combining **PostgreSQL** for relational user data and **MongoDB** for flexible content metadata.
 
 ---
 
@@ -40,21 +40,6 @@ The system follows a distributed architecture to ensure scalability and separati
 <p align="center">
     <img src="./docs/architectureDiagram.png" alt="Nodeflix Architecture"/>
 </p>
-
----
-
-## Project Structure
-
-```bash
-nodeflix/
-├── client/          # Frontend mobile application (Expo/React Native)
-├── server/          # Backend API (Node.js/Express)
-├── cdn/             # Content Distribution Network & Media Processing (Nginx)
-├── db/              # Database models and configuration (Postgres/MongoDB)
-├── docs/            # Project documentation and assets
-├── tests/           # End-to-end and integration tests
-└── docker-compose.yml
-```
 
 ---
 
@@ -98,12 +83,12 @@ Before running the tests, ensure that:
    - `PLAYWRIGHT_API_URL`: The URL of the API gateway (default `http://localhost:5000/api`).
    - `PLAYWRIGHT_JWT_TOKEN`: A valid JWT bearer token for authenticated API tests.
    - `BYPASS_RATELIMIT_SECRET`: The rate-limit bypass key matching the backend configuration.
+4. You already have an account registered in the database with the email `test@test.com` using the password `test`.
 
->[!WARNING] JWT TOKEN needs to be retrieved manually with a HTTP request!
+> [!WARNING] 
+> JWT TOKEN needs to be retrieved manually with a HTTP request!
 
 ### Running Tests
-
-We provide scripts in the root `package.json` to simplify test execution. You can run them using `npm`:
 
 ```bash
 # Run all tests headlessly
@@ -129,8 +114,6 @@ npx playwright test tests/api/basics.spec.ts
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
-
----
 
 ## Author
 

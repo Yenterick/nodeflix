@@ -20,7 +20,7 @@
 This database system is designed to support all data operations within Nodeflix, combining relational and non-relational approaches:
 
 - PostgreSQL for structured and relational data (users, content, relationships).
-- MongoDB for flexible and scalable data (logs, analytics, dynamic content).
+- MongoDB for nested data models (movies, series...).
 - Optimized data models for streaming platforms.
 - Efficient querying and indexing strategies.
 - Separation of concerns between transactional and non-transactional data.
@@ -44,13 +44,8 @@ Handles structured and transactional data:
 - **users** → Stores account credentials and basic user configuration.
 - **profiles** → Represents individual user profiles (multi-profile system).
 - **view_events** → Tracks content consumption (watch time, completion, episodes).
-- **interaction_events** → Stores user actions (clicks, likes, interactions).
+- **interaction_events** → Stores user actions (likes, dislikes).
 - **list_events** → Manages user lists and saved content.
-
-This layer ensures:
-- Data integrity through relationships (FKs)
-- Consistency in user-related operations
-- Efficient querying for user activity
 
 ---
 
@@ -62,18 +57,11 @@ Handles flexible and content-heavy data:
 - **series** → Stores series data with nested seasons and episodes.
 - **profile_pictures** → Stores available profile images.
 
-This layer is optimized for:
-- Fast content retrieval
-- Flexible schemas (especially for nested episodes/seasons)
-- Scalability for large media catalogs
-
 ---
 
 ## License
 
 This project is licensed under the MIT License.
-
----
 
 ## Author
 

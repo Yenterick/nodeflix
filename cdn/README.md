@@ -339,7 +339,7 @@ After installing the app, you can use the user interface:
     <img src="./docs/mediaProcessor.png" alt="Nodeflix CDN"/>
 </p>
 
->If you check the box to remember credentials, all your information will be saved inside the **%appdata%** folder of your user.
+> If you check the box to remember credentials, all your information will be saved inside the **%appdata%** folder of your user.
 
 > [!WARNING]
 > Remember to use the content processor with care because the process of deleting the server and database will have to be done manually!
@@ -349,8 +349,6 @@ After installing the app, you can use the user interface:
 ## License
 
 This project is licensed under the MIT License.
-
----
 
 ## Author
 

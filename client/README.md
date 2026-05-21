@@ -63,27 +63,9 @@ Environment variables are used to configure API endpoints and services.
 
 ---
 
-## Project Structure
-
-```
-client/
-├── app/
-├── screens/
-├── components/
-├── context/
-├── hooks/
-├── assets/
-├── .env
-└── package.json
-```
-
----
-
 ## License
 
 This project is licensed under the MIT License.
-
----
 
 ## Author
 
