@@ -12,7 +12,7 @@ test.describe('Video Player Tests', () => {
         const page = await context.newPage();
         testEmail = `test_${Date.now()}_${Math.random().toString(36).substring(2, 6)}@test.com`;
         profileName = `T${Math.random().toString(36).substring(2, 8)}`;
-        await page.goto(process.env.PLAYWRIGHT_URL || 'http://localhost:8081/');
+        await page.goto(process.env.PLAYWRIGHT_PAGE_URL || 'http://localhost:8081/');
         await page.getByText('Register').click();
         await page.getByPlaceholder('Insert your email...').filter({ visible: true }).fill(testEmail);
         await page.getByPlaceholder('Insert your password...').filter({ visible: true }).fill('test');
@@ -35,7 +35,7 @@ test.describe('Video Player Tests', () => {
 
     // Login, select profile, open movie and launch video player before each test
     test.beforeEach(async ({ page }) => {
-        await page.goto(process.env.PLAYWRIGHT_URL || 'http://localhost:8081/');
+        await page.goto(process.env.PLAYWRIGHT_PAGE_URL || 'http://localhost:8081/');
         await page.getByPlaceholder('Insert your email...').filter({ visible: true }).fill(testEmail);
         await page.getByPlaceholder('Insert your password...').filter({ visible: true }).fill('test');
         await page.getByRole('button', { name: /Login/i }).click();

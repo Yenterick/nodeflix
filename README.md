@@ -45,7 +45,7 @@ The system follows a distributed architecture to ensure scalability and separati
 
 ## Quick Start
 
-The entire ecosystem can be launched using Docker Compose for local development:
+The server ecosystem can be launched using Docker Compose for local development:
 
 #### 1. Configure Environment
 
@@ -64,7 +64,7 @@ docker compose up -d --build
 #### 3. Access Services
 
 - Backend: `http://localhost:5000`
-- CDN: `http://localhost:80`
+- CDN: Follow instructions in [cdn/README.md](./cdn/README.md)
 - Client: Follow instructions in [client/README.md](./client/README.md)
 
 ---
@@ -73,17 +73,27 @@ docker compose up -d --build
 
 Nodeflix features a robust end-to-end and API testing suite implemented with **Playwright**.
 
+<p align="center">
+    <img src="./docs/tests.png" alt="Nodeflix Tests"/>
+</p>
+
 ### Prerequisites
 
 Before running the tests, ensure that:
-1. All backend, database, and CDN services are running (e.g., using `docker compose up -d`).
-2. The client web server is running at the address specified by the environment variables (typically `http://localhost:8081/`).
-3. Your local `.env` file is properly configured with the test variables:
-   - `PLAYWRIGHT_URL` (or `PLAYWRIGHT_PAGE_URL`): The URL where the client is running (default `http://localhost:8081/`).
-   - `PLAYWRIGHT_API_URL`: The URL of the API gateway (default `http://localhost:5000/api`).
-   - `PLAYWRIGHT_JWT_TOKEN`: A valid JWT bearer token for authenticated API tests.
-   - `BYPASS_RATELIMIT_SECRET`: The rate-limit bypass key matching the backend configuration.
-4. You already have an account registered in the database with the email `test@test.com` using the password `test`.
+1. All backend, database, and CDN services are running.
+2. Your local `.env` file is properly configured with the test variables:
+    - `PLAYWRIGHT_PAGE_URL`: The URL where the client is running (default `http://localhost:8081/`).
+    - `PLAYWRIGHT_API_URL`: The URL of the API gateway (default `http://localhost:5000/api`).
+    - `PLAYWRIGHT_CONTENT_PROCESSOR_ROUTE`: The Electron app for media processing entrypoint route.
+    - `PLAYWRIGHT_CDN_URL`: The URL of the content delivery network. (default `http://localhost`).
+    - `PLAYWRIGHT_JWT_TOKEN`: A valid JWT bearer token for authenticated API tests.
+    - `BYPASS_RATELIMIT_SECRET`: The rate-limit bypass key matching the backend configuration.
+3. You already have an account registered in the database with the email `test@test.com` using the password `test`.
+4. You already correctly logged into the media processor atleast once and checked [X] Remember Credentials. e.g. 
+
+<p align="center">
+    <img src="./docs/mediaProcessorExample.png" alt="Media Processor Example"/>
+</p>
 
 > [!WARNING] 
 > JWT TOKEN needs to be retrieved manually with a HTTP request!

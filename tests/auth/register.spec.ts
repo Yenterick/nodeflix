@@ -5,7 +5,7 @@ test.describe('Register Tests', () => {
 
     // Go to the starting url before each test
     test.beforeEach(async ({ page }) => {
-        await page.goto(process.env.PLAYWRIGHT_URL || 'http://localhost:8081/');
+        await page.goto(process.env.PLAYWRIGHT_PAGE_URL || 'http://localhost:8081/');
         await page.getByText('Register').click();
         await expect(page.getByText(/Register to continue.../i)).toBeVisible();
     });

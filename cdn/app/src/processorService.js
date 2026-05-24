@@ -121,6 +121,19 @@ class ProcessorService {
         }
     }
 
+    // Deletes the folder from the CDN recursively
+    async deleteRemoteFolder(remotePath) {
+        try {
+            await this.sftp.connect(this.sshConfig);
+            const exists = await this.sftp.exists(remotePath);
+            if (exists) {
+                await this.sftp.rmdir(remotePath, true);
+            }
+        } finally {
+            await this.sftp.end();
+        }
+    }
+
     // Delete the temporary directory
     async cleanup(localPath) {
         if (fs.existsSync(localPath)) {

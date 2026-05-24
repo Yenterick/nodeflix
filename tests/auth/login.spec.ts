@@ -5,7 +5,7 @@ test.describe('Login Tests', () => {
 
     // Go to the starting url before each test
     test.beforeEach(async ({ page }) => {
-        await page.goto(process.env.PLAYWRIGHT_URL || 'http://localhost:8081/');
+        await page.goto(process.env.PLAYWRIGHT_PAGE_URL || 'http://localhost:8081/');
     });
 
     // Test confirming it goes to the login page

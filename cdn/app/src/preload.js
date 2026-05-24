@@ -11,5 +11,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getVideoDuration: (filePath) => ipcRenderer.invoke('get-video-duration', filePath),
     getAllContent: () => ipcRenderer.invoke('get-all-content'),
     processPictures: (data) => ipcRenderer.invoke('process-pictures', data),
-    onProgress: (callback) => ipcRenderer.on('process-progress', (event, value) => callback(value))
+    onProgress: (callback) => ipcRenderer.on('process-progress', (event, value) => callback(value)),
+    getManageMovies: () => ipcRenderer.invoke('get-manage-movies'),
+    getManageSeries: () => ipcRenderer.invoke('get-manage-series'),
+    getManagePictures: () => ipcRenderer.invoke('get-manage-pictures'),
+    updateMovie: (data) => ipcRenderer.invoke('update-movie', data),
+    updateSeries: (data) => ipcRenderer.invoke('update-series', data),
+    updatePicture: (data) => ipcRenderer.invoke('update-picture', data),
+    deleteMovie: (id) => ipcRenderer.invoke('delete-movie', id),
+    deleteSeries: (id) => ipcRenderer.invoke('delete-series', id),
+    deletePicture: (id) => ipcRenderer.invoke('delete-picture', id)
 });

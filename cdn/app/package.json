@@ -1,6 +1,6 @@
 {
   "name": "nodeflix-cdn-app",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Content distribution network app for Nodeflix.",
   "keywords": [
     "cdn",
@@ -14,7 +14,7 @@
   "main": "./src/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "nodemon --watch . --exec 'electron .'",
+    "dev": "electron .",
     "dist": "electron-builder"
   },
   "build": {
@@ -44,7 +44,6 @@
     "electron-builder": "^26.8.1",
     "nodemon": "^3.1.14",
     "electron": "^41.1.0"
-    
   },
   "dependencies": {
     "dotenv": "^17.3.1",

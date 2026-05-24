@@ -61,6 +61,13 @@
             >
                 Pictures
             </button>
+            <button 
+                type="button" 
+                id="manageTab" 
+                class="tab-btn"
+            >
+                Manage
+            </button>
         </div>
 
         <form id="mediaForm" class="environment-form" novalidate>
@@ -403,6 +410,155 @@
                 Process & Upload
             </button>
         </form>
+
+        <div id="manageSection" style="display: none;" class="environment-form">
+            <div class="form-section">
+                <p class="form-title">
+                    Manage Content
+                </p>
+                <div class="type-selector" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+                    <button type="button" id="manageMoviesTab" class="tab-btn active" style="padding: 8px 24px; font-size: 1rem;">Movies</button>
+                    <button type="button" id="manageSeriesTab" class="tab-btn" style="padding: 8px 24px; font-size: 1rem;">Series</button>
+                    <button type="button" id="managePicturesTab" class="tab-btn" style="padding: 8px 24px; font-size: 1rem;">Pictures</button>
+                </div>
+                
+                <div class="form-group">
+                    <label>Select Item to Edit / Delete</label>
+                    <div id="manageContentList" class="content-list" style="max-height: 200px;"></div>
+                </div>
+            </div>
+
+            <!-- Edit Form (visible when an item is selected) -->
+            <div id="manageEditForm" style="display: none;" class="form-section">
+                <p class="form-title" style="margin-top: 1rem;">
+                    Edit Information
+                </p>
+                <input type="hidden" id="editItemId">
+                
+                <!-- Movie Edit Fields -->
+                <div id="movieEditFields" style="display: none;">
+                    <div class="form-line">
+                        <div class="form-group">
+                            <label for="editMovieTitle">Title</label>
+                            <input type="text" id="editMovieTitle" placeholder="Title...">
+                        </div>
+                        <div class="form-group">
+                            <label for="editMovieYear">Release Year</label>
+                            <input type="number" id="editMovieYear" placeholder="2026">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 0.8rem;">
+                        <label for="editMovieDescription">Description</label>
+                        <textarea id="editMovieDescription" rows="3" placeholder="Description..."></textarea>
+                    </div>
+                    <div class="form-line" style="margin-top: 0.8rem;">
+                        <div class="form-group">
+                            <label>Genres</label>
+                            <div id="editMovieGenresContainer" class="genres-grid">
+                                <label class="genre-chip"><input type="checkbox" value="Action"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Action</label>
+                                <label class="genre-chip"><input type="checkbox" value="Comedy"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Comedy</label>
+                                <label class="genre-chip"><input type="checkbox" value="Drama"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Drama</label>
+                                <label class="genre-chip"><input type="checkbox" value="Horror"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Horror</label>
+                                <label class="genre-chip"><input type="checkbox" value="Sci-Fi"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Sci-Fi</label>
+                                <label class="genre-chip"><input type="checkbox" value="Thriller"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Thriller</label>
+                                <label class="genre-chip"><input type="checkbox" value="Romance"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Romance</label>
+                                <label class="genre-chip"><input type="checkbox" value="Documentary"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Documentary</label>
+                                <label class="genre-chip"><input type="checkbox" value="Animation"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Animation</label>
+                                <label class="genre-chip"><input type="checkbox" value="Family"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Family</label>
+                                <label class="genre-chip"><input type="checkbox" value="Fantasy"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Fantasy</label>
+                                <label class="genre-chip"><input type="checkbox" value="Crime"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Crime</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editMovieCast">Cast (comma separated)</label>
+                            <input type="text" id="editMovieCast" placeholder="Cast...">
+                        </div>
+                    </div>
+                    <div class="form-line" style="margin-top: 0.8rem;">
+                        <div class="form-group">
+                            <label for="editMovieDuration">Duration (seconds)</label>
+                            <input type="number" id="editMovieDuration" placeholder="Duration...">
+                        </div>
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="editMovieIsForKids">
+                                <label for="editMovieIsForKids">Is for kids?</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Series Edit Fields -->
+                <div id="seriesEditFields" style="display: none;">
+                    <div class="form-line">
+                        <div class="form-group">
+                            <label for="editSeriesTitle">Title</label>
+                            <input type="text" id="editSeriesTitle" placeholder="Title...">
+                        </div>
+                        <div class="form-group">
+                            <label for="editSeriesYear">Release Year</label>
+                            <input type="number" id="editSeriesYear" placeholder="2026">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 0.8rem;">
+                        <label for="editSeriesDescription">Description</label>
+                        <textarea id="editSeriesDescription" rows="3" placeholder="Description..."></textarea>
+                    </div>
+                    <div class="form-line" style="margin-top: 0.8rem;">
+                        <div class="form-group">
+                            <label>Genres</label>
+                            <div id="editSeriesGenresContainer" class="genres-grid">
+                                <label class="genre-chip"><input type="checkbox" value="Action"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Action</label>
+                                <label class="genre-chip"><input type="checkbox" value="Comedy"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Comedy</label>
+                                <label class="genre-chip"><input type="checkbox" value="Drama"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Drama</label>
+                                <label class="genre-chip"><input type="checkbox" value="Horror"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Horror</label>
+                                <label class="genre-chip"><input type="checkbox" value="Sci-Fi"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Sci-Fi</label>
+                                <label class="genre-chip"><input type="checkbox" value="Thriller"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Thriller</label>
+                                <label class="genre-chip"><input type="checkbox" value="Romance"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Romance</label>
+                                <label class="genre-chip"><input type="checkbox" value="Documentary"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Documentary</label>
+                                <label class="genre-chip"><input type="checkbox" value="Animation"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Animation</label>
+                                <label class="genre-chip"><input type="checkbox" value="Family"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Family</label>
+                                <label class="genre-chip"><input type="checkbox" value="Fantasy"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Fantasy</label>
+                                <label class="genre-chip"><input type="checkbox" value="Crime"><svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Crime</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editSeriesCast">Cast (comma separated)</label>
+                            <input type="text" id="editSeriesCast" placeholder="Cast...">
+                        </div>
+                    </div>
+                    <div class="form-line" style="margin-top: 0.8rem;">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="editSeriesIsForKids">
+                                <label for="editSeriesIsForKids">Is for kids?</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>Seasons & Episodes</label>
+                        <div id="editSeriesSeasonsContainer" style="margin-top: 0.5rem;"></div>
+                    </div>
+                </div>
+
+                <!-- Profile Pictures Edit Fields -->
+                <div id="picturesEditFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="editPicturesContentName">Content Reference Name</label>
+                        <input type="text" id="editPicturesContentName" placeholder="Content name...">
+                    </div>
+                </div>
+
+                <!-- Save & Delete Actions -->
+                <div class="form-line" style="margin-top: 1.5rem; gap: 1rem;">
+                    <button type="button" id="saveEditBtn" class="action-btn" style="flex: 1;">Save Changes</button>
+                    <button type="button" id="deleteBtn" class="remove-btn" style="padding: 12px; font-size: 1rem; width: 150px; box-shadow: 0px 6px 10px rgba(255, 71, 87, 0.3);">Delete</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div 
@@ -423,6 +579,25 @@
             >
                 Accept
             </button>
+        </div>
+    </div>
+
+    <div
+        id="confirmModal"
+        class="modal-overlay"
+    >
+        <div class="confirm-modal-card">
+            <h2 class="error-modal-title">
+                Confirm deletion
+            </h2>
+            <p
+                id="confirmModalMessage"
+                class="error-modal-message"
+            ></p>
+            <div class="confirm-modal-actions">
+                <button id="confirmCancelBtn" class="close-modal-btn" style="margin-bottom: 0.75rem;">Cancel</button>
+                <button id="confirmOkBtn" class="close-modal-btn">Delete</button>
+            </div>
         </div>
     </div>
 

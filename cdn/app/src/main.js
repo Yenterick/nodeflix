@@ -1,6 +1,13 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+app.name = 'nodeflix-cdn-app';
 const nativeImage = require('electron').nativeImage;
 const path = require('path');
+
+// Ensure userData directory matches the correct app directory in testing
+const currentUserData = app.getPath('userData');
+if (currentUserData.endsWith('Electron')) {
+    app.setPath('userData', path.join(app.getPath('appData'), 'nodeflix-cdn-app'));
+}
 const mongoose = require('mongoose');
 const fs = require('fs');
 const dotenv = require('dotenv');
@@ -14,7 +21,7 @@ const ProfilePicture = require('./models/profilePicture');
 // Environmental variables configuration
 const envPath = path.join(app.getPath('userData'), '.env');
 if (fs.existsSync(envPath)) {
-    dotenv.config({ path: envPath });
+    dotenv.config({ path: envPath, quiet: true });
 }
 
 let mainWindow;
@@ -23,7 +30,7 @@ let mainWindow;
 const createWindow = () => {
     mainWindow = new BrowserWindow({
         width: 1000,
-        height: 800,
+        height: 900,
         resizable: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -313,6 +320,128 @@ ipcMain.handle('process-pictures', async (event, data) => {
         return { success: true };
     } catch (error) {
         await processor.cleanup(tempDir).catch(() => {});
+        return { success: false, error: error.message };
+    }
+});
+
+// IPC Handlers for Edit and Delete functionality
+
+ipcMain.handle('get-manage-movies', async () => {
+    try {
+        const movies = await Movie.find({}).sort({ title: 1 }).lean();
+        const serialized = movies.map(m => ({
+            ...m,
+            _id: m._id.toString()
+        }));
+        return { success: true, data: serialized };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('get-manage-series', async () => {
+    try {
+        const series = await Series.find({}).sort({ title: 1 }).lean();
+        const serialized = series.map(s => ({
+            ...s,
+            _id: s._id.toString()
+        }));
+        return { success: true, data: serialized };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('get-manage-pictures', async () => {
+    try {
+        const pictures = await ProfilePicture.find({}).sort({ content_name: 1 }).lean();
+        const serialized = pictures.map(p => ({
+            ...p,
+            _id: p._id.toString()
+        }));
+        return { success: true, data: serialized };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('update-movie', async (event, { id, metadata }) => {
+    try {
+        await Movie.findByIdAndUpdate(id, metadata);
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('update-series', async (event, { id, metadata }) => {
+    try {
+        await Series.findByIdAndUpdate(id, metadata);
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('update-picture', async (event, { id, metadata }) => {
+    try {
+        await ProfilePicture.findByIdAndUpdate(id, metadata);
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('delete-movie', async (event, id) => {
+    try {
+        const movie = await Movie.findById(id);
+        if (!movie) {
+            return { success: false, error: 'Movie not found' };
+        }
+        await Movie.findByIdAndDelete(id);
+
+        const processor = new ProcessorService(currentConfig.ssh);
+        const remotePath = `/var/www/hls/movies/${id}`;
+        await processor.deleteRemoteFolder(remotePath);
+
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('delete-series', async (event, id) => {
+    try {
+        const series = await Series.findById(id);
+        if (!series) {
+            return { success: false, error: 'Series not found' };
+        }
+        await Series.findByIdAndDelete(id);
+
+        const processor = new ProcessorService(currentConfig.ssh);
+        const remotePath = `/var/www/hls/series/${id}`;
+        await processor.deleteRemoteFolder(remotePath);
+
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('delete-picture', async (event, id) => {
+    try {
+        const picture = await ProfilePicture.findById(id);
+        if (!picture) {
+            return { success: false, error: 'Profile pictures not found' };
+        }
+        await ProfilePicture.findByIdAndDelete(id);
+
+        const processor = new ProcessorService(currentConfig.ssh);
+        const remotePath = `/var/www/hls/pictures/${id}`;
+        await processor.deleteRemoteFolder(remotePath);
+
+        return { success: true };
+    } catch (error) {
         return { success: false, error: error.message };
     }
 });

@@ -10,7 +10,7 @@ test.describe('Profile Selector Tests', () => {
         const context = await browser.newContext();
         const page = await context.newPage();
         testEmail = `test_${Date.now()}_${Math.random().toString(36).substring(2, 6)}@test.com`;
-        await page.goto(process.env.PLAYWRIGHT_URL || 'http://localhost:8081/');
+        await page.goto(process.env.PLAYWRIGHT_PAGE_URL || 'http://localhost:8081/');
         await page.getByText('Register').click();
         await page.getByPlaceholder('Insert your email...').filter({ visible: true }).fill(testEmail);
         await page.getByPlaceholder('Insert your password...').filter({ visible: true }).fill('test');
@@ -21,7 +21,7 @@ test.describe('Profile Selector Tests', () => {
     });
 
     test.beforeEach(async ({ page }) => {
-        await page.goto(process.env.PLAYWRIGHT_URL || 'http://localhost:8081/');
+        await page.goto(process.env.PLAYWRIGHT_PAGE_URL || 'http://localhost:8081/');
         await page.getByPlaceholder('Insert your email...').filter({ visible: true }).fill(testEmail);
         await page.getByPlaceholder('Insert your password...').filter({ visible: true }).fill('test');
         await page.getByRole('button', { name: /Login/i }).click();
