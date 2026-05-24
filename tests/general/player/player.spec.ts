@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// Tests for the video player and continue watching functionality
+// All the video player related tests
 test.describe('Video Player Tests', () => {
 
     let testEmail = '';

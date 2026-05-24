@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// Tests for the Continue Watching functionality on the home page
+// All continue watching functionality tests
 test.describe('Continue Watching Tests', () => {
 
     let testEmail = '';

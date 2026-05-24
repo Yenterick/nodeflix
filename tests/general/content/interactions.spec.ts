@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// Tests for the content info modal and its interactions
+// All content interaction tests
 test.describe('Content Interaction Tests', () => {
 
     let testEmail = '';

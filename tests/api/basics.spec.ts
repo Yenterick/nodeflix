@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 const API_URL = process.env.PLAYWRIGHT_API_URL || 'http://localhost:5000/api';
 
 // All the API basic tests
-test.describe('API Basics Tests', () => {
+test.describe('API Basic Tests', () => {
 
     // Test the health check endpoint status
     test('Server health check status', async ({ request }) => {

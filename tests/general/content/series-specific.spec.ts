@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// Tests specific to series: season selector, episodes list, episode playback
+// All series specific tests
 test.describe('Series Specific Tests', () => {
 
     let testEmail = '';
