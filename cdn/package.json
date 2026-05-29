@@ -1,6 +1,6 @@
 {
   "name": "nodeflix-cdn",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Content distribution network for Nodeflix.",
   "keywords": [
     "cdn",

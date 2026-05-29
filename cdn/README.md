@@ -10,7 +10,7 @@
     <a href="#"><img src="https://img.shields.io/badge/Node.js-18+-green?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js"></a>
     <a href="#"><img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white" alt="NGINX"></a>
     <a href="#"><img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" alt="Status"></a>
-    <a href="#"><img src="https://img.shields.io/badge/Version-3.0.0-orange?style=for-the-badge" alt="Version"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Version-3.0.1-orange?style=for-the-badge" alt="Version"></a>
     <a href="#"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License"></a>
     <a href="#"><img src="https://img.shields.io/badge/Built%20by-Yenterick-blueviolet?style=for-the-badge" alt="Built by Yenterick"></a>
 </p>
